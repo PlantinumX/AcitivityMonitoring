@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Activity recognition</string>
+    <string name="action_settings">Settings</string>
+    <string name="button_start">Start</string>
+    <string name="activity_recognition">Activity Recognition</string>
+    <string name="Walking">Walking</string>
+    <string name="Joging">Jogging</string>
+    <string name="Downstairs">Downstairs</string>
+    <string name="Upstairs">Upstairs</string>
+    <string name="Standing">Standing</string>
+    <string name="Sitting">Sitting</string>
+    <string name="empty">(placeholder)</string>
+
+</resources>
