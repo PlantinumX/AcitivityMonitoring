@@ -41,8 +41,8 @@ class_labels = {"Walking": 0,
 # print(len(y_vals[0]))
 
 #
-# load data
-raw_data = []
+# load data,
+raw_data = np.zeros((5418, 14, 3))
 all_data = []
 
 
@@ -52,7 +52,19 @@ labels = np.zeros((5418,6))
 counter = 0
 for one_value in df.get_values():
 
-    raw_data.append(np.reshape(one_value[2:-2],(14,3)))
+    tmp = np.zeros((14,3))
+    for cnt_outter in range(0, 10):
+        tmp[cnt_outter][0] = one_value[2 + cnt_outter]
+        tmp[cnt_outter][1] = one_value[12 + cnt_outter]
+        tmp[cnt_outter][2] = one_value[22 + cnt_outter]
+
+    for cnt_outter in range(0, 4):
+        tmp[cnt_outter + 10][0] = one_value[32 + (cnt_outter *3)]
+        tmp[cnt_outter + 10][1] = one_value[33 + (cnt_outter *3)]
+        tmp[cnt_outter + 10][2] = one_value[34 + (cnt_outter *3)]
+
+
+#    raw_data.append(np.reshape(one_value[2:-2],(14,3)))
     index = class_labels[one_value[-1].decode('ascii')]
     labels[counter][index] = 1
     counter += 1
@@ -63,7 +75,7 @@ print(len(labels))
 print(labels[0:5])
 c = list(zip(raw_data, labels))
 #
-random.shuffle(c)
+#random.shuffle(c)
 raw_data,labels = zip(*c)
 raw_data = np.asarray(raw_data)
 labels = np.asarray(labels)
@@ -83,11 +95,11 @@ print(y_vals_test.shape)
 x_data_train = tf.placeholder(shape=[5300, 14,3], dtype=tf.double)
 y_data_train = tf.placeholder(shape=[5300, 6], dtype=tf.double)
 x_data_test = tf.placeholder(shape=[14, 3], dtype=tf.double)
-print("HELO")
+print("HELLO")
 for k in range(2,60):
 
     # # manhattan distance
-    distance = tf.sqrt(tf.reduce_sum(tf.reduce_sum(tf.square(x_data_train - x_data_test),axis=2),axis=1))
+    distance = tf.sqrt(tf.reduce_sum(tf.reduce_sum(tf.square(x_data_train - x_data_test), axis=2), axis=1))
     # #
     # # # nearest k points
     _, top_k_indices = tf.nn.top_k(tf.negative(distance), k=k)
