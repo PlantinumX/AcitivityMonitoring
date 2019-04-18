@@ -51,10 +51,10 @@ for label in labels:
 
 
 # train just with 5000 blocks in the arff file
-x_vals_train = data[0:200000, :, :] #217294,5,3
+x_vals_train = new_data[0:200000, :, :] #217294,5,3
 y_vals_train = new_labels[0:200000] #
 
-x_vals_test = data[200000:-1, :, :]
+x_vals_test = new_data[200000:-1, :, :]
 y_vals_test = new_labels[200000:-1]
 c = list(zip(x_vals_test,y_vals_test))
 
@@ -63,17 +63,17 @@ random.shuffle(c)
 x_vals_test,y_vals_test = zip(*c)
 x_vals_test = np.asarray(x_vals_test)
 y_vals_test = np.asarray(y_vals_test)
-print(x_vals_train.shape)
-print(y_vals_train.shape)
-print(y_vals_test.shape)
-print(x_vals_test.shape)
+print("x_vals_train ", x_vals_train.shape)
+print("y_vals_train ",y_vals_train.shape)
+print("y_vals_test ",y_vals_test.shape)
+print("x_vals_test ",x_vals_test.shape)
 # # We use K-NN algortihm
 
-x_data_train = tf.placeholder(shape=[200000, 5,3], dtype=tf.float32)
+x_data_train = tf.placeholder(shape=[200000, 6,3], dtype=tf.float32)
 y_data_train = tf.placeholder(shape=[200000, 6], dtype=tf.float32)
-x_data_test = tf.placeholder(shape=[5, 3], dtype=tf.float32)
+x_data_test = tf.placeholder(shape=[6, 3], dtype=tf.float32)
 print("HELLO")
-for k in range(2,60):
+for k in range(30,60):
 
     # # manhattan distance
     distance = tf.sqrt(tf.reduce_sum(tf.reduce_sum(tf.square(x_data_train - x_data_test), axis=2), axis=1))
