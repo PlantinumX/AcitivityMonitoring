@@ -2,7 +2,6 @@ import random
 
 import tensorflow as tf
 import numpy as np
-
 # Dictionary for classlabeling
 # TODO dictionary also in java code
 # TODO if classification bad insert avg as a extra row and maybe extra feature
@@ -73,7 +72,10 @@ x_data_train = tf.placeholder(shape=[200000, 6,3], dtype=tf.float32)
 y_data_train = tf.placeholder(shape=[200000, 6], dtype=tf.float32)
 x_data_test = tf.placeholder(shape=[6, 3], dtype=tf.float32)
 print("HELLO")
-for k in range(30,60):
+max_accuracy = 0
+max_accuracy_index=0
+#for k in range(30,60):
+for k in range(30,31):
 
     # # manhattan distance
     distance = tf.sqrt(tf.reduce_sum(tf.reduce_sum(tf.square(x_data_train - x_data_test), axis=2), axis=1))
@@ -95,5 +97,44 @@ for k in range(30,60):
 
             if ind == np.argmax(y_vals_test[i]):
                 accuracy += 1
+
         print("k is ",k , "accurace ",accuracy / 2200)
+
+        if accuracy > max_accuracy:
+            max_accuracy = accuracy
+            max_accuracy_index = k
+
+print("best accuracy at " + str(max_accuracy_index) + " with " + str(max_accuracy / 2200))
+
+# # manhattan distance
+distance = tf.sqrt(tf.reduce_sum(tf.reduce_sum(tf.square(x_data_train - x_data_test), axis=2), axis=1))
+# # # nearest k points
+_, top_k_indices = tf.nn.top_k(tf.negative(distance), k=max_accuracy_index)
+top_k_label = tf.gather(y_data_train, top_k_indices)
+test = tf.reduce_sum(top_k_label, axis=0)
+pred = tf.argmax(test)
+init = tf.global_variables_initializer()
+# Start training
+accuracy = 0
+
+with tf.Session() as sess:
+    sess.run(init)
+    for i in range(2200):
+        ind = sess.run(pred, feed_dict={x_data_train: x_vals_train,
+                                        x_data_test: x_vals_test[i, :, :],
+                                        y_data_train: y_vals_train})
+
+        if ind == np.argmax(y_vals_test[i]):
+            accuracy += 1
+
+
+    print("Best accauracy at " + str(max_accuracy_index) + " with an accuracy of " +  str(accuracy / 2200))
+
+    export_path = "./"
+    print('Exporting trained model to', export_path)
+    builder = tf.saved_model.builder.SavedModelBuilder(export_path)
+#   builder.add_meta_graph_and_variables(sess, [tf.saved_model.tag_constants.SERVING], signature_def_map={'predict_images':prediction_signature, signature_constants.DEFAULT_SERVING_SIGNATURE_DEF_KEY:classification_signature, }, main_op=tf.tables_initializer())
+    builder.save()
+
+
 
