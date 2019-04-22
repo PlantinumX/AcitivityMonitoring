@@ -14,7 +14,7 @@ public class Classifier
     }
 
     private TensorFlowInferenceInterface inferenceInterface;
-    private static final String MODEL_FILE = "D:\\Dokumente\\Studium\\8.Semester\\MC\\Project\\AcitivityMonitoring\\ActivityClassifier\\exported_modell\\saved_model.pb";
+    private static final String MODEL_FILE = "D:\\Dokumente\\Studium\\8.Semester\\MC\\Project\\AcitivityMonitoring\\ActivityClassifier\\exported_modell\\saved_model.pb";    //todo change fucking path to tired today FUCK YOU
     private static final String INPUT_NODE = "x_data";
     private static final String[] OUTPUT_NODES = {"y_data"};
     private static final String OUTPUT_NODE = "y_data";
