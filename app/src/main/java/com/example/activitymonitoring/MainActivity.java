@@ -15,15 +15,23 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.ArrayList;
+
 
 public class MainActivity extends AppCompatActivity
 {
+
+	private static List<Double> accelerometer_x = new ArrayList<>();
+	private static List<Double> accelerometer_y = new ArrayList<>();
+	private static List<Double> accelerometer_z = new ArrayList<>();
+	private Classifier classifier = new Classifier(getApplicationContext());
 
 	public SensorHandler sensorHandler;
 	public SensorManager sensorManager;
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		Toolbar toolbar = findViewById(R.id.toolbar);
@@ -42,6 +50,32 @@ public class MainActivity extends AppCompatActivity
 		});
 	}
 
+
+
+	private int prediction()
+	{
+
+		int result;
+		double[] data = new double[600];
+
+		for(int i=0; i<200; i+=3)
+		{
+			data[i] = accelerometer_x.get(i);
+			data[i+1] = accelerometer_y.get(i);
+			data[i+2] = accelerometer_z.get(i);
+		}
+
+		result = classifier.predictProbabilities(data);
+
+		accelerometer_x.clear();
+		accelerometer_y.clear();
+		accelerometer_z.clear();
+
+		return result;
+
+	}
+
+
 	public void updateEditView(Accelerometer accelerometer,Gyroscope gyroscope)
 	{
 		TextView xAxis = findViewById(R.id.x_Axis);
@@ -50,6 +84,7 @@ public class MainActivity extends AppCompatActivity
 		TextView xRot = findViewById(R.id.x_Rot);
 		TextView yRot = findViewById(R.id.y_Rot);
 		TextView zRot = findViewById(R.id.z_Rot);
+		TextView activity = findViewById(R.id.Activity);
 
 		xAxis.setText(Double.toString(accelerometer.x));
 		yAxis.setText(Double.toString(accelerometer.y));
@@ -58,7 +93,49 @@ public class MainActivity extends AppCompatActivity
 		xRot.setText(Double.toString(gyroscope.xRotation));
 		yRot.setText(Double.toString(gyroscope.yRotation));
 		zRot.setText(Double.toString(gyroscope.zRotation));
+
+		accelerometer_x.add(accelerometer.x);
+		accelerometer_y.add(accelerometer.y);
+		accelerometer_z.add(accelerometer.z);
+
+		if (accelerometer_x.size() == 200 && accelerometer_y.size() == 200 && accelerometer_z.size() == 200)
+		{
+			int result = prediction();
+
+			switch (result)
+			{
+				case 0:
+					activity.setText("Walking");
+					break;
+				case 1:
+					activity.setText("Jogging");
+					break;
+				case 2:
+					activity.setText("Sitting");
+					break;
+				case 3:
+					activity.setText("Standing");
+					break;
+				case 4:
+					activity.setText("Upstairs");
+					break;
+				case 5:
+					activity.setText("Downstairs");
+					break;
+			}
+
+			if (accelerometer_x.size() > 200 || accelerometer_y.size() > 200 || accelerometer_z.size() > 200)
+			{
+				accelerometer_x.clear();
+				accelerometer_y.clear();
+				accelerometer_z.clear();
+			}
+
+
+		}
 	}
+
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)

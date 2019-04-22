@@ -74,8 +74,7 @@ x_data_test = tf.placeholder(shape=[6, 3], dtype=tf.float32)
 print("HELLO")
 max_accuracy = 0
 max_accuracy_index=0
-#for k in range(30,60):
-for k in range(30,31):
+for k in range(30,61):
 
     # # manhattan distance
     distance = tf.sqrt(tf.reduce_sum(tf.reduce_sum(tf.square(x_data_train - x_data_test), axis=2), axis=1))
@@ -130,11 +129,7 @@ with tf.Session() as sess:
 
     print("Best accauracy at " + str(max_accuracy_index) + " with an accuracy of " +  str(accuracy / 2200))
 
-    export_path = "./"
+    export_path = "./exported_modell"
     print('Exporting trained model to', export_path)
     builder = tf.saved_model.builder.SavedModelBuilder(export_path)
-#   builder.add_meta_graph_and_variables(sess, [tf.saved_model.tag_constants.SERVING], signature_def_map={'predict_images':prediction_signature, signature_constants.DEFAULT_SERVING_SIGNATURE_DEF_KEY:classification_signature, }, main_op=tf.tables_initializer())
     builder.save()
-
-
-
