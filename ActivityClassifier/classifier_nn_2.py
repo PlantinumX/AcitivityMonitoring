@@ -12,8 +12,6 @@ import matplotlib.pyplot as plt
 from scipy import stats
 import tensorflow as tf
 
-plt.style.use('ggplot')
-
 
 def read_data(file_path):
     column_names = ['user-id', 'activity', 'timestamp', 'x-axis', 'y-axis', 'z-axis']
@@ -50,37 +48,15 @@ def segment_signal(data, window_size=200):
     segments = np.zeros((0, window_size, 3))
     labels = np.zeros((0))
     for (start, end) in windows(data["timestamp"], window_size):
-        x = data["x-axis"][start:end]
-        y = data["y-axis"][start:end]
-        z = data["z-axis"][start:end]
+        x_tmp = data["x-axis"][start:end]
+        y_tmp = data["y-axis"][start:end]
+        z_tmp = data["z-axis"][start:end]
+
         if (len(dataset["timestamp"][start:end]) == window_size):
-            segments = np.vstack([segments, np.dstack([x, y, z])])
+            segments = np.vstack([segments, np.dstack([x_tmp, y_tmp, z_tmp])])
             labels = np.append(labels, stats.mode(data["activity"][start:end])[0][0])
+
     return segments, labels
-
-segments, labels = segment_signal(dataset)
-labels = np.asarray(pd.get_dummies(labels), dtype = np.int8)
-reshaped_segments = segments.reshape(len(segments), 1, 200, 3)
-train_test_split = np.random.rand(len(reshaped_segments)) < 0.70
-train_x = reshaped_segments[train_test_split]
-train_y = labels[train_test_split]
-test_x = reshaped_segments[~train_test_split]
-test_y = labels[~train_test_split]
-
-input_height = 1
-input_width = 200
-num_labels = 6
-num_channels = 3
-
-batch_size = 10
-kernel_size = 60
-depth = 60
-num_hidden = 1000
-
-learning_rate = 0.0001
-training_epochs = 1
-
-total_batchs = train_x.shape[0] // batch_size
 
 
 def weight_variable(shape):
@@ -107,10 +83,43 @@ def apply_max_pool(x, kernel_size, stride_size):
     return tf.nn.max_pool(x, ksize=[1, 1, kernel_size, 1],
                           strides=[1, 1, stride_size, 1], padding='VALID')
 
-X = tf.placeholder(tf.float32, shape=[None,input_height,input_width,num_channels])
+input_height = 1
+input_width = 200
+num_labels = 6
+num_channels = 3
+
+batch_size = 10
+kernel_size = 60
+depth = 60
+num_hidden = 100
+
+learning_rate = 0.0001
+training_epochs = 30
+
+plt.style.use('ggplot')
+
+
+segments, labels = segment_signal(dataset)
+labels = np.asarray(pd.get_dummies(labels), dtype = np.int8)
+reshaped_segments = segments.reshape(len(segments), 1, 200, 3)
+
+train_test_split = np.random.rand(len(reshaped_segments)) < 0.70
+
+train_x = reshaped_segments[train_test_split]
+train_y = labels[train_test_split]
+test_x = reshaped_segments[~train_test_split]
+test_y = labels[~train_test_split]
+
+total_batchs = train_x.shape[0] // batch_size
+
+
+#X = tf.placeholder(tf.float32, shape=[None,input_height,input_width,num_channels], name='input')
 Y = tf.placeholder(tf.float32, shape=[None,num_labels])
 
-c = apply_depthwise_conv(X,kernel_size,num_channels,depth)
+X = tf.placeholder(tf.float32, shape=[None,input_width * num_channels], name="input")
+X_reshaped = tf.reshape(X,[-1,1,200,3])
+
+c = apply_depthwise_conv(X_reshaped,kernel_size,num_channels,depth)
 p = apply_max_pool(c,20,2)
 c = apply_depthwise_conv(p,6,depth*num_channels,depth//10)
 
@@ -139,11 +148,12 @@ with tf.Session() as session:
             offset = (b * batch_size) % (train_y.shape[0] - batch_size)
             batch_x = train_x[offset:(offset + batch_size), :, :, :]
             batch_y = train_y[offset:(offset + batch_size), :]
-            _, c = session.run([optimizer, loss], feed_dict={X: batch_x, Y: batch_y})
+            _, c = session.run([optimizer, loss], feed_dict={X_reshaped: batch_x, Y: batch_y})
             cost_history = np.append(cost_history, c)
         print("Epoch: ", epoch, " Training Loss: ", np.mean(cost_history), " Training Accuracy: ",
-        session.run(accuracy, feed_dict={X: train_x, Y: train_y}))
-    print ("Testing Accuracy:", session.run(accuracy, feed_dict={X: test_x, Y: test_y}))
+        session.run(accuracy, feed_dict={X_reshaped: train_x, Y: train_y}))
+#    print ("Testing Accuracy:", session.run(accuracy, feed_dict={X_reshaped: test_x, Y: test_y}))
+    print ("Testing Accuracy:", session.run(y_, feed_dict={X_reshaped: test_x, Y: test_y}), "testy: " , test_y)
     tf.train.write_graph(session.graph_def, '.', './checkpoint/har.pbtxt')
     saver.save(session, save_path="./checkpoint/har.ckpt")
 
