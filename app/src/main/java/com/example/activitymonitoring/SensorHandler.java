@@ -23,14 +23,14 @@ import static java.nio.charset.Charset.*;
 
 public class SensorHandler implements SensorEventListener {
 
-	MainActivity activity;
+	ClassifierActivity activity;
 	List<Gyroscope> gyroscopeValues;
 
 	List<Accelerometer> accelerometerValues;
 
 	public OutputStreamWriter fOutStream;
 
-	public  SensorHandler(MainActivity activity) {
+	public  SensorHandler(ClassifierActivity activity) {
 		this.activity = activity;
 		accelerometerValues = new ArrayList<>();
 		gyroscopeValues = new ArrayList<>();
@@ -66,7 +66,7 @@ public class SensorHandler implements SensorEventListener {
 		}
 		if(accelerometerValues.size() > 1 && gyroscopeValues.size() > 1) {
 			writeToFile();
-			activity.updateEditView(accelerometerValues.get(accelerometerValues.size()-1), gyroscopeValues.get(gyroscopeValues.size() - 1));
+			activity.updateEditView(accelerometerValues.get(accelerometerValues.size()-1));
 		}
 
 	}
@@ -133,12 +133,12 @@ class Gyroscope {
 
 //TODO maybe we should inherit Sensor  class from Android maybe we need it
 class Accelerometer {
-	public transient double x;
-	public transient double y;
-	public transient double z;
+	public transient float  x;
+	public transient float y;
+	public transient float z;
 	Accelerometer() {}
 
-	Accelerometer(double x, double y, double z) {
+	Accelerometer(float x, float y, float z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;;

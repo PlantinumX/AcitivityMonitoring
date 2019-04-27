@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp">
+
+    <TextView
+        android:id="@+id/ActivityRecognitionText"
+        android:layout_marginTop="30dp"
+
+        android:textSize="20sp"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:textColor="@android:color/white"
+        android:background="@android:color/background_dark"
+        android:text="@string/StartActivityRecognition"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start">
+
+        <Button
+            android:id="@+id/start_button_activity"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_start" />
+
+    </LinearLayout>
+    <TextView
+        android:layout_marginTop="30dp"
+        android:id="@+id/LocalizationText"
+        android:textSize="20sp"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:textColor="@android:color/white"
+        android:background="@android:color/background_dark"
+        android:text="@string/StartLocalization"/>
+    <LinearLayout
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start">
+
+        <Button
+            android:id="@+id/start_button_localization"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_start" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,93 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
     android:paddingLeft="16dp"
-    android:paddingRight="16dp">
+    android:paddingRight="16dp"
+    android:baselineAligned="false">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:paddingTop="80dp"
+        android:layout_width="150dp"
+        android:layout_height="250dp"
+        android:layout_weight="1"
         android:orientation="vertical">
+        <TextView
+            android:id="@+id/Activity"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+
+            android:text="@string/Activity"
+            android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/x_Axis"
-            android:textSize="12sp"
+            android:layout_marginTop="5dp"
+            android:id="@+id/Downstairs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="@string/Downstairs"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/Jogging"
+            android:layout_marginTop="5dp"
+
+            android:layout_width="match_parent"
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="5dp"
+            android:layout_height="wrap_content"
+            android:text="@string/Joging" />
+
+        <TextView
+            android:id="@+id/Sitting"
+            android:layout_width="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
+
+            android:layout_height="wrap_content"
+            android:text="@string/Sitting" />
+        <TextView
+            android:id="@+id/Standing"
+            android:layout_width="match_parent"
+            android:textSize="14sp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:textColor="@android:color/black"
+
+            android:layout_height="wrap_content"
+            android:text="@string/Standing" />
+        <TextView
+            android:id="@+id/Upstairs"
+            android:layout_marginBottom="5dp"
+            android:layout_width="match_parent"
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="5dp"
+            android:layout_height="wrap_content"
+            android:text="@string/Upstairs" />
+
+        <TextView
+            android:id="@+id/Walking"
+            android:layout_width="match_parent"
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_height="wrap_content"
+            android:text="@string/Walking" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/Probability"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:textColor="@android:color/black"
+            android:text="@string/Probability"
+            android:textSize="20sp" />
+        <TextView
+            android:layout_marginTop="5dp"
+            android:id="@+id/Downstairs_prob"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            android:layout_marginBottom="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/empty"/>
 
         <TextView
-            android:id="@+id/y_Axis"
+            android:id="@+id/Jogging_prob"
             android:layout_width="match_parent"
-            android:textSize="12sp"
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="5dp"
             android:layout_height="wrap_content"
             android:text="@string/empty" />
 
         <TextView
-            android:id="@+id/z_Axis"
+            android:id="@+id/Sitting_prob"
             android:layout_width="match_parent"
-            android:textSize="12sp"
+            android:layout_marginBottom="5dp"
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
+
             android:layout_height="wrap_content"
             android:text="@string/empty" />
         <TextView
-            android:id="@+id/x_Rot"
+            android:id="@+id/Standing_prob"
             android:layout_width="match_parent"
-            android:textSize="12sp"
+            android:textSize="14sp"
+            android:layout_marginBottom="5dp"
+            android:textColor="@android:color/black"
+
             android:layout_height="wrap_content"
             android:text="@string/empty" />
         <TextView
-            android:id="@+id/y_Rot"
+            android:id="@+id/Upstairs_prob"
+            android:layout_marginBottom="5dp"
             android:layout_width="match_parent"
-            android:textSize="12sp"
-            android:layout_height="wrap_content"
-            android:text="@string/empty" />
-        <TextView
-            android:id="@+id/z_Rot"
-            android:layout_width="match_parent"
-            android:textSize="12sp"
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
             android:layout_height="wrap_content"
             android:text="@string/empty" />
 
         <TextView
-            android:id="@+id/Activity"
+            android:id="@+id/Walking_prob"
             android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:text="@string/empty"
-            android:textSize="20sp" />
-    </LinearLayout>
-
-    <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="300dp"
-        android:layout_gravity="center|start"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/activites"
-            android:layout_width="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
             android:text="@string/empty" />
-    </ScrollView>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start">
-
-        <Button
-            android:id="@+id/start_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_start" />
 
     </LinearLayout>
 
