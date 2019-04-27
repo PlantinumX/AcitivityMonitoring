@@ -88,7 +88,7 @@ depth = 60
 num_hidden = 1000
 
 learning_rate = 0.0001
-training_epochs = 30
+training_epochs = 1
 
 total_batchs = train_x.shape[0] // batch_size
 
@@ -133,14 +133,14 @@ f = tf.nn.tanh(tf.add(tf.matmul(c_flat, f_weights_l1),f_biases_l1))
 
 out_weights = weight_variable([num_hidden, num_labels])
 out_biases = bias_variable([num_labels])
-y_ = tf.nn.softmax(tf.matmul(f, out_weights) + out_biases)
+y_ = tf.nn.softmax(tf.matmul(f, out_weights) + out_biases,name="y_")
 
 loss = -tf.reduce_sum(Y * tf.log(y_))
 optimizer = tf.train.GradientDescentOptimizer(learning_rate = learning_rate).minimize(loss)
 
 correct_prediction = tf.equal(tf.argmax(y_,1), tf.argmax(Y,1))
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-
+saver = tf.train.Saver()
 with tf.Session() as session:
     tf.global_variables_initializer().run()
     for epoch in range(training_epochs):
@@ -154,6 +154,8 @@ with tf.Session() as session:
         print("Epoch: ", epoch, " Training Loss: ", np.mean(cost_history), " Training Accuracy: ",
         session.run(accuracy, feed_dict={X: train_x, Y: train_y}))
     print ("Testing Accuracy:", session.run(accuracy, feed_dict={X: test_x, Y: test_y}))
+    tf.train.write_graph(session.graph_def, '.', './checkpoint/har.pbtxt')
+    saver.save(session, save_path="./checkpoint/har.ckpt")
 
     from tensorflow.python.tools import freeze_graph
 
@@ -165,7 +167,7 @@ with tf.Session() as session:
     filename_tensor_name = "save/Const:0"
     output_frozen_graph_name = 'frozen_'+MODEL_NAME+'.pb'
 
-    freeze_graph.freeze_graph(input_graph_path, input_saver="",
+    freeze_graph.freeze_graph(input_graph=input_graph_path, input_saver="",
                               input_binary=False, input_checkpoint=checkpoint_path,
                               output_node_names="y_", restore_op_name="save/restore_all",
                               filename_tensor_name="save/Const:0",
