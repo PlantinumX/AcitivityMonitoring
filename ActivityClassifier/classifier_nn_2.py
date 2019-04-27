@@ -88,7 +88,7 @@ depth = 60
 num_hidden = 1000
 
 learning_rate = 0.0001
-training_epochs = 5
+training_epochs = 30
 
 total_batchs = train_x.shape[0] // batch_size
 
@@ -153,5 +153,20 @@ with tf.Session() as session:
             cost_history = np.append(cost_history, c)
         print("Epoch: ", epoch, " Training Loss: ", np.mean(cost_history), " Training Accuracy: ",
         session.run(accuracy, feed_dict={X: train_x, Y: train_y}))
-# print
-# "Testing Accuracy:", session.run(accuracy, feed_dict={X: test_x, Y: test_y})
+    print ("Testing Accuracy:", session.run(accuracy, feed_dict={X: test_x, Y: test_y}))
+
+    from tensorflow.python.tools import freeze_graph
+
+    MODEL_NAME = 'har'
+
+    input_graph_path = 'checkpoint/' + MODEL_NAME+'.pbtxt'
+    checkpoint_path = './checkpoint/' +MODEL_NAME+'.ckpt'
+    restore_op_name = "save/restore_all"
+    filename_tensor_name = "save/Const:0"
+    output_frozen_graph_name = 'frozen_'+MODEL_NAME+'.pb'
+
+    freeze_graph.freeze_graph(input_graph_path, input_saver="",
+                              input_binary=False, input_checkpoint=checkpoint_path,
+                              output_node_names="y_", restore_op_name="save/restore_all",
+                              filename_tensor_name="save/Const:0",
+                              output_graph=output_frozen_graph_name, clear_devices=True, initializer_nodes="")
