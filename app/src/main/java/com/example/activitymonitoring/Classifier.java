@@ -2,8 +2,10 @@ package com.example.activitymonitoring;
 
 
 import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
-import android.content.Context;
 
+import android.app.Activity;
+import android.content.Context;
+import android.util.Log;
 
 
 //Classifier gets data in Real Time from accelorometer and returns output from pre trained model use it for Localization
@@ -14,45 +16,49 @@ public class Classifier
     {
         System.loadLibrary("tensorflow_inference");
     }
-
+    private static final String MESSAGE_TAG = "CLASSIFIER";
     private TensorFlowInferenceInterface inferenceInterface;
-    private static final String MODEL_FILE = "D:\\Dokumente\\Studium\\8.Semester\\MC\\Project\\AcitivityMonitoring\\ActivityClassifier\\exported_modell\\saved_model.pb";    //todo change fucking path to tired today FUCK YOU
-    private static final String INPUT_NODE = "x_data";
-    private static final String[] OUTPUT_NODES = {"y_data"};
-    private static final String OUTPUT_NODE = "y_data";
-    private static final long[] INPUT_SIZE = {1, 200, 3};
-    private static final int OUTPUT_SIZE = 6;
-
-    public Classifier(final Context context)
+	private static final String INPUT_NODE = "input";
+	private static final String[] OUTPUT_NODES = {"y_"};
+	private static final String OUTPUT_NODE = "y_";
+	private static final long[] INPUT_SIZE = {1, 600};
+	private static final int OUTPUT_SIZE = 6;
+	private static final String MODEL_FILE = "file:///android_asset/frozen_har.pb";
+	public Classifier(final Context context)
     {
-        inferenceInterface = new TensorFlowInferenceInterface(context.getAssets(), MODEL_FILE);
+		try {
+			inferenceInterface = new TensorFlowInferenceInterface(context.getAssets(), MODEL_FILE);
+		} catch (Exception e) {
+			Log.e(MESSAGE_TAG, e.getStackTrace().toString());
+		}
     }
 
-    public int predictProbabilities(double[] data)
+    public float[] predictProbabilities(float[] data)
     {
-        double[] result = new double[OUTPUT_SIZE];
+        float[] result = new float[OUTPUT_SIZE];
         inferenceInterface.feed(INPUT_NODE, data, INPUT_SIZE); //todo maybe change data from double to float
         inferenceInterface.run(OUTPUT_NODES);
         inferenceInterface.fetch(OUTPUT_NODE, result);
+        Log.e(MESSAGE_TAG,"RESULTS " + "Downstairs "+  Float.toString(result[0])+" Jogging " + Float.toString(result[1]) +" Sitting "+ Float.toString(result[2]) +" Standing " + Float.toString(result[3]) +"  Upstairs " +Float.toString(result[4]) + " Upstairs " +Float.toString(result[5]));
+		return result;
+//        double highest_probability = 0;
+//        int highest_probability_index = 0;
+//        for(int i = 0; i < result.length; i++)
+//        {
+//            if(highest_probability < result[i])
+//            {
+//                highest_probability = result[i];
+//                highest_probability_index = i;
+//            }
+//        }
 
-        double highest_probability = 0;
-        int highest_probability_index = 0;
-        for(int i = 0; i < result.length; i++)
-        {
-            if(highest_probability < result[i])
-            {
-                highest_probability = result[i];
-                highest_probability_index = i;
-            }
-        }
-
-        //Walking = 0
+        // Walking= 5
         // Jogging = 1
         // Sitting = 2
         // Standing = 3
         // Upstairs	= 4
-        // Downstairs = 5
-        return highest_probability_index;
+        // Downstairs = 0
+//        return highest_probability_index;
     }
 
 }

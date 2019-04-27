@@ -21,7 +21,8 @@
             </intent-filter>
 
         </activity>
-
+        <activity android:name=".ClassifierActivity" android:parentActivityName=".MainActivity">
+        </activity>
     </application>
 
 </manifest>
