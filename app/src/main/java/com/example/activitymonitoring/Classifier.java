@@ -4,7 +4,9 @@ package com.example.activitymonitoring;
 import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
 import android.content.Context;
 
-//Classifier gets data in Real Time from accelorometer and returns output from pre trained model
+
+
+//Classifier gets data in Real Time from accelorometer and returns output from pre trained model use it for Localization
 public class Classifier
 {
 

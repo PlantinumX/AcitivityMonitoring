@@ -7,21 +7,14 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Environment;
 
-import java.io.DataOutputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
+
 import java.io.OutputStreamWriter;
-import java.io.Serializable;
-import java.nio.charset.Charset;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 import static android.content.Context.*;
 import static java.nio.charset.Charset.*;
@@ -35,7 +28,6 @@ public class SensorHandler implements SensorEventListener {
 
 	List<Accelerometer> accelerometerValues;
 
-	public DataInputStream fInpStream = null;
 	public OutputStreamWriter fOutStream;
 
 	public  SensorHandler(MainActivity activity) {

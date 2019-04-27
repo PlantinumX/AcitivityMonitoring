@@ -24,8 +24,9 @@ public class MainActivity extends AppCompatActivity
 	private static List<Double> accelerometer_x = new ArrayList<>();
 	private static List<Double> accelerometer_y = new ArrayList<>();
 	private static List<Double> accelerometer_z = new ArrayList<>();
-	private Classifier classifier = new Classifier(getApplicationContext());
-
+//	private Matrix matrix = new Matrix();
+//	private Classifier classifier = new Classifier(getApplicationContext());
+//	private RawDataReader rawDataReader;
 	public SensorHandler sensorHandler;
 	public SensorManager sensorManager;
 	@Override
@@ -36,6 +37,11 @@ public class MainActivity extends AppCompatActivity
 		setContentView(R.layout.activity_main);
 		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
+//		rawDataReader = new RawDataReader(this);
+//
+//		rawDataReader.loadData();
+//		rawDataReader.prepareData(matrix);
+
 		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		sensorHandler = new SensorHandler(this);
 		sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) , SensorManager.SENSOR_DELAY_NORMAL);
@@ -55,7 +61,7 @@ public class MainActivity extends AppCompatActivity
 	private int prediction()
 	{
 
-		int result;
+		int result = 0;
 		double[] data = new double[600];
 
 		for(int i=0; i<200; i+=3)
@@ -65,7 +71,7 @@ public class MainActivity extends AppCompatActivity
 			data[i+2] = accelerometer_z.get(i);
 		}
 
-		result = classifier.predictProbabilities(data);
+//		result = classifier.predictProbabilities(data);
 
 		accelerometer_x.clear();
 		accelerometer_y.clear();
