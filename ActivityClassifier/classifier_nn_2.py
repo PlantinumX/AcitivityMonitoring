@@ -38,7 +38,7 @@ def plot_activity(activity, data):
     plt.subplots_adjust(top=0.90)
     plt.show()
 
-dataset = read_data('/home/oemer/Documents/HAR-CNN-Keras-master/actitracker_raw.txt')
+dataset = read_data('actitracker_raw.txt')
 dataset.dropna(axis=0, how='any', inplace= True)
 dataset['x-axis'] = feature_normalize(dataset['x-axis'])
 dataset['y-axis'] = feature_normalize(dataset['y-axis'])
@@ -151,9 +151,7 @@ with tf.Session() as session:
             batch_y = train_y[offset:(offset + batch_size), :]
             _, c = session.run([optimizer, loss], feed_dict={X: batch_x, Y: batch_y})
             cost_history = np.append(cost_history, c)
-        print
-        "Epoch: ", epoch, " Training Loss: ", np.mean(cost_history), " Training Accuracy: ",
-        session.run(accuracy, feed_dict={X: train_x, Y: train_y})
-
-print
-"Testing Accuracy:", session.run(accuracy, feed_dict={X: test_x, Y: test_y})
+        print("Epoch: ", epoch, " Training Loss: ", np.mean(cost_history), " Training Accuracy: ",
+        session.run(accuracy, feed_dict={X: train_x, Y: train_y}))
+# print
+# "Testing Accuracy:", session.run(accuracy, feed_dict={X: test_x, Y: test_y})
