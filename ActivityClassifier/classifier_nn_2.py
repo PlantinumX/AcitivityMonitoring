@@ -18,19 +18,17 @@ def read_data(file_path):
     column_names = ['user-id', 'activity', 'timestamp', 'x-axis', 'y-axis', 'z-axis']
     data = pd.read_csv(file_path, header=None, names=column_names)
 
-    data.dropna(axis=0, how='any', inplace=True)
+#    data.dropna(axis=0, how='any', inplace=True)
 
-    mu = np.mean(data['x-axis'])
-    sigma = np.std(data['x-axis'], axis=0)
-    data['x-axis'] = (data['x-axis'] - mu) / sigma
 
-    mu = np.mean(data['y-axis'])
-    sigma = np.std(data['y-axis'], axis=0)
-    data['y-axis'] = (data['y-axis'] - mu) / sigma
 
-    mu = np.mean(data['z-axis'])
-    sigma = np.std(data['z-axis'], axis=0)
-    data['z-axis'] = (data['z-axis'] - mu) / sigma
+#    mu = np.mean(data['y-axis'])
+#    sigma = np.std(data['y-axis'], axis=0)
+#    data['y-axis'] = (data['y-axis'] - mu) / sigma
+
+#    mu = np.mean(data['z-axis'])
+#    sigma = np.std(data['z-axis'], axis=0)
+#    data['z-axis'] = (data['z-axis'] - mu) / sigma
 
     return data
 
@@ -39,7 +37,7 @@ def windows(data, size):
     start = 0
     while start < data.count():
         yield int(start), int(start + size)
-        start += (size / 2)
+        start += size
 
 
 def segment_signal(data, window_size=200):
@@ -49,6 +47,7 @@ def segment_signal(data, window_size=200):
         x_tmp = data["x-axis"][start:end]
         y_tmp = data["y-axis"][start:end]
         z_tmp = data["z-axis"][start:end]
+
 
         if (len(dataset["timestamp"][start:end]) == window_size):
             segments = np.vstack([segments, np.dstack([x_tmp, y_tmp, z_tmp])])
@@ -78,8 +77,7 @@ def apply_depthwise_conv(x, kernel_size, num_channels, depth):
 
 
 def apply_max_pool(x, kernel_size, stride_size):
-    return tf.nn.max_pool(x, ksize=[1, 1, kernel_size, 1],
-                          strides=[1, 1, stride_size, 1], padding='VALID')
+    return tf.nn.max_pool(x, ksize=[1, 1, kernel_size, 1], strides=[1, 1, stride_size, 1], padding='VALID')
 
 input_height = 1
 input_width = 200
@@ -98,7 +96,7 @@ dataset = read_data('actitracker_raw.txt')
 
 segments, labels = segment_signal(dataset)
 labels = np.asarray(pd.get_dummies(labels), dtype = np.int8)
-reshaped_segments = segments.reshape(len(segments), 1,200, 3)
+reshaped_segments = segments.reshape(len(segments), 1, 200, 3)
 
 train_test_split = np.random.rand(len(reshaped_segments)) < 0.70
 
@@ -111,7 +109,7 @@ total_batchs = train_x.shape[0] // batch_size
 
 
 X = tf.placeholder(tf.float32, shape=[None,input_width * num_channels], name="input")
-X_reshaped = tf.reshape(X,[-1,1,45,3])
+X_reshaped = tf.reshape(X,[-1,1,200,3])
 Y = tf.placeholder(tf.float32, shape=[None,num_labels])
 
 
