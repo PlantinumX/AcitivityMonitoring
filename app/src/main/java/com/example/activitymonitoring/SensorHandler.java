@@ -110,7 +110,20 @@ public class SensorHandler implements SensorEventListener {
 		}
 		return false;
 	}
+
+	public static float[] convertToFloatArray(List<Float> list)
+	{
+		int i = 0;
+		float[] array = new float[list.size()];
+
+		for (Float f : list) {
+			array[i++] = (f != null ? f : Float.NaN);
+		}
+		return array;
+	}
+
 }
+
 
 
 class Gyroscope {
