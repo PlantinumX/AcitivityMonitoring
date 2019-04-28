@@ -14,5 +14,6 @@
     <string name="empty">(placeholder)</string>
     <string name="StartActivityRecognition">Press Button for Activity Recognition</string>
     <string name="StartLocalization">Press Button for Localization</string>
+    <string name="NotImplemented">Not Implemented yet!</string>
 
 </resources>
