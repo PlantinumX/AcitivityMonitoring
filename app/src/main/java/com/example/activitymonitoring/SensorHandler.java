@@ -6,6 +6,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Environment;
+import android.util.FloatMath;
 
 
 import java.io.OutputStreamWriter;
@@ -122,6 +123,50 @@ public class SensorHandler implements SensorEventListener {
 		return array;
 	}
 
+	public static  float[] calculateMeans(float[] data,int window)
+	{
+		float[] mean = new float[3];
+		mean[0] = (float)0.0;
+		mean[1] = (float)0.0;
+		mean[2] = (float)0.0;
+		for(int axis = 0;axis < 3;axis++) {
+			for (int i = axis*window; i < (axis+1)*window; i++) {
+				mean[axis] += data[i];
+			}
+			mean[axis] /= window;
+		}
+
+		//mean x,mean y, mean z
+		return mean;
+	}
+
+	public static float[] calculateVariances(float[] data, int window,float[] mean)
+	{
+		float[] variances = new float[3];
+		variances[0] = (float)0.0;
+		variances[1] = (float)0.0;
+		variances[2] = (float)0.0;
+		for(int axis = 0;axis < 3;axis++) {
+			for (int i = axis*window; i < (axis+1)*window; i++) {
+				variances[axis] += (data[i] - mean[axis]) * (data[i] - mean[axis]);
+			}
+			variances[axis] /= window;
+			variances[axis] = (float) Math.sqrt(variances[axis]);
+		}
+		return variances;
+	}
+
+	public static float[] normalizeData(float[] data, int window, float[] means, float[] variances)
+	{
+		for(int axis = 0;axis < 3;axis++) {
+			for (int i = axis*window; i < (axis+1)*window; i++) {
+				data[i] = data[i]
+			}
+			variances[axis] /= window;
+			variances[axis] = (float) Math.sqrt(variances[axis]);
+		}
+
+	}
 }
 
 

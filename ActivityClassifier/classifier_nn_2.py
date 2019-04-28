@@ -8,11 +8,12 @@
 
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy import stats
 import tensorflow as tf
+from tensorflow.python.tools import freeze_graph
 
-
+#TODO check what happes if we do not normalize dataset
+#is it better or far worse
 def read_data(file_path):
     column_names = ['user-id', 'activity', 'timestamp', 'x-axis', 'y-axis', 'z-axis']
     data = pd.read_csv(file_path, header=None, names=column_names)
@@ -32,9 +33,6 @@ def read_data(file_path):
     data['z-axis'] = (data['z-axis'] - mu) / sigma
 
     return data
-
-
-dataset = read_data('actitracker_raw.txt')
 
 
 def windows(data, size):
@@ -94,14 +92,13 @@ depth = 60
 num_hidden = 100
 
 learning_rate = 0.0001
-training_epochs = 30
+training_epochs = 15
 
-plt.style.use('ggplot')
-
+dataset = read_data('actitracker_raw.txt')
 
 segments, labels = segment_signal(dataset)
 labels = np.asarray(pd.get_dummies(labels), dtype = np.int8)
-reshaped_segments = segments.reshape(len(segments), 1, 200, 3)
+reshaped_segments = segments.reshape(len(segments), 1,200, 3)
 
 train_test_split = np.random.rand(len(reshaped_segments)) < 0.70
 
@@ -113,11 +110,10 @@ test_y = labels[~train_test_split]
 total_batchs = train_x.shape[0] // batch_size
 
 
-#X = tf.placeholder(tf.float32, shape=[None,input_height,input_width,num_channels], name='input')
+X = tf.placeholder(tf.float32, shape=[None,input_width * num_channels], name="input")
+X_reshaped = tf.reshape(X,[-1,1,45,3])
 Y = tf.placeholder(tf.float32, shape=[None,num_labels])
 
-X = tf.placeholder(tf.float32, shape=[None,input_width * num_channels], name="input")
-X_reshaped = tf.reshape(X,[-1,1,200,3])
 
 c = apply_depthwise_conv(X_reshaped,kernel_size,num_channels,depth)
 p = apply_max_pool(c,20,2)
@@ -135,7 +131,7 @@ out_biases = bias_variable([num_labels])
 y_ = tf.nn.softmax(tf.matmul(f, out_weights) + out_biases,name="y_")
 
 loss = -tf.reduce_sum(Y * tf.log(y_))
-optimizer = tf.train.GradientDescentOptimizer(learning_rate = learning_rate).minimize(loss)
+optimizer = tf.train.AdamOptimizer(learning_rate = learning_rate).minimize(loss)
 
 correct_prediction = tf.equal(tf.argmax(y_,1), tf.argmax(Y,1))
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
@@ -152,14 +148,12 @@ with tf.Session() as session:
             cost_history = np.append(cost_history, c)
         print("Epoch: ", epoch, " Training Loss: ", np.mean(cost_history), " Training Accuracy: ",
         session.run(accuracy, feed_dict={X_reshaped: train_x, Y: train_y}))
-#    print ("Testing Accuracy:", session.run(accuracy, feed_dict={X_reshaped: test_x, Y: test_y}))
     print ("Testing Accuracy:", session.run(y_, feed_dict={X_reshaped: test_x, Y: test_y}), "testy: " , test_y)
-    tf.train.write_graph(session.graph_def, '.', './checkpoint/har.pbtxt')
-    saver.save(session, save_path="./checkpoint/har.ckpt")
+    tf.train.write_graph(session.graph_def, '.', './checkpoint/activity.pbtxt')
+    saver.save(session, save_path="./checkpoint/activity.ckpt")
 
-    from tensorflow.python.tools import freeze_graph
 
-    MODEL_NAME = 'har'
+    MODEL_NAME = 'activity'
 
     input_graph_path = 'checkpoint/' + MODEL_NAME+'.pbtxt'
     checkpoint_path = './checkpoint/' +MODEL_NAME+'.ckpt'
