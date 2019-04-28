@@ -4,7 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingLeft="16dp"
+    android:paddingLeft="70dp"
     android:paddingRight="16dp"
     android:baselineAligned="false">
 
@@ -13,22 +13,23 @@
         android:layout_height="250dp"
         android:layout_weight="1"
         android:orientation="vertical">
+
         <TextView
             android:id="@+id/Activity"
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
             android:layout_marginBottom="5dp"
-
             android:text="@string/Activity"
+
+            android:textColor="@android:color/black"
             android:textSize="20sp" />
 
         <TextView
-            android:layout_marginTop="5dp"
             android:id="@+id/Downstairs"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:text="@string/Downstairs"
             android:textColor="@android:color/black"
@@ -36,54 +37,56 @@
 
         <TextView
             android:id="@+id/Jogging"
-            android:layout_marginTop="5dp"
-
             android:layout_width="match_parent"
-            android:textSize="14sp"
-            android:textColor="@android:color/black"
-            android:layout_marginBottom="5dp"
+
             android:layout_height="wrap_content"
-            android:text="@string/Joging" />
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:text="@string/Joging"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/Sitting"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:textSize="14sp"
-            android:textColor="@android:color/black"
+            android:text="@string/Sitting"
 
-            android:layout_height="wrap_content"
-            android:text="@string/Sitting" />
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
         <TextView
             android:id="@+id/Standing"
             android:layout_width="match_parent"
-            android:textSize="14sp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:textColor="@android:color/black"
-
             android:layout_height="wrap_content"
-            android:text="@string/Standing" />
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:text="@string/Standing"
+
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
         <TextView
             android:id="@+id/Upstairs"
-            android:layout_marginBottom="5dp"
             android:layout_width="match_parent"
-            android:textSize="14sp"
-            android:textColor="@android:color/black"
-            android:layout_marginTop="5dp"
             android:layout_height="wrap_content"
-            android:text="@string/Upstairs" />
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:text="@string/Upstairs"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/Walking"
             android:layout_width="match_parent"
-            android:textSize="14sp"
-            android:textColor="@android:color/black"
+            android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:layout_height="wrap_content"
-            android:text="@string/Walking" />
+            android:text="@string/Walking"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
 
 
     </LinearLayout>
@@ -98,68 +101,71 @@
             android:id="@+id/Probability"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/Probability"
             android:layout_marginBottom="5dp"
+            android:text="@string/Probability"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
+
         <TextView
-            android:layout_marginTop="5dp"
             android:id="@+id/Downstairs_prob"
-            android:textColor="@android:color/black"
-            android:textSize="14sp"
-            android:layout_marginBottom="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/empty"/>
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:text="@string/empty"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/Jogging_prob"
             android:layout_width="match_parent"
-            android:textSize="14sp"
-            android:textColor="@android:color/black"
+            android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:layout_height="wrap_content"
-            android:text="@string/empty" />
+            android:text="@string/empty"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/Sitting_prob"
             android:layout_width="match_parent"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:textSize="14sp"
-            android:textColor="@android:color/black"
-
             android:layout_height="wrap_content"
-            android:text="@string/empty" />
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:text="@string/empty"
+
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
         <TextView
             android:id="@+id/Standing_prob"
-            android:layout_marginTop="5dp"
             android:layout_width="match_parent"
-            android:textSize="14sp"
-            android:layout_marginBottom="5dp"
-            android:textColor="@android:color/black"
             android:layout_height="wrap_content"
-            android:text="@string/empty" />
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:text="@string/empty"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
         <TextView
             android:id="@+id/Upstairs_prob"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:layout_width="match_parent"
-            android:textSize="14sp"
+            android:text="@string/empty"
             android:textColor="@android:color/black"
-            android:layout_height="wrap_content"
-            android:text="@string/empty" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/Walking_prob"
             android:layout_width="match_parent"
-            android:textSize="14sp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
 
+            android:text="@string/empty"
             android:textColor="@android:color/black"
-            android:layout_height="wrap_content"
-            android:text="@string/empty" />
+            android:textSize="14sp" />
 
 
     </LinearLayout>
