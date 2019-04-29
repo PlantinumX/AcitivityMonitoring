@@ -12,8 +12,17 @@
     <string name="Standing">Standing</string>
     <string name="Sitting">Sitting</string>
     <string name="empty">(placeholder)</string>
+    <string name="SelectActivity">Please select the activity for labeling data set</string>
+    <string name="GenerateData">Generate Data</string>
     <string name="StartActivityRecognition">Press Button for Activity Recognition</string>
     <string name="StartLocalization">Press Button for Localization</string>
     <string name="NotImplemented">Not Implemented yet!</string>
-
+    <string-array name="activity_array">
+        <item>Downstairs</item>
+        <item>Jogging</item>
+        <item>Sitting</item>
+        <item>Standing</item>
+        <item>Upstairs</item>
+        <item>Walking</item>
+    </string-array>
 </resources>

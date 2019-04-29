@@ -21,11 +21,12 @@ public class Classifier
 	private static final String INPUT_NODE = "input";
 	private static final String[] OUTPUT_NODES = {"y_"};
 	private static final String OUTPUT_NODE = "y_";
-	private static final long[] INPUT_SIZE = {1, 900};
+	private static final long[] INPUT_SIZE = {1, SensorHandler.WINDOW_SIZE * 3};
 	private static final int OUTPUT_SIZE = 6;
 	private static final String MODEL_FILE = "file:///android_asset/frozen_activity.pb";
 	public Classifier(final Context context)
     {
+
 		try {
 			inferenceInterface = new TensorFlowInferenceInterface(context.getAssets(), MODEL_FILE);
 		} catch (Exception e) {

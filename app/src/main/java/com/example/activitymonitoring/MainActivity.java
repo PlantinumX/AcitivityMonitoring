@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
 {
-
+	public static final String GENERATE_DATA = "GENERATE DATA";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -23,16 +23,27 @@ public class MainActivity extends AppCompatActivity
 		setContentView(R.layout.content_main_activity);
 		Button startButton = findViewById(R.id.start_button_activity);
 		Button startLocalizationButton = findViewById(R.id.start_button_localization);
+		Button startDataMining = findViewById(R.id.data_button_activity);
 		View.OnClickListener mHandler = new View.OnClickListener()
 		{
 			@Override
 			public void onClick(View v)
 			{
 				Intent myIntent = new Intent(MainActivity.this,ClassifierActivity.class);
+				myIntent.putExtra(GENERATE_DATA,false);
 				MainActivity.this.startActivity(myIntent);
 			}
 		};
-
+		View.OnClickListener mDataHandler = new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				Intent myIntent = new Intent(MainActivity.this,ClassifierActivity.class);
+				myIntent.putExtra(GENERATE_DATA,true);
+				MainActivity.this.startActivity(myIntent);
+			}
+		};
 		View.OnClickListener mHandlerLocalization = new View.OnClickListener()
 		{
 			@Override
@@ -46,6 +57,7 @@ public class MainActivity extends AppCompatActivity
 			}
 		};
 		startButton.setOnClickListener(mHandler);
+		startDataMining.setOnClickListener(mDataHandler);
 		startLocalizationButton.setOnClickListener(mHandlerLocalization);
 	}
 

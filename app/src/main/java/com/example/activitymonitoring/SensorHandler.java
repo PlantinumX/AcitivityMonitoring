@@ -1,21 +1,19 @@
 package com.example.activitymonitoring;
 
-import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Environment;
-import android.util.FloatMath;
 
 
 import java.io.OutputStreamWriter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.io.DataInputStream;
 
 import static android.content.Context.*;
 import static java.nio.charset.Charset.*;
@@ -23,7 +21,7 @@ import static java.nio.charset.Charset.*;
 //Reading from a file
 
 public class SensorHandler implements SensorEventListener {
-
+	public static final int WINDOW_SIZE = 300;
 	ClassifierActivity activity;
 	List<Gyroscope> gyroscopeValues;
 
@@ -65,8 +63,7 @@ public class SensorHandler implements SensorEventListener {
 		if(sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)  {
 
 		}
-		if(accelerometerValues.size() > 1 && gyroscopeValues.size() > 1) {
-			writeToFile();
+		if(accelerometerValues.size() >= 1 && gyroscopeValues.size() >= 1) {
 			activity.updateEditView(accelerometerValues.get(accelerometerValues.size()-1));
 		}
 
@@ -78,20 +75,48 @@ public class SensorHandler implements SensorEventListener {
 	}
 
 
-	//TODO function is not needed because we will use already trained model
-	public void writeToFile() {
+	public void writeToActivityLogFile(float[] result) {
 		try {
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy-hh-mm-ss");
 			String format = simpleDateFormat.format(new Date()) + "  ";
 			fOutStream.write(format);
-			fOutStream.write(accelerometerValues.get(accelerometerValues.size()-1).toString());
-			fOutStream.write(gyroscopeValues.get(gyroscopeValues.size()-1).toString());
+			fOutStream.write(Float.toString(result[0]) + " " + Float.toString(result[1])+ " " +
+					Float.toString(result[2]) + " " +
+					Float.toString(result[3]) + " " +
+					Float.toString(result[4]) + " " +
+					Float.toString(result[5]) + " MAXIMUM" );
+			int index = 0;
+			for(int i = 0;i < 6;i++){
+				if(result[i] > result[index]) {
+					index = i;
+				}
+			}
+			fOutStream.write(" " + index);
+//			fOutStream.write(gyroscopeValues.get(gyroscopeValues.size()-1).toString());
 
 			fOutStream.write("\n");
 			fOutStream.flush();
 		} catch (Exception e) {
 			e.printStackTrace();
     	}
+	}
+
+	//TODO python classifier accepts folowing format : 33,Jogging,49105962326000,-0.6946377,12.680544,0.50395286
+	public void writeToActivityLogFile(String selectedActivity,Accelerometer accelerometer) {
+		try {
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("ddMMyyyyhhmmss");
+			String format = simpleDateFormat.format(new Date());
+			fOutStream.write("00,");
+			fOutStream.write(selectedActivity+",");
+			fOutStream.write(format + ",");
+			fOutStream.write(Float.toString(accelerometer.x)
+					+"," + Float.toString(accelerometer.y) + ","
+					+ Float.toString(accelerometer.z));
+			fOutStream.write("\n");
+			fOutStream.flush();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public boolean isExternalStorageWritable() {
@@ -160,13 +185,12 @@ public class SensorHandler implements SensorEventListener {
 	{
 		for(int axis = 0;axis < 3;axis++) {
 			for (int i = axis*window; i < (axis+1)*window; i++) {
-				data[i] = data[i]
+				data[i] = (data[i] - means[axis] ) / variances[axis];
 			}
-			variances[axis] /= window;
-			variances[axis] = (float) Math.sqrt(variances[axis]);
 		}
-
+		return data;
 	}
+
 }
 
 
@@ -199,11 +223,11 @@ class Accelerometer {
 	Accelerometer(float x, float y, float z) {
 		this.x = x;
 		this.y = y;
-		this.z = z;;
+		this.z = z;
 	}
 
 	@Override
 	public String toString() {
-		return "X = " + Double.toString(x) + " Y = " + Double.toString(y) + " Z = " + Double.toString(z);
+		return "X = " + Float.toString(x) + " Y = " + Float.toString(y) + " Z = " + Float.toString(z);
 	}
 }
