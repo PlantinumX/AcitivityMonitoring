@@ -81,7 +81,7 @@ num_hidden = 1000
 learning_rate = 0.0001
 training_epochs = 15
 
-dataset = read_data('data_v2.txt')
+dataset = read_data('data_v3.txt')
 
 segments, labels = segment_signal(dataset)
 labels = np.asarray(pd.get_dummies(labels), dtype = np.int8)
