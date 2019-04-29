@@ -27,16 +27,28 @@ def windows(data, size):
     start = 0
     while start < data.count():
         yield int(start), int(start + size)
-        start += (size / 2)
+        start += size
 
 
-def segment_signal(data, window_size=90):
+def segment_signal(data, window_size=300):
     segments = np.zeros((0, window_size, 3))
     labels = np.zeros((0))
     for (start, end) in windows(data["timestamp"], window_size):
         x_tmp = data["x-axis"][start:end]
         y_tmp = data["y-axis"][start:end]
         z_tmp = data["z-axis"][start:end]
+
+        mu = np.mean(x_tmp)
+        sigma = np.std(x_tmp)
+        x_tmp = (x_tmp - mu) / sigma
+
+        mu = np.mean(y_tmp)
+        sigma = np.std(y_tmp)
+        y_tmp = (y_tmp - mu) / sigma
+
+        mu = np.mean(z_tmp)
+        sigma = np.std(z_tmp)
+        z_tmp = (z_tmp - mu) / sigma
 
         if (len(dataset["timestamp"][start:end]) == window_size):
             segments = np.vstack([segments, np.dstack([x_tmp, y_tmp, z_tmp])])
@@ -69,14 +81,14 @@ def apply_max_pool(x, kernel_size, stride_size):
     return tf.nn.max_pool(x, ksize=[1, 1, kernel_size, 1], strides=[1, 1, stride_size, 1], padding='VALID')
 
 input_height = 1
-input_width = 90
+input_width = 300
 num_labels = 6
 num_channels = 3
 
 batch_size = 10
 kernel_size = 60
 depth = 60
-num_hidden = 100
+num_hidden = 1000
 
 learning_rate = 0.0001
 training_epochs = 15
@@ -85,7 +97,8 @@ dataset = read_data('actitracker_raw.txt')
 
 segments, labels = segment_signal(dataset)
 labels = np.asarray(pd.get_dummies(labels), dtype = np.int8)
-reshaped_segments = segments.reshape(len(segments), 1, 90, 3)
+
+reshaped_segments = segments.reshape(len(segments), 1, 300, 3)
 
 train_test_split = np.random.rand(len(reshaped_segments)) < 0.70
 
@@ -98,7 +111,7 @@ total_batchs = train_x.shape[0] // batch_size
 
 
 X = tf.placeholder(tf.float32, shape=[None,input_width * num_channels], name="input")
-X_reshaped = tf.reshape(X,[-1,1,90,3])
+X_reshaped = tf.reshape(X,[-1,1,300,3])
 Y = tf.placeholder(tf.float32, shape=[None,num_labels])
 
 
@@ -135,7 +148,8 @@ with tf.Session() as session:
             cost_history = np.append(cost_history, c)
         print("Epoch: ", epoch, " Training Loss: ", np.mean(cost_history), " Training Accuracy: ",
         session.run(accuracy, feed_dict={X_reshaped: train_x, Y: train_y}))
-    print ("Testing Accuracy:", session.run(y_, feed_dict={X_reshaped: test_x, Y: test_y}), "testy: " , test_y)
+    print ("Testing Accuracy:", session.run(accuracy, feed_dict={X_reshaped: test_x, Y: test_y}))
+
     tf.train.write_graph(session.graph_def, '.', './checkpoint/activity.pbtxt')
     saver.save(session, save_path="./checkpoint/activity.ckpt")
 
