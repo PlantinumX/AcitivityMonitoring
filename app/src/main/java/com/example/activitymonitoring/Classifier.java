@@ -22,7 +22,7 @@ public class Classifier
 	private static final String[] OUTPUT_NODES = {"y_"};
 	private static final String OUTPUT_NODE = "y_";
 	private static final long[] INPUT_SIZE = {1, SensorHandler.WINDOW_SIZE * 3};
-	private static final int OUTPUT_SIZE = 6;
+	private static final int OUTPUT_SIZE = 3;
 	private static final String MODEL_FILE = "file:///android_asset/frozen_activity.pb";
 	public Classifier(final Context context)
     {
@@ -40,13 +40,10 @@ public class Classifier
         inferenceInterface.feed(INPUT_NODE, data, INPUT_SIZE); //todo maybe change data from double to float
         inferenceInterface.run(OUTPUT_NODES);
         inferenceInterface.fetch(OUTPUT_NODE, result);
-        Log.e(MESSAGE_TAG,"RESULTS " + "Downstairs "+  Float.toString(result[0])+" Jogging " + Float.toString(result[1]) +" Sitting "+ Float.toString(result[2]) +" Standing " + Float.toString(result[3]) +"  Upstairs " +Float.toString(result[4]) + " Upstairs " +Float.toString(result[5]));
-	    // Downstairs = 0
-	    // Jogging = 1
-	    // Sitting = 2
-	    // Standing = 3
-	    // Upstairs	= 4
-		// Walking= 5
+        Log.e(MESSAGE_TAG,"RESULTS " + "Sitting "+  Float.toString(result[0]) +" Standing "+ Float.toString(result[1]) +" Jogging " + Float.toString(result[2]));
+	    // Sitting = 0
+	    // Standing = 1
+	    // Jogging = 2
 	    return result;
     }
 
