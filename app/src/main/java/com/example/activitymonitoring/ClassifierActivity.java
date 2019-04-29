@@ -64,8 +64,8 @@ public class ClassifierActivity  extends AppCompatActivity implements AdapterVie
 		sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 		sensorHandler = new SensorHandler(this);
 
-		sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) , SensorManager.SENSOR_DELAY_UI);
-		sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) , SensorManager.SENSOR_DELAY_UI);
+		sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) , SensorManager.SENSOR_DELAY_FASTEST);
+		sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) , SensorManager.SENSOR_DELAY_FASTEST);
 	}
 
 
@@ -82,11 +82,8 @@ public class ClassifierActivity  extends AppCompatActivity implements AdapterVie
 		}
 		else
 		{
-			TextView downstairsProb = findViewById(R.id.Downstairs_prob);
-			TextView joggingProb = findViewById(R.id.Jogging_prob);
 			TextView SittingProb = findViewById(R.id.Sitting_prob);
 			TextView StandingProb = findViewById(R.id.Standing_prob);
-			TextView UpstairsProb = findViewById(R.id.Upstairs_prob);
 			TextView WalkingProb = findViewById(R.id.Walking_prob);
 
 			accelerometer_x.add(accelerometer.x);
@@ -103,17 +100,14 @@ public class ClassifierActivity  extends AppCompatActivity implements AdapterVie
 				accelerometer_x.clear();
 				accelerometer_z.clear();
 				accelerometer_y.clear();
-				float[] means = SensorHandler.calculateMeans(data,SensorHandler.WINDOW_SIZE);
-				float[] variances = SensorHandler.calculateVariances(data,SensorHandler.WINDOW_SIZE,means);
-				data = SensorHandler.normalizeData(data,SensorHandler.WINDOW_SIZE,means,variances);
+//				float[] means = SensorHandler.calculateMeans(data,SensorHandler.WINDOW_SIZE);
+//				float[] variances = SensorHandler.calculateVariances(data,SensorHandler.WINDOW_SIZE,means);
+//				data = SensorHandler.normalizeData(data,SensorHandler.WINDOW_SIZE,means,variances);
 				float[] result = classifier.predictProbabilities(data);
 				sensorHandler.writeToActivityLogFile(result);
-				downstairsProb.setText(Float.toString(result[0]));
-				joggingProb.setText(Float.toString(result[1]));
-				SittingProb.setText(Float.toString(result[2]));
-				StandingProb.setText(Float.toString(result[3]));
-				UpstairsProb.setText(Float.toString(result[4]));
-				WalkingProb.setText(Float.toString(result[5]));
+				SittingProb.setText(Float.toString(result[0]));
+				StandingProb.setText(Float.toString(result[1]));
+				WalkingProb.setText(Float.toString(result[2]));
 
 			}
 		}

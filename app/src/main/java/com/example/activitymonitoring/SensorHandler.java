@@ -21,7 +21,7 @@ import static java.nio.charset.Charset.*;
 //Reading from a file
 
 public class SensorHandler implements SensorEventListener {
-	public static final int WINDOW_SIZE = 300;
+	public static final int WINDOW_SIZE = 90;
 	ClassifierActivity activity;
 	List<Gyroscope> gyroscopeValues;
 
@@ -63,9 +63,11 @@ public class SensorHandler implements SensorEventListener {
 		if(sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)  {
 
 		}
-		if(accelerometerValues.size() >= 1 && gyroscopeValues.size() >= 1) {
+		if(accelerometerValues.size() >= 1) {
 			activity.updateEditView(accelerometerValues.get(accelerometerValues.size()-1));
 		}
+		accelerometerValues.clear();
+		gyroscopeValues.clear();
 
 	}
 
@@ -81,19 +83,14 @@ public class SensorHandler implements SensorEventListener {
 			String format = simpleDateFormat.format(new Date()) + "  ";
 			fOutStream.write(format);
 			fOutStream.write(Float.toString(result[0]) + " " + Float.toString(result[1])+ " " +
-					Float.toString(result[2]) + " " +
-					Float.toString(result[3]) + " " +
-					Float.toString(result[4]) + " " +
-					Float.toString(result[5]) + " MAXIMUM" );
+					Float.toString(result[2]) + " " + "MAXIMUM" );
 			int index = 0;
-			for(int i = 0;i < 6;i++){
+			for(int i = 0;i < 3;i++){
 				if(result[i] > result[index]) {
 					index = i;
 				}
 			}
 			fOutStream.write(" " + index);
-//			fOutStream.write(gyroscopeValues.get(gyroscopeValues.size()-1).toString());
-
 			fOutStream.write("\n");
 			fOutStream.flush();
 		} catch (Exception e) {
@@ -101,7 +98,6 @@ public class SensorHandler implements SensorEventListener {
     	}
 	}
 
-	//TODO python classifier accepts folowing format : 33,Jogging,49105962326000,-0.6946377,12.680544,0.50395286
 	public void writeToActivityLogFile(String selectedActivity,Accelerometer accelerometer) {
 		try {
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("ddMMyyyyhhmmss");
