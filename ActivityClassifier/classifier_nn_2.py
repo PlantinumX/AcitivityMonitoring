@@ -73,7 +73,7 @@ input_width = 90
 num_labels = 3
 num_channels = 3
 
-batch_size = 10
+batch_size = 1
 kernel_size = 60
 depth = 60
 num_hidden = 1000
@@ -98,7 +98,7 @@ test_y = labels[~train_test_split]
 total_batchs = train_x.shape[0] // batch_size
 
 
-X = tf.placeholder(tf.float32, shape=[None, input_width * num_channels], name="input")
+X = tf.placeholder(tf.float32, shape=[batch_size, input_width * num_channels], name="input")
 X_reshaped = tf.reshape(X, [-1, 1, 90, 3])
 Y = tf.placeholder(tf.float32, shape=[None, num_labels])
 
@@ -131,8 +131,9 @@ with tf.Session() as session:
         for b in range(total_batchs):
             offset = (b * batch_size) % (train_y.shape[0] - batch_size)
             batch_x = train_x[offset:(offset + batch_size), :, :, :]
+            batch_x = np.reshape(batch_x, (1, 270))
             batch_y = train_y[offset:(offset + batch_size), :]
-            _, c = session.run([optimizer, loss], feed_dict={X_reshaped: batch_x, Y: batch_y})
+            _, c = session.run([optimizer, loss], feed_dict={X: batch_x, Y: batch_y})
             cost_history = np.append(cost_history, c)
         print("Epoch: ", epoch, " Training Loss: ", np.mean(cost_history), " Training Accuracy: ",
         session.run(accuracy, feed_dict={X_reshaped: train_x, Y: train_y}))
