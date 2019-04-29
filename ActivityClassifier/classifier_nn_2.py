@@ -27,28 +27,16 @@ def windows(data, size):
     start = 0
     while start < data.count():
         yield int(start), int(start + size)
-        start += size
+        start += (size/2)
 
 
-def segment_signal(data, window_size=300):
+def segment_signal(data, window_size=90):
     segments = np.zeros((0, window_size, 3))
     labels = np.zeros((0))
     for (start, end) in windows(data["timestamp"], window_size):
         x_tmp = data["x-axis"][start:end]
         y_tmp = data["y-axis"][start:end]
         z_tmp = data["z-axis"][start:end]
-
-        mu = np.mean(x_tmp)
-        sigma = np.std(x_tmp)
-        x_tmp = (x_tmp - mu) / sigma
-
-        mu = np.mean(y_tmp)
-        sigma = np.std(y_tmp)
-        y_tmp = (y_tmp - mu) / sigma
-
-        mu = np.mean(z_tmp)
-        sigma = np.std(z_tmp)
-        z_tmp = (z_tmp - mu) / sigma
 
         if (len(dataset["timestamp"][start:end]) == window_size):
             segments = np.vstack([segments, np.dstack([x_tmp, y_tmp, z_tmp])])
@@ -81,8 +69,8 @@ def apply_max_pool(x, kernel_size, stride_size):
     return tf.nn.max_pool(x, ksize=[1, 1, kernel_size, 1], strides=[1, 1, stride_size, 1], padding='VALID')
 
 input_height = 1
-input_width = 300
-num_labels = 6
+input_width = 90
+num_labels = 3
 num_channels = 3
 
 batch_size = 10
@@ -93,12 +81,12 @@ num_hidden = 1000
 learning_rate = 0.0001
 training_epochs = 15
 
-dataset = read_data('actitracker_raw.txt')
+dataset = read_data('data_v2.txt')
 
 segments, labels = segment_signal(dataset)
 labels = np.asarray(pd.get_dummies(labels), dtype = np.int8)
 
-reshaped_segments = segments.reshape(len(segments), 1, 300, 3)
+reshaped_segments = segments.reshape(len(segments), 1, 90, 3)
 
 train_test_split = np.random.rand(len(reshaped_segments)) < 0.70
 
@@ -110,30 +98,30 @@ test_y = labels[~train_test_split]
 total_batchs = train_x.shape[0] // batch_size
 
 
-X = tf.placeholder(tf.float32, shape=[None,input_width * num_channels], name="input")
-X_reshaped = tf.reshape(X,[-1,1,300,3])
-Y = tf.placeholder(tf.float32, shape=[None,num_labels])
+X = tf.placeholder(tf.float32, shape=[None, input_width * num_channels], name="input")
+X_reshaped = tf.reshape(X, [-1, 1, 90, 3])
+Y = tf.placeholder(tf.float32, shape=[None, num_labels])
 
 
-c = apply_depthwise_conv(X_reshaped,kernel_size,num_channels,depth)
-p = apply_max_pool(c,20,2)
-c = apply_depthwise_conv(p,6,depth*num_channels,depth//10)
+c = apply_depthwise_conv(X_reshaped, kernel_size, num_channels, depth)
+p = apply_max_pool(c, 20, 2)
+c = apply_depthwise_conv(p, 3, depth*num_channels, depth//10)
 
 shape = c.get_shape().as_list()
 c_flat = tf.reshape(c, [-1, shape[1] * shape[2] * shape[3]])
 
 f_weights_l1 = weight_variable([shape[1] * shape[2] * depth * num_channels * (depth//10), num_hidden])
 f_biases_l1 = bias_variable([num_hidden])
-f = tf.nn.tanh(tf.add(tf.matmul(c_flat, f_weights_l1),f_biases_l1))
+f = tf.nn.tanh(tf.add(tf.matmul(c_flat, f_weights_l1), f_biases_l1))
 
 out_weights = weight_variable([num_hidden, num_labels])
 out_biases = bias_variable([num_labels])
-y_ = tf.nn.softmax(tf.matmul(f, out_weights) + out_biases,name="y_")
+y_ = tf.nn.softmax(tf.matmul(f, out_weights) + out_biases, name="y_")
 
 loss = -tf.reduce_sum(Y * tf.log(y_))
 optimizer = tf.train.AdamOptimizer(learning_rate = learning_rate).minimize(loss)
 
-correct_prediction = tf.equal(tf.argmax(y_,1), tf.argmax(Y,1))
+correct_prediction = tf.equal(tf.argmax(y_, 1), tf.argmax(Y, 1))
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 saver = tf.train.Saver()
 with tf.Session() as session:
