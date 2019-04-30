@@ -37,7 +37,7 @@ public class Classifier
     public float[] predictProbabilities(float[] data)
     {
         float[] result = new float[OUTPUT_SIZE];
-        inferenceInterface.feed(INPUT_NODE, data, INPUT_SIZE); //todo maybe change data from double to float
+        inferenceInterface.feed(INPUT_NODE, data, INPUT_SIZE);
         inferenceInterface.run(OUTPUT_NODES);
         inferenceInterface.fetch(OUTPUT_NODE, result);
         Log.e(MESSAGE_TAG,"RESULTS " + "Sitting "+  Float.toString(result[0]) +" Standing "+ Float.toString(result[1]) +" Jogging " + Float.toString(result[2]));

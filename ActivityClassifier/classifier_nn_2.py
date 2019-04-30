@@ -79,7 +79,7 @@ depth = 60
 num_hidden = 1000
 
 learning_rate = 0.0001
-training_epochs = 15
+training_epochs = 1
 
 dataset = read_data('data_v3.txt')
 
