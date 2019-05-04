@@ -27,11 +27,10 @@ public class Record
     void clacDistanc(Record trainingsset, Record sample)
     {
 
-
-        for(int i = 0; i < sample.length; i ++)
-        {
             this.distance += Math.pow(trainingsset.x - sample.x, 2);
-        }
+            this.distance += Math.pow(trainingsset.y - sample.y, 2);
+            this.distance += Math.pow(trainingsset.z - sample.z, 2);
+
         this.distance = Math.sqrt(distance);
 
     }
