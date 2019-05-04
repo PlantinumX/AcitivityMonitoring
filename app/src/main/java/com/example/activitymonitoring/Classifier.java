@@ -12,72 +12,129 @@ import java.util.Set;
 
 
 //Classifier gets data in Real Time from accelorometer and returns output from pre trained model use it for Localization
-public class Classifier
-{
+public class Classifier {
 
-//    private TrainRecord[] trainingSet;
-    private List<Double> TrainRecord = new ArrayList<>();
+
+    int number_trainingsset = 925936;
+    int number_samples = 925936/90;
+    private Record[] trainingSet = new Record[3];
+    private Record[] testSet = new Record[3];
     private final int K = 21;
-    private final int NUM_CLASSES = 6;
+    private final int NUM_CLASSES = 3;
 
-    public Classifier()
+    public Classifier(InputStream trainingFile)
     {
 
-        try
-        {
-            //read trainingSet and testingSet
-            //trainingSet = FileManager.readTrainFile(trainingFile);
 
-            File file = new File(fileName);
-            Scanner scanner = new Scanner(file).useLocale(Locale.US);
-
-            //read file
-            int NumOfSamples = scanner.nextInt();
-            int NumOfAttributes = scanner.nextInt();
-            int LabelOrNot = scanner.nextInt();
-            scanner.nextLine();
-
-            assert LabelOrNot == 1 : "No classLabel";// ensure that C is present in this file
+            Scanner scanner = new Scanner("actitracker_raw.txt"); //todo change filename
+            scanner.useDelimiter(",");
 
 
-            //transform data from file into TrainRecord objects
-            TrainRecord[] records = new TrainRecord[NumOfSamples];
-            int index = 0;
-            while(scanner.hasNext()){
-                double[] attributes = new double[NumOfAttributes];
-                int classLabel = -1;
-
-                //Read a whole line for a TrainRecord
-                for(int i = 0; i < NumOfAttributes; i ++){
-                    attributes[i] = scanner.nextDouble();
+            for(int i = 0; i < number_trainingsset; i++)
+            {
+                scanner.next();
+                switch (scanner.next()) {
+                    case "Walking":
+                        scanner.next();
+                        trainingSet[0].x[i] = Double.parseDouble(scanner.next());
+                        trainingSet[0].y[i] = Double.parseDouble(scanner.next());
+                        trainingSet[0].z[i] = Double.parseDouble(scanner.next());
+                        break;
+                    case "Upstairs":
+                        scanner.next();
+                        trainingSet[0].x[i] = Double.parseDouble(scanner.next());
+                        trainingSet[0].y[i] = Double.parseDouble(scanner.next());
+                        trainingSet[0].z[i] = Double.parseDouble(scanner.next());
+                        break;
+                    case "Downstairs":
+                        scanner.next();
+                        trainingSet[0].x[i] = Double.parseDouble(scanner.next());
+                        trainingSet[0].y[i] = Double.parseDouble(scanner.next());
+                        trainingSet[0].z[i] = Double.parseDouble(scanner.next());
+                        break;
+                    case "Jogging":
+                        scanner.next();
+                        trainingSet[0].x[i] = Double.parseDouble(scanner.next());
+                        trainingSet[0].y[i] = Double.parseDouble(scanner.next());
+                        trainingSet[0].z[i] = Double.parseDouble(scanner.next());
+                        break;
+                    case "Sitting":
+                        scanner.next();
+                        trainingSet[1].x[i] = Double.parseDouble(scanner.next());
+                        trainingSet[1].y[i] = Double.parseDouble(scanner.next());
+                        trainingSet[1].z[i] = Double.parseDouble(scanner.next());
+                        break;
+                    case "Standing":
+                        scanner.next();
+                        trainingSet[2].x[i] = Double.parseDouble(scanner.next());
+                        trainingSet[2].y[i] = Double.parseDouble(scanner.next());
+                        trainingSet[2].z[i] = Double.parseDouble(scanner.next());
+                        break;
+                    default:
+                        break;
                 }
-
-                //Read classLabel
-                classLabel = (int) scanner.nextDouble();
-                assert classLabel != -1 : "Reading class label is wrong!";
-
-                records[index] = new TrainRecord(attributes, classLabel);
-                index ++;
+                scanner.nextLine();
             }
 
-            return records;
 
 
-
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        int i = 0;
+        while(scanner.hasNextLine())
+        {
+            scanner.next();
+            switch (scanner.next()) {
+                case "Walking":
+                    scanner.next();
+                    testSet[0].x[i] = Double.parseDouble(scanner.next());
+                    testSet[0].y[i] = Double.parseDouble(scanner.next());
+                    testSet[0].z[i] = Double.parseDouble(scanner.next());
+                    break;
+                case "Upstairs":
+                    scanner.next();
+                    testSet[0].x[i] = Double.parseDouble(scanner.next());
+                    testSet[0].y[i] = Double.parseDouble(scanner.next());
+                    testSet[0].z[i] = Double.parseDouble(scanner.next());
+                    break;
+                case "Downstairs":
+                    scanner.next();
+                    testSet[0].x[i] = Double.parseDouble(scanner.next());
+                    testSet[0].y[i] = Double.parseDouble(scanner.next());
+                    testSet[0].z[i] = Double.parseDouble(scanner.next());
+                    break;
+                case "Jogging":
+                    scanner.next();
+                    testSet[0].x[i] = Double.parseDouble(scanner.next());
+                    testSet[0].y[i] = Double.parseDouble(scanner.next());
+                    testSet[0].z[i] = Double.parseDouble(scanner.next());
+                    break;
+                case "Sitting":
+                    scanner.next();
+                    testSet[1].x[i] = Double.parseDouble(scanner.next());
+                    testSet[1].y[i] = Double.parseDouble(scanner.next());
+                    testSet[1].z[i] = Double.parseDouble(scanner.next());
+                    break;
+                case "Standing":
+                    scanner.next();
+                    testSet[2].x[i] = Double.parseDouble(scanner.next());
+                    testSet[2].y[i] = Double.parseDouble(scanner.next());
+                    testSet[2].z[i] = Double.parseDouble(scanner.next());
+                    break;
+                default:
+                    break;
+            }
+            scanner.nextLine();
+            i++;
         }
     }
 
-    public int predict(double[] sample) {
+    public int predict(Record[] sample)
+    {
 
-        TrainRecord[] neighbors = findKNearestNeighbors(trainingSet, sample);
+        Record[] neighbors = findKNearestNeighbors(trainingSet, sample);
 
         int[] labelCounts = new int[NUM_CLASSES];
-        for (int j = 0; j < K; j++)
-            labelCounts[neighbors[j].classLabel]++;
+        for (int index = 0; index < K; index++)
+            labelCounts[neighbors[index].classLabel]++;
 
         int predictedLabel = 0;
         int maxCount = -1;
@@ -91,20 +148,22 @@ public class Classifier
     }
 
     // Find K nearest neighbors of sample within trainingSet
-    private TrainRecord[] findKNearestNeighbors(TrainRecord[] trainingSet, double[] sample) {
+    private Record[] findKNearestNeighbors(Record[] trainingSet, Record[] sample)
+    {
 
-        TrainRecord[] neighbors = new TrainRecord[K];
+        Record[] neighbors = new Record[K];
 
-        //initialization, put the first K trainRecords into the above arrayList
         int index;
-        for (index = 0; index < K; index++) {
-            trainingSet[index].distance = metric.getDistance(trainingSet[index].attributes, sample);
+        for (index = 0; index < K; index++)
+        {
+            trainingSet[index].distance = Record.clacDistanc(trainingSet[index], sample);
             neighbors[index] = trainingSet[index];
         }
 
         //go through the remaining records in the trainingSet to find K nearest neighbors
-        for (index = K; index < trainingSet.length; index++) {
-            trainingSet[index].distance = metric.getDistance(trainingSet[index].attributes, sample);
+        for (index = K; index < trainingSet.length; index++)
+        {
+            trainingSet[index].distance = Record.clacDistanc(trainingSet[index], sample);
 
             //get the index of the neighbor with the largest distance to sample
             int maxIndex = 0;
@@ -121,5 +180,3 @@ public class Classifier
         return neighbors;
     }
 }
-
-
