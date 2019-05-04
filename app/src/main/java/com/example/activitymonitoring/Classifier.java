@@ -16,9 +16,8 @@ public class Classifier {
 
 
     int number_trainingsset = 925936;
-    int number_samples = 925936/90;
-    private Record[] trainingSet = new Record[3];
-    private Record[] testSet = new Record[3];
+    private Record[] trainingSet = new Record[number_trainingsset];
+    private Record[] testSet = new Record[number_trainingsset];
     private final int K = 21;
     private final int NUM_CLASSES = 3;
 
@@ -34,45 +33,32 @@ public class Classifier {
             {
                 scanner.next();
                 switch (scanner.next()) {
+
                     case "Walking":
-                        scanner.next();
-                        trainingSet[0].x[i] = Double.parseDouble(scanner.next());
-                        trainingSet[0].y[i] = Double.parseDouble(scanner.next());
-                        trainingSet[0].z[i] = Double.parseDouble(scanner.next());
+                        trainingSet[i].classLabel = 0;
                         break;
                     case "Upstairs":
-                        scanner.next();
-                        trainingSet[0].x[i] = Double.parseDouble(scanner.next());
-                        trainingSet[0].y[i] = Double.parseDouble(scanner.next());
-                        trainingSet[0].z[i] = Double.parseDouble(scanner.next());
+                        trainingSet[i].classLabel = 0;
                         break;
                     case "Downstairs":
-                        scanner.next();
-                        trainingSet[0].x[i] = Double.parseDouble(scanner.next());
-                        trainingSet[0].y[i] = Double.parseDouble(scanner.next());
-                        trainingSet[0].z[i] = Double.parseDouble(scanner.next());
+                        trainingSet[i].classLabel = 0;
                         break;
                     case "Jogging":
-                        scanner.next();
-                        trainingSet[0].x[i] = Double.parseDouble(scanner.next());
-                        trainingSet[0].y[i] = Double.parseDouble(scanner.next());
-                        trainingSet[0].z[i] = Double.parseDouble(scanner.next());
+                        trainingSet[i].classLabel = 0;
                         break;
                     case "Sitting":
-                        scanner.next();
-                        trainingSet[1].x[i] = Double.parseDouble(scanner.next());
-                        trainingSet[1].y[i] = Double.parseDouble(scanner.next());
-                        trainingSet[1].z[i] = Double.parseDouble(scanner.next());
+                        trainingSet[i].classLabel = 1;
                         break;
                     case "Standing":
-                        scanner.next();
-                        trainingSet[2].x[i] = Double.parseDouble(scanner.next());
-                        trainingSet[2].y[i] = Double.parseDouble(scanner.next());
-                        trainingSet[2].z[i] = Double.parseDouble(scanner.next());
+                        trainingSet[i].classLabel = 2;
                         break;
                     default:
                         break;
                 }
+                scanner.next();
+                trainingSet[i].x = Double.parseDouble(scanner.next());
+                trainingSet[i].y = Double.parseDouble(scanner.next());
+                trainingSet[i].z = Double.parseDouble(scanner.next());
                 scanner.nextLine();
             }
 
@@ -82,52 +68,40 @@ public class Classifier {
         while(scanner.hasNextLine())
         {
             scanner.next();
-            switch (scanner.next()) {
+            switch (scanner.next())
+            {
                 case "Walking":
-                    scanner.next();
-                    testSet[0].x[i] = Double.parseDouble(scanner.next());
-                    testSet[0].y[i] = Double.parseDouble(scanner.next());
-                    testSet[0].z[i] = Double.parseDouble(scanner.next());
+                    trainingSet[i].classLabel = 1;
                     break;
                 case "Upstairs":
-                    scanner.next();
-                    testSet[0].x[i] = Double.parseDouble(scanner.next());
-                    testSet[0].y[i] = Double.parseDouble(scanner.next());
-                    testSet[0].z[i] = Double.parseDouble(scanner.next());
+                    trainingSet[i].classLabel = 1;
                     break;
                 case "Downstairs":
-                    scanner.next();
-                    testSet[0].x[i] = Double.parseDouble(scanner.next());
-                    testSet[0].y[i] = Double.parseDouble(scanner.next());
-                    testSet[0].z[i] = Double.parseDouble(scanner.next());
+                    trainingSet[i].classLabel = 1;
                     break;
                 case "Jogging":
-                    scanner.next();
-                    testSet[0].x[i] = Double.parseDouble(scanner.next());
-                    testSet[0].y[i] = Double.parseDouble(scanner.next());
-                    testSet[0].z[i] = Double.parseDouble(scanner.next());
+                    trainingSet[i].classLabel = 1;
                     break;
                 case "Sitting":
-                    scanner.next();
-                    testSet[1].x[i] = Double.parseDouble(scanner.next());
-                    testSet[1].y[i] = Double.parseDouble(scanner.next());
-                    testSet[1].z[i] = Double.parseDouble(scanner.next());
+                    trainingSet[i].classLabel = 1;
                     break;
                 case "Standing":
-                    scanner.next();
-                    testSet[2].x[i] = Double.parseDouble(scanner.next());
-                    testSet[2].y[i] = Double.parseDouble(scanner.next());
-                    testSet[2].z[i] = Double.parseDouble(scanner.next());
+                    trainingSet[i].classLabel = 1;
                     break;
                 default:
                     break;
             }
+
+            scanner.next();
+            testSet[i].x = Double.parseDouble(scanner.next());
+            testSet[i].y = Double.parseDouble(scanner.next());
+            testSet[i].z = Double.parseDouble(scanner.next());
             scanner.nextLine();
             i++;
         }
     }
 
-    public int predict(Record[] sample)
+    public int predict(Record sample)
     {
 
         Record[] neighbors = findKNearestNeighbors(trainingSet, sample);
@@ -147,8 +121,9 @@ public class Classifier {
         return predictedLabel;
     }
 
-    // Find K nearest neighbors of sample within trainingSet
-    private Record[] findKNearestNeighbors(Record[] trainingSet, Record[] sample)
+
+
+    private Record[] findKNearestNeighbors(Record[] trainingSet, Record sample)
     {
 
         Record[] neighbors = new Record[K];
@@ -156,25 +131,28 @@ public class Classifier {
         int index;
         for (index = 0; index < K; index++)
         {
-            trainingSet[index].distance = Record.clacDistanc(trainingSet[index], sample);
+            trainingSet[index].clacDistanc(trainingSet[index], sample);
             neighbors[index] = trainingSet[index];
         }
 
         //go through the remaining records in the trainingSet to find K nearest neighbors
         for (index = K; index < trainingSet.length; index++)
         {
-            trainingSet[index].distance = Record.clacDistanc(trainingSet[index], sample);
+            trainingSet[index].clacDistanc(trainingSet[index], sample);
 
-            //get the index of the neighbor with the largest distance to sample
             int maxIndex = 0;
-            for (int i = 1; i < K; i++) {
+            for (int i = 1; i < K; i++)
+            {
                 if (neighbors[i].distance > neighbors[maxIndex].distance)
+                {
                     maxIndex = i;
+                }
             }
 
-            //add the current trainingSet[index] into neighbors if applicable
             if (neighbors[maxIndex].distance > trainingSet[index].distance)
+            {
                 neighbors[maxIndex] = trainingSet[index];
+            }
         }
 
         return neighbors;
