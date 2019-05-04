@@ -11,8 +11,6 @@ public class Record
 
     Record()
     {
-        this.user = 0;
-        this.timestamp = 0;
         this.classLabel = 0;
     }
 
