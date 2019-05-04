@@ -2,12 +2,11 @@ package com.example.activitymonitoring;
 
 public class Record
 {
-    double x[];
-    double y[];
-    double z[];
+    double x;
+    double y;
+    double z;
+    double distance;
     int classLabel;
-    int user;
-    int timestamp;
 
 
     Record()
@@ -17,29 +16,25 @@ public class Record
         this.classLabel = 0;
     }
 
-    Record(double x[], double y[], double z[], int classLabel, int user, int timestamp)
+    Record(double x, double y, double z, int classLabel, int user, int timestamp)
     {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.user = user;
-        this.timestamp = timestamp;
         this.classLabel = classLabel;
     }
 
-    static double clacDistanc(Record[] trainingsset, Record[] sample)
+    void clacDistanc(Record trainingsset, Record sample)
     {
 
-        double distance = 0;
 
         for(int i = 0; i < sample.length; i ++)
         {
-            distance += Math.pow(trainingsset.x - sample.x, 2);
+            this.distance += Math.pow(trainingsset.x - sample.x, 2);
         }
-        distance = Math.sqrt(distance);
+        this.distance = Math.sqrt(distance);
 
-        return distance;
     }
-    }
+
 }
 
