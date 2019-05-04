@@ -1,50 +1,125 @@
 package com.example.activitymonitoring;
 
 
-import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
-
-import android.app.Activity;
-import android.content.Context;
-import android.util.Log;
+import java.io.*;
+import java.util.Scanner;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
 
 
 //Classifier gets data in Real Time from accelorometer and returns output from pre trained model use it for Localization
 public class Classifier
 {
 
-    static
-    {
-        System.loadLibrary("tensorflow_inference");
-    }
-    private static final String MESSAGE_TAG = "CLASSIFIER";
-    private TensorFlowInferenceInterface inferenceInterface;
-	private static final String INPUT_NODE = "input";
-	private static final String[] OUTPUT_NODES = {"y_"};
-	private static final String OUTPUT_NODE = "y_";
-	private static final long[] INPUT_SIZE = {1, SensorHandler.WINDOW_SIZE * 3};
-	private static final int OUTPUT_SIZE = 3;
-	private static final String MODEL_FILE = "file:///android_asset/frozen_activity.pb";
-	public Classifier(final Context context)
+//    private TrainRecord[] trainingSet;
+    private List<Double> TrainRecord = new ArrayList<>();
+    private final int K = 21;
+    private final int NUM_CLASSES = 6;
+
+    public Classifier()
     {
 
-		try {
-			inferenceInterface = new TensorFlowInferenceInterface(context.getAssets(), MODEL_FILE);
-		} catch (Exception e) {
-			Log.e(MESSAGE_TAG, e.getStackTrace().toString());
-		}
+        try
+        {
+            //read trainingSet and testingSet
+            //trainingSet = FileManager.readTrainFile(trainingFile);
+
+            File file = new File(fileName);
+            Scanner scanner = new Scanner(file).useLocale(Locale.US);
+
+            //read file
+            int NumOfSamples = scanner.nextInt();
+            int NumOfAttributes = scanner.nextInt();
+            int LabelOrNot = scanner.nextInt();
+            scanner.nextLine();
+
+            assert LabelOrNot == 1 : "No classLabel";// ensure that C is present in this file
+
+
+            //transform data from file into TrainRecord objects
+            TrainRecord[] records = new TrainRecord[NumOfSamples];
+            int index = 0;
+            while(scanner.hasNext()){
+                double[] attributes = new double[NumOfAttributes];
+                int classLabel = -1;
+
+                //Read a whole line for a TrainRecord
+                for(int i = 0; i < NumOfAttributes; i ++){
+                    attributes[i] = scanner.nextDouble();
+                }
+
+                //Read classLabel
+                classLabel = (int) scanner.nextDouble();
+                assert classLabel != -1 : "Reading class label is wrong!";
+
+                records[index] = new TrainRecord(attributes, classLabel);
+                index ++;
+            }
+
+            return records;
+
+
+
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public float[] predictProbabilities(float[] data)
-    {
-        float[] result = new float[OUTPUT_SIZE];
-        inferenceInterface.feed(INPUT_NODE, data, INPUT_SIZE);
-        inferenceInterface.run(OUTPUT_NODES);
-        inferenceInterface.fetch(OUTPUT_NODE, result);
-        Log.e(MESSAGE_TAG,"RESULTS " + "Sitting "+  Float.toString(result[0]) +" Standing "+ Float.toString(result[1]) +" Jogging " + Float.toString(result[2]));
-	    // Sitting = 0
-	    // Standing = 1
-	    // Jogging = 2
-	    return result;
+    public int predict(double[] sample) {
+
+        TrainRecord[] neighbors = findKNearestNeighbors(trainingSet, sample);
+
+        int[] labelCounts = new int[NUM_CLASSES];
+        for (int j = 0; j < K; j++)
+            labelCounts[neighbors[j].classLabel]++;
+
+        int predictedLabel = 0;
+        int maxCount = -1;
+        for (int j = 0; j < NUM_CLASSES; j++)
+            if (labelCounts[j] > maxCount) {
+                maxCount = labelCounts[j];
+                predictedLabel = j;
+            }
+
+        return predictedLabel;
     }
 
+    // Find K nearest neighbors of sample within trainingSet
+    private TrainRecord[] findKNearestNeighbors(TrainRecord[] trainingSet, double[] sample) {
+
+        TrainRecord[] neighbors = new TrainRecord[K];
+
+        //initialization, put the first K trainRecords into the above arrayList
+        int index;
+        for (index = 0; index < K; index++) {
+            trainingSet[index].distance = metric.getDistance(trainingSet[index].attributes, sample);
+            neighbors[index] = trainingSet[index];
+        }
+
+        //go through the remaining records in the trainingSet to find K nearest neighbors
+        for (index = K; index < trainingSet.length; index++) {
+            trainingSet[index].distance = metric.getDistance(trainingSet[index].attributes, sample);
+
+            //get the index of the neighbor with the largest distance to sample
+            int maxIndex = 0;
+            for (int i = 1; i < K; i++) {
+                if (neighbors[i].distance > neighbors[maxIndex].distance)
+                    maxIndex = i;
+            }
+
+            //add the current trainingSet[index] into neighbors if applicable
+            if (neighbors[maxIndex].distance > trainingSet[index].distance)
+                neighbors[maxIndex] = trainingSet[index];
+        }
+
+        return neighbors;
+    }
 }
+
+
