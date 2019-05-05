@@ -7,8 +7,14 @@ import android.hardware.SensorManager;
 import android.os.Environment;
 
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 
+import java.nio.Buffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,20 +27,24 @@ import static java.nio.charset.Charset.*;
 //Reading from a file
 
 public class SensorHandler implements SensorEventListener {
-	public static final int WINDOW_SIZE = 90;
 	ClassifierActivity activity;
 	List<Gyroscope> gyroscopeValues;
-
-	List<Accelerometer> accelerometerValues;
-
+	private Record records;
 	public OutputStreamWriter fOutStream;
+	BufferedReader reader;
+	private List<Double> accelerometerValuesXAxis;
+	private List<Double> accelerometerValuesYAxis;
+	private List<Double> accelerometerValuesZAxis;
 
 	public  SensorHandler(ClassifierActivity activity) {
 		this.activity = activity;
-		accelerometerValues = new ArrayList<>();
+		accelerometerValuesXAxis = new ArrayList<>();
+		accelerometerValuesYAxis = new ArrayList<>();
+		accelerometerValuesZAxis = new ArrayList<>();
 		gyroscopeValues = new ArrayList<>();
+		records =  new Record();
 		try {
-		fOutStream = new OutputStreamWriter(activity.openFileOutput("data.txt", MODE_PRIVATE), forName("UTF-8"));
+			fOutStream = new OutputStreamWriter(activity.openFileOutput("data.txt", MODE_PRIVATE), forName("UTF-8"));
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -44,10 +54,12 @@ public class SensorHandler implements SensorEventListener {
 	public void onSensorChanged(SensorEvent sensorEvent) {
 		Sensor sensor = sensorEvent.sensor;
 		if (sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-			Accelerometer accelerometer = new Accelerometer(sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]);
-			accelerometerValues.add(accelerometer);
+			accelerometerValuesXAxis.add((double) sensorEvent.values[0]);
+			accelerometerValuesYAxis.add((double)sensorEvent.values[1]);
+			accelerometerValuesZAxis.add((double)sensorEvent.values[2]);
 		}
 
+		//NEEDED FOR A2
 		if (sensor.getType() == Sensor.TYPE_GYROSCOPE) {
 			float[] rotationMatrix = new float[16];
 			float[] remappedRotationMatrix = new float[16];
@@ -59,15 +71,19 @@ public class SensorHandler implements SensorEventListener {
 			Gyroscope gyroscope = new Gyroscope(Math.toDegrees(orientations[0]), Math.toDegrees(orientations[1]), Math.toDegrees(orientations[2]));
 			gyroscopeValues.add(gyroscope);
 		}
-		//TODO do we need compass too ??
-		if(sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)  {
 
+		if(accelerometerValuesXAxis.size() == Record.WINDOW_SIZE - 1 && accelerometerValuesYAxis.size() >= Record.WINDOW_SIZE - 1 && accelerometerValuesZAxis.size() >= Record.WINDOW_SIZE - 1) {
+			records = new Record();
+			records.toDoubleArray(accelerometerValuesXAxis, 0);
+			records.toDoubleArray(accelerometerValuesYAxis, 1);
+			records.toDoubleArray(accelerometerValuesZAxis, 2);
+			activity.updateEditView(records);
+			accelerometerValuesXAxis.clear();
+			accelerometerValuesYAxis.clear();
+			accelerometerValuesZAxis.clear();
+			gyroscopeValues.clear();
 		}
-		if(accelerometerValues.size() >= 1) {
-			activity.updateEditView(accelerometerValues.get(accelerometerValues.size()-1));
-		}
-		accelerometerValues.clear();
-		gyroscopeValues.clear();
+
 
 	}
 
@@ -98,98 +114,24 @@ public class SensorHandler implements SensorEventListener {
     	}
 	}
 
-	public void writeToActivityLogFile(String selectedActivity,Accelerometer accelerometer) {
+	public void writeToActivityLogFile(String selectedActivity/*,Accelerometer accelerometer*/) {
 		try {
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("ddMMyyyyhhmmss");
 			String format = simpleDateFormat.format(new Date());
 			fOutStream.write("00,");
 			fOutStream.write(selectedActivity+",");
-			fOutStream.write(format + ",");
+			fOutStream.write(format + ",");/*
 			fOutStream.write(Float.toString(accelerometer.x)
 					+"," + Float.toString(accelerometer.y) + ","
 					+ Float.toString(accelerometer.z));
-			fOutStream.write("\n");
+			fOutStream.write("\n");*/
 			fOutStream.flush();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public boolean isExternalStorageWritable() {
-		String state = Environment.getExternalStorageState();
-		if (Environment.MEDIA_MOUNTED.equals(state)) {
-			return true;
-		}
-		return false;
-	}
-
-	/* Checks if external storage is available to at least read */
-	public boolean isExternalStorageReadable() {
-		String state = Environment.getExternalStorageState();
-		if (Environment.MEDIA_MOUNTED.equals(state) ||
-				Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-			return true;
-		}
-		return false;
-	}
-
-	public static float[] convertToFloatArray(List<Float> list)
-	{
-		int i = 0;
-		float[] array = new float[list.size()];
-
-		for (Float f : list) {
-			array[i++] = (f != null ? f : Float.NaN);
-		}
-		return array;
-	}
-
-	public static  float[] calculateMeans(float[] data,int window)
-	{
-		float[] mean = new float[3];
-		mean[0] = (float)0.0;
-		mean[1] = (float)0.0;
-		mean[2] = (float)0.0;
-		for(int axis = 0;axis < 3;axis++) {
-			for (int i = axis*window; i < (axis+1)*window; i++) {
-				mean[axis] += data[i];
-			}
-			mean[axis] /= window;
-		}
-
-		//mean x,mean y, mean z
-		return mean;
-	}
-
-	public static float[] calculateVariances(float[] data, int window,float[] mean)
-	{
-		float[] variances = new float[3];
-		variances[0] = (float)0.0;
-		variances[1] = (float)0.0;
-		variances[2] = (float)0.0;
-		for(int axis = 0;axis < 3;axis++) {
-			for (int i = axis*window; i < (axis+1)*window; i++) {
-				variances[axis] += (data[i] - mean[axis]) * (data[i] - mean[axis]);
-			}
-			variances[axis] /= window;
-			variances[axis] = (float) Math.sqrt(variances[axis]);
-		}
-		return variances;
-	}
-
-	public static float[] normalizeData(float[] data, int window, float[] means, float[] variances)
-	{
-		for(int axis = 0;axis < 3;axis++) {
-			for (int i = axis*window; i < (axis+1)*window; i++) {
-				data[i] = (data[i] - means[axis] ) / variances[axis];
-			}
-		}
-		return data;
-	}
-
 }
-
-
 
 class Gyroscope {
 	public double xRotation;
@@ -208,22 +150,3 @@ class Gyroscope {
 	}
 }
 
-
-//TODO maybe we should inherit Sensor  class from Android maybe we need it
-class Accelerometer {
-	public transient float  x;
-	public transient float y;
-	public transient float z;
-	Accelerometer() {}
-
-	Accelerometer(float x, float y, float z) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
-	}
-
-	@Override
-	public String toString() {
-		return "X = " + Float.toString(x) + " Y = " + Float.toString(y) + " Z = " + Float.toString(z);
-	}
-}
