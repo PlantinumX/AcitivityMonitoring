@@ -27,16 +27,15 @@ import static java.nio.charset.Charset.*;
 //Reading from a file
 
 public class SensorHandler implements SensorEventListener {
-	ClassifierActivity activity;
+	BaseActivity activity;
 	List<Gyroscope> gyroscopeValues;
 	private Record records;
 	public OutputStreamWriter fOutStream;
-	BufferedReader reader;
 	private List<Double> accelerometerValuesXAxis;
 	private List<Double> accelerometerValuesYAxis;
 	private List<Double> accelerometerValuesZAxis;
 
-	public  SensorHandler(ClassifierActivity activity) {
+	public  SensorHandler(BaseActivity activity) {
 		this.activity = activity;
 		accelerometerValuesXAxis = new ArrayList<>();
 		accelerometerValuesYAxis = new ArrayList<>();
@@ -77,6 +76,7 @@ public class SensorHandler implements SensorEventListener {
 			records.toDoubleArray(accelerometerValuesXAxis, 0);
 			records.toDoubleArray(accelerometerValuesYAxis, 1);
 			records.toDoubleArray(accelerometerValuesZAxis, 2);
+			records.saveDirectionvalues(gyroscopeValues);
 			activity.updateEditView(records);
 			accelerometerValuesXAxis.clear();
 			accelerometerValuesYAxis.clear();

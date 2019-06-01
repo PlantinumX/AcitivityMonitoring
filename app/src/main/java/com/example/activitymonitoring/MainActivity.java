@@ -48,11 +48,11 @@ public class MainActivity extends AppCompatActivity
 			@Override
 			public void onClick(View v)
 			{
-				String text  = getString(R.string.NotImplemented);
-				Toast.makeText(getApplicationContext(), text,Toast.LENGTH_LONG).show();
+//				String text  = getString(R.string.NotImplemented);
+//				Toast.makeText(getApplicationContext(), text,Toast.LENGTH_LONG).show();
 				//TODO implement Localization
-//				Intent myIntent = new Intent(MainActivity.this,LocalizationActivity.class);
-//				MainActivity.this.startActivity(myIntent);
+				Intent myIntent = new Intent(MainActivity.this,LocalizationActivity.class);
+				MainActivity.this.startActivity(myIntent);
 			}
 		};
 		startButton.setOnClickListener(mHandler);

@@ -7,6 +7,7 @@ import java.util.List;
 public class Record {
 	public static int WINDOW_SIZE = 20; //20 samples
 	public static int AXES_SIZE = 3;
+	public Gyroscope[] direction;
 	public double[] x;
 	public double[] y;
 	public double[] z;
@@ -23,14 +24,15 @@ public class Record {
 	Record() {
 //        this.user = 0;
 //        this.timestamp = 0;
-		this.x = new double[20];
-		this.y = new double[20];
-		this.z = new double[20];
-		this.featureDev = new double[3];
-		this.featureMin = new double[3];
-		this.featurePeak = new double[3];
-		this.featureMean = new double[3];
-		this.featureAbsoluteDev = new double[3];
+		this.x = new double[WINDOW_SIZE];
+		this.y = new double[WINDOW_SIZE];
+		this.z = new double[WINDOW_SIZE];
+		this.direction = new Gyroscope[WINDOW_SIZE];
+		this.featureDev = new double[AXES_SIZE];
+		this.featureMin = new double[AXES_SIZE];
+		this.featurePeak = new double[AXES_SIZE];
+		this.featureMean = new double[AXES_SIZE];
+		this.featureAbsoluteDev = new double[AXES_SIZE];
 		this.featureResultant = 0;
 		this.classLabel = 0;
 	}
@@ -170,11 +172,19 @@ public class Record {
 				this.y[i] = list.get(i);  // java 1.4 style
 			}
 		}
-		else
+		else if (type == 2)
 		{
 			for (int i = 0; i < list.size(); i++) {
 				this.z[i] = list.get(i);  // java 1.4 style
 			}
+		}
+
+	}
+
+	public void saveDirectionvalues(List<Gyroscope> gyroscope)
+	{
+		for (int i = 0; i < gyroscope.size(); i++) {
+			this.direction[i] = gyroscope.get(i);  // java 1.4 style
 		}
 
 	}

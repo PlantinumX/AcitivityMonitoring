@@ -2,6 +2,7 @@ package com.example.activitymonitoring;
 
 
 import android.app.Activity;
+import android.content.res.AssetManager;
 import android.util.Log;
 
 import java.io.*;
@@ -23,9 +24,9 @@ public class Classifier {
 	private Scanner scanner;
 	//SHOULD GET PREPROCESSED TRAININGS DATA
     public Classifier(Activity activity) throws FileNotFoundException,IOException {
-
-	        scanner = new Scanner(new InputStreamReader(activity.openFileInput("data_v3.txt"))); //todo change filename
-	        readTrainingsSet();
+		AssetManager am = activity.getAssets();
+		scanner = new Scanner(new InputStreamReader(am.open("data_v3.txt"))); //todo change filename
+		readTrainingsSet();
 
 
     }

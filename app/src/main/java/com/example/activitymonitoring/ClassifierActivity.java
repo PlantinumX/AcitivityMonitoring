@@ -15,7 +15,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClassifierActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener
+public class ClassifierActivity extends BaseActivity implements AdapterView.OnItemSelectedListener
 {
 	private boolean isDataContent;
 	private Classifier classifier;

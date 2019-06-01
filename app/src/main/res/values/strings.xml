@@ -15,6 +15,9 @@
     <string name="SelectActivity">Please select the activity for labeling data set</string>
     <string name="GenerateData">Generate Data</string>
     <string name="StartActivityRecognition">Press Button for Activity Recognition</string>
+    <string name="Direction">Going direction</string>
+    <string name="Map">Map</string>
+
     <string name="StartLocalization">Press Button for Localization</string>
     <string name="NotImplemented">Not Implemented yet!</string>
     <string-array name="activity_array">
