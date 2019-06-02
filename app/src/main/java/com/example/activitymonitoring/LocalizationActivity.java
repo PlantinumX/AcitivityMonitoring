@@ -3,6 +3,8 @@ package com.example.activitymonitoring;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,13 +17,14 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class LocalizationActivity extends BaseActivity
+public class LocalizationActivity extends BaseActivity implements SensorEventListener
 {
     private boolean isDataContent;
     private Classifier classifier;
     public SensorHandler sensorHandler;
     public SensorManager sensorManager;
-
+    private float currentDegree = 0f;
+    public ParticleFilter particleFilter;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -32,6 +35,7 @@ public class LocalizationActivity extends BaseActivity
         try {
 
             classifier = new Classifier(this);
+            this.particleFilter =  new ParticleFilter();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -39,13 +43,43 @@ public class LocalizationActivity extends BaseActivity
 
         sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
         sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_FASTEST);
-        RotateAnimation rotateAnimation = new RotateAnimation(180.0f, 0.0f,  Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        rotateAnimation.setInterpolator(new DecelerateInterpolator());
-        rotateAnimation.setRepeatCount(0);
-        rotateAnimation.setDuration(10000);
-        rotateAnimation.setFillAfter(true);
+        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
+                SensorManager.SENSOR_DELAY_GAME);
+    }
+
+    //TODO more sensitive
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+
+        // get the angle around the z-axis rotated
+        float degree = Math.round(event.values[0]);
         Button arrowImageView = findViewById(R.id.green_arrow);
+
+
+        // create a rotation animation (reverse turn degree degrees)
+        RotateAnimation rotateAnimation = new RotateAnimation(
+                currentDegree,
+                -degree,
+                Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF,
+                0.5f);
+
+        // how long the animation will take place
+        rotateAnimation.setDuration(210);
+
+        // set the animation after the end of the reservation status
+        rotateAnimation.setFillAfter(true);
+
+        // Start the animation
+
         arrowImageView.startAnimation(rotateAnimation);
+        currentDegree = degree;
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        // not in use
     }
 
     public void updateEditView(Record record)
@@ -53,6 +87,7 @@ public class LocalizationActivity extends BaseActivity
 
             //TAKE SMALLER WINDOW
             float[] result = classifier.predict(record);
+
 
     }
 }

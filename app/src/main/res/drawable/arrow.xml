@@ -5,9 +5,9 @@
         <item>
             <shape android:shape="rectangle">
                 <size
-                    android:width="100dp"
-                    android:height="40dp" />
-                <solid android:color="#5EB888" />
+                    android:width="60dp"
+                    android:height="24dp" />
+                <solid android:color="#000000" />
                 <corners android:radius="0dp"/>
             </shape>
         </item>
@@ -15,13 +15,13 @@
         <!-- This rectangle for the top arrow edge -->
         <!-- Its color should be the same as the layout's background -->
         <item
-            android:top="-40dp"
-            android:bottom="65dp"
-            android:right="-30dp">
+            android:top="-24dp"
+            android:bottom="39dp"
+            android:right="-18dp">
             <rotate
                 android:fromDegrees="45">
                 <shape android:shape="rectangle">
-                    <solid android:color="#ffffff" />
+                    <solid android:color="#FFFFFF" />
                 </shape>
             </rotate>
         </item>
@@ -29,9 +29,9 @@
         <!-- This rectangle for the lower arrow edge -->
         <!-- Its color should be the same as the layout's background -->
         <item
-            android:top="65dp"
-            android:bottom="-40dp"
-            android:right="-30dp">
+            android:top="39dp"
+            android:bottom="-24dp"
+            android:right="-18dp">
             <rotate
                 android:fromDegrees="-45">
                 <shape android:shape="rectangle">
