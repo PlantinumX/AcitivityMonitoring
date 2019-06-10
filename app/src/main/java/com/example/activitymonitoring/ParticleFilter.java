@@ -2,11 +2,22 @@ package com.example.activitymonitoring;
 
 public class ParticleFilter
 {
-    public final int PARTICLES = 7500;
+    private final int PARTICLES = 7500;
     public Particle[] particles;
 
     ParticleFilter()
     {
         particles = new Particle[PARTICLES];
     }
+
+
+    public int init()
+    {
+        double weight = 1 / PARTICLES;
+
+        return 0;
+    }
+
+
+
 }
