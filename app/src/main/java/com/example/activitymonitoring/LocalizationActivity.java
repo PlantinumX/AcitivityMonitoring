@@ -8,6 +8,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
@@ -43,38 +44,45 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
 
         sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
         sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_FASTEST);
-        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
-                SensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_GAME);
     }
 
     //TODO more sensitive
     @Override
-    public void onSensorChanged(SensorEvent event) {
-
-        // get the angle around the z-axis rotated
-        float degree = Math.round(event.values[0]);
-        Button arrowImageView = findViewById(R.id.green_arrow);
+    public void onSensorChanged(SensorEvent event)
+    {
+        if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
 
 
-        // create a rotation animation (reverse turn degree degrees)
-        RotateAnimation rotateAnimation = new RotateAnimation(
-                currentDegree,
-                -degree,
-                Animation.RELATIVE_TO_SELF, 0.5f,
-                Animation.RELATIVE_TO_SELF,
-                0.5f);
+            // get the angle around the z-axis rotated
+            float degree = Math.round(event.values[0]);
 
-        // how long the animation will take place
-        rotateAnimation.setDuration(210);
+            //if(event.values[0])
 
-        // set the animation after the end of the reservation status
-        rotateAnimation.setFillAfter(true);
+            Log.d("50", Float.toString(degree));
+            Button arrowImageView = findViewById(R.id.green_arrow);
 
-        // Start the animation
 
-        arrowImageView.startAnimation(rotateAnimation);
-        currentDegree = degree;
+            // create a rotation animation (reverse turn degree degrees)
+            RotateAnimation rotateAnimation = new RotateAnimation(
+                    currentDegree,
+                    -degree,
+                    Animation.RELATIVE_TO_SELF, 0.5f,
+                    Animation.RELATIVE_TO_SELF,
+                    0.5f);
 
+            // how long the animation will take place
+            rotateAnimation.setDuration(210);
+
+            // set the animation after the end of the reservation status
+            rotateAnimation.setFillAfter(true);
+
+            // Start the animation
+
+            arrowImageView.startAnimation(rotateAnimation);
+            currentDegree = degree;
+        }
     }
 
     @Override
