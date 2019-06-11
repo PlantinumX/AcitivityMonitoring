@@ -7,24 +7,19 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
+import android.util.Log;
 import android.view.animation.Animation;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.RotateAnimation;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
-import android.widget.TextView;
-
 public class LocalizationActivity extends BaseActivity implements SensorEventListener
 {
-    private boolean isDataContent;
+
     private Classifier classifier;
     public SensorHandler sensorHandler;
     public SensorManager sensorManager;
     private float currentDegree = 0f;
     public ParticleFilter particleFilter;
+    private Map map;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -35,6 +30,7 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
         try {
 
             classifier = new Classifier(this);
+            this.map = new Map();
             this.particleFilter =  new ParticleFilter();
         } catch (Exception e) {
             e.printStackTrace();
@@ -44,7 +40,7 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
         sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
         sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_FASTEST);
         sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
-                SensorManager.SENSOR_DELAY_GAME);
+                SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     //TODO more sensitive
@@ -54,8 +50,7 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
         // get the angle around the z-axis rotated
         float degree = Math.round(event.values[0]);
         Button arrowImageView = findViewById(R.id.green_arrow);
-
-
+        Log.d("50",Float.toString(degree));
         // create a rotation animation (reverse turn degree degrees)
         RotateAnimation rotateAnimation = new RotateAnimation(
                 currentDegree,
