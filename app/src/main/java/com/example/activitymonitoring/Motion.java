@@ -4,6 +4,7 @@ public class Motion
 {
     private boolean is_moving;
     private  double angle;
+    private int steps;
 
     public Motion(boolean is_moving, double angle)
     {
@@ -29,5 +30,15 @@ public class Motion
     public void setAngle(double angle)
     {
         this.angle = angle;
+    }
+
+    public int getSteps()
+    {
+        return steps;
+    }
+
+    public void setSteps(int steps)
+    {
+        this.steps = steps;
     }
 }
