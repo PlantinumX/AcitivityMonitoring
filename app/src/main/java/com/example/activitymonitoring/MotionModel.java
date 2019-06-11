@@ -6,13 +6,14 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Timer;
 
 
 public class MotionModel
 {
     final int MAX_VALUES = 40;
-    private int steps;
     private double degree;
     private ArrayList<Double> xAcc = new ArrayList<Double>();
     private ArrayList<Double> yAcc = new ArrayList<Double>();
@@ -44,22 +45,16 @@ public class MotionModel
         return variance;
     }
 
-    void calc_Motion(SensorEvent event)
+    long calc_duration_Motion(float[] values)
     {
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
+
+        long duration = System.currentTimeMillis();
+
+        while (values[2] > values[0] && values[2] > values[0])
         {
-            xAcc.add((double)event.values[0]);
-            yAcc.add((double)event.values[1]);
-            zAcc.add((double)event.values[2]);
         }
-
-        if(xAcc.size() == MAX_VALUES && yAcc.size() == MAX_VALUES && zAcc.size() == MAX_VALUES)
-        {
-
-
-        }
-
-
+        duration = System.currentTimeMillis() - duration;
+        return duration;
     }
 
 
