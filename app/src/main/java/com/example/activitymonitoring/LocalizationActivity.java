@@ -57,7 +57,7 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
 
             //if(event.values[0])
 
-            Log.d("50", Float.toString(degree));
+//            Log.d("50", Float.toString(degree));
             Button arrowImageView = findViewById(R.id.green_arrow);
 
 

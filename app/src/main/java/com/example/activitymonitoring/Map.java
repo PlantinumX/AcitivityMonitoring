@@ -23,17 +23,18 @@ public class Map
 
     public void prepareMap()
     {
+        this.image = this.image.copy(this.image.getConfig(),true);
         int height = this.image.getHeight();
         int width = this.image.getWidth();
-        for(int x = 0; x < height;x++)
+        for(int x = 0; x < width;x++)
         {
-            for(int y = 0; y < width; y++)
+            for(int y = 0; y < height; y++)
             {
-                Log.d("MAP", "Color : " + image.getPixel(x,y));
+//                Log.d("MAP", " x " + Integer.toString(x) + " y " + Integer.toString(y)  + " Color : " + Integer.toHexString(image.getPixel(x,y) << 8));
 
-                if(image.getPixel(x,y) == 0xFFFFFF)
+                if((image.getPixel(x,y) << 8) == 0xFFFFFF00) // shift right
                 {
-                    this.image.setPixel(x ,y , 0x0000FF);
+                    this.image.setPixel(x ,y , 0xFF0000FF);
                 }
             }
         }
