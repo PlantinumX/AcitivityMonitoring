@@ -7,25 +7,21 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.DecelerateInterpolator;
+import android.util.Log;
 import android.view.animation.RotateAnimation;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 public class LocalizationActivity extends BaseActivity implements SensorEventListener
 {
-    private boolean isDataContent;
+
     private Classifier classifier;
     public SensorHandler sensorHandler;
     public SensorManager sensorManager;
     private float currentDegree = 0f;
     public ParticleFilter particleFilter;
+    private Map map;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -36,12 +32,13 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
         try {
 
             classifier = new Classifier(this);
+            this.map = new Map(this);
+            this.map.prepareMap();
             this.particleFilter =  new ParticleFilter();
         } catch (Exception e) {
             e.printStackTrace();
         }
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-
         sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
         sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_FASTEST);
         sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_GAME);
@@ -60,7 +57,7 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
 
             //if(event.values[0])
 
-            Log.d("50", Float.toString(degree));
+//            Log.d("50", Float.toString(degree));
             Button arrowImageView = findViewById(R.id.green_arrow);
 
 
@@ -83,6 +80,8 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
             arrowImageView.startAnimation(rotateAnimation);
             currentDegree = degree;
         }
+        ImageView imageView = findViewById(R.id.image1);
+        imageView.setImageBitmap(this.map.getImage());
     }
 
     @Override
