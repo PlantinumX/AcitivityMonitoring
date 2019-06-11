@@ -7,10 +7,12 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.animation.Animation;
+import android.util.Log;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
+import android.widget.ImageView;
+
 public class LocalizationActivity extends BaseActivity implements SensorEventListener
 {
 
@@ -30,46 +32,56 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
         try {
 
             classifier = new Classifier(this);
-            this.map = new Map();
+            this.map = new Map(this);
+            this.map.prepareMap();
             this.particleFilter =  new ParticleFilter();
         } catch (Exception e) {
             e.printStackTrace();
         }
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-
         sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
         sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_FASTEST);
-        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
-                SensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_GAME);
     }
 
     //TODO more sensitive
     @Override
-    public void onSensorChanged(SensorEvent event) {
+    public void onSensorChanged(SensorEvent event)
+    {
+        if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
 
-        // get the angle around the z-axis rotated
-        float degree = Math.round(event.values[0]);
-        Button arrowImageView = findViewById(R.id.green_arrow);
-        Log.d("50",Float.toString(degree));
-        // create a rotation animation (reverse turn degree degrees)
-        RotateAnimation rotateAnimation = new RotateAnimation(
-                currentDegree,
-                -degree,
-                Animation.RELATIVE_TO_SELF, 0.5f,
-                Animation.RELATIVE_TO_SELF,
-                0.5f);
 
-        // how long the animation will take place
-        rotateAnimation.setDuration(210);
+            // get the angle around the z-axis rotated
+            float degree = Math.round(event.values[0]);
 
-        // set the animation after the end of the reservation status
-        rotateAnimation.setFillAfter(true);
+            //if(event.values[0])
 
-        // Start the animation
+            Log.d("50", Float.toString(degree));
+            Button arrowImageView = findViewById(R.id.green_arrow);
 
-        arrowImageView.startAnimation(rotateAnimation);
-        currentDegree = degree;
 
+            // create a rotation animation (reverse turn degree degrees)
+            RotateAnimation rotateAnimation = new RotateAnimation(
+                    currentDegree,
+                    -degree,
+                    Animation.RELATIVE_TO_SELF, 0.5f,
+                    Animation.RELATIVE_TO_SELF,
+                    0.5f);
+
+            // how long the animation will take place
+            rotateAnimation.setDuration(210);
+
+            // set the animation after the end of the reservation status
+            rotateAnimation.setFillAfter(true);
+
+            // Start the animation
+
+            arrowImageView.startAnimation(rotateAnimation);
+            currentDegree = degree;
+        }
+        ImageView imageView = findViewById(R.id.image1);
+        imageView.setImageBitmap(this.map.getImage());
     }
 
     @Override
