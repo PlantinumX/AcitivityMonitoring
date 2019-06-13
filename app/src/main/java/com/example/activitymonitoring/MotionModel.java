@@ -45,16 +45,14 @@ public class MotionModel
         return variance;
     }
 
-    long calc_duration_Motion(float[] values)
+    void calc_Motion(Classifier classifier, Record records)
     {
 
         long duration = System.currentTimeMillis();
 
-        while (values[2] > values[0] && values[2] > values[0])
-        {
-        }
+        float[] props = classifier.predict(records);
+
         duration = System.currentTimeMillis() - duration;
-        return duration;
     }
 
 

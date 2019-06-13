@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 public class LocalizationActivity extends BaseActivity implements SensorEventListener
 {
@@ -22,6 +23,12 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
     private float currentDegree = 0f;
     public ParticleFilter particleFilter;
     private Map map;
+    private Motion motion = new Motion();
+    private double orientation;
+    private double mean_orientation = 0;
+    private int duration = 0;
+    long startTime = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -80,6 +87,11 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
             arrowImageView.startAnimation(rotateAnimation);
             currentDegree = degree;
         }
+        if (event.sensor.getType() == Sensor.TYPE_ORIENTATION)
+        {
+            orientation = event.values[0];
+        }
+
         ImageView imageView = findViewById(R.id.image1);
         imageView.setImageBitmap(this.map.getImage());
     }
@@ -91,9 +103,47 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
 
     public void updateEditView(Record record)
     {
+        //TAKE SMALLER WINDOW
 
-            //TAKE SMALLER WINDOW
-            float[] result = classifier.predict(record);
+
+        float[] result = classifier.predict(record);
+
+        motion.angle.add(orientation);
+
+
+        if(result[2] > result[0] && result[2] > result[1])
+        {
+            motion.is_moving.add(true);
+        }
+        else {
+            motion.is_moving.add(false);
+        }
+        Log.d("orienttation ", Double.toString(orientation));
+
+        if(motion.is_moving.size() == 50)
+        {
+            for(int i = 0; i < motion.is_moving.size(); i++)
+            {
+                if(motion.is_moving.get(i) == true)
+                {
+                    duration += 400; //in millis
+                }
+            }
+
+            for(int i = 0; i <motion.angle.size(); i++)
+            {
+                mean_orientation += motion.angle.get(i);
+            }
+            mean_orientation /= motion.angle.size();
+
+            Log.d("duration: ", Integer.toString(duration));
+            Log.d("mean angle", Double.toString(mean_orientation));
+            Toast.makeText(this, "duration: " + Integer.toString(duration) + "mean angle: " + Double.toString(orientation), Toast.LENGTH_LONG);
+            duration = 0;
+            mean_orientation = 0;
+            motion.is_moving.clear();
+            motion.angle.clear();
+        }
 
 
     }
