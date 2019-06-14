@@ -5,6 +5,8 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Environment;
+import android.text.LoginFilter;
+import android.util.Log;
 
 
 import java.io.BufferedReader;
@@ -26,6 +28,7 @@ import static java.nio.charset.Charset.*;
 
 //Reading from a file
 
+
 public class SensorHandler implements SensorEventListener {
 	BaseActivity activity;
 	List<Gyroscope> gyroscopeValues;
@@ -34,6 +37,7 @@ public class SensorHandler implements SensorEventListener {
 	private List<Double> accelerometerValuesXAxis;
 	private List<Double> accelerometerValuesYAxis;
 	private List<Double> accelerometerValuesZAxis;
+	long duration = 0;
 
 	public  SensorHandler(BaseActivity activity) {
 		this.activity = activity;
@@ -51,6 +55,11 @@ public class SensorHandler implements SensorEventListener {
 
 	@Override
 	public void onSensorChanged(SensorEvent sensorEvent) {
+		if(duration == 0)
+		{
+			duration = System.currentTimeMillis();
+		}
+
 		Sensor sensor = sensorEvent.sensor;
 		if (sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 			accelerometerValuesXAxis.add((double) sensorEvent.values[0]);
@@ -72,16 +81,19 @@ public class SensorHandler implements SensorEventListener {
 		}
 
 		if(accelerometerValuesXAxis.size() == Record.WINDOW_SIZE - 1 && accelerometerValuesYAxis.size() >= Record.WINDOW_SIZE - 1 && accelerometerValuesZAxis.size() >= Record.WINDOW_SIZE - 1) {
+			duration = System.currentTimeMillis() - duration;
 			records = new Record();
 			records.toDoubleArray(accelerometerValuesXAxis, 0);
 			records.toDoubleArray(accelerometerValuesYAxis, 1);
 			records.toDoubleArray(accelerometerValuesZAxis, 2);
 			records.saveDirectionvalues(gyroscopeValues);
+			records.duration = duration;
 			activity.updateEditView(records);
 			accelerometerValuesXAxis.clear();
 			accelerometerValuesYAxis.clear();
 			accelerometerValuesZAxis.clear();
 			gyroscopeValues.clear();
+			duration = 0;
 		}
 
 

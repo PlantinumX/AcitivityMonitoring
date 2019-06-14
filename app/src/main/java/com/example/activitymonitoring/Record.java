@@ -17,6 +17,7 @@ public class Record {
 	public double[] featureDev;
 	public double[] featureAbsoluteDev;
 	public double featureResultant;
+	public long duration;
 	double distance;
 	int classLabel;
 	//TODO timestamp and user maybe needed
@@ -35,6 +36,7 @@ public class Record {
 		this.featureAbsoluteDev = new double[AXES_SIZE];
 		this.featureResultant = 0;
 		this.classLabel = 0;
+		this.duration = 0;
 	}
 
 	void clacDistanc(Record sample) {
