@@ -6,18 +6,13 @@ import android.support.annotation.ColorInt;
 import android.support.constraint.solver.widgets.Rectangle;
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Map
 {
     private Bitmap image;
-    private List<Rectangle> rooms;
 
     public Map(BaseActivity baseActivity)
     {
         this.image = BitmapFactory.decodeResource(baseActivity.getResources(), R.drawable.map_tug);
-        this.rooms = new ArrayList<>();
 
     }
 
