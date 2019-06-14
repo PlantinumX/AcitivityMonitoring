@@ -45,14 +45,10 @@ public class MotionModel
         return variance;
     }
 
-    void calc_Motion(Classifier classifier, Record records)
+    void calc_Motion(double values[], Record records, Motion motion)
     {
+        motion.sample_cnt++;
 
-        long duration = System.currentTimeMillis();
-
-        float[] props = classifier.predict(records);
-
-        duration = System.currentTimeMillis() - duration;
     }
 
 

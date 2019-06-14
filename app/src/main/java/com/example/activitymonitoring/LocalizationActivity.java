@@ -27,7 +27,9 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
     private double orientation;
     private double mean_orientation = 0;
     private int duration = 0;
-    long startTime = 0;
+    private double duration_sec;
+    private int step_cnt = 0;
+    private double distance = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -106,17 +108,21 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
         //TAKE SMALLER WINDOW
 
         motion.sample_cnt++;
+
         float[] result = classifier.predict(record);
 
         motion.angle.add(orientation);
 
-        if(result[2] > result[0] && result[2] > result[1])
+        //sitting = [1]
+        //walking = [0]
+        //standing = [2]
+        if(result[0] > result[1] && result[0] > result[2])
         {
             motion.duration += record.duration;
         }
 
 
-        if(motion.sample_cnt == 500)
+        if(motion.sample_cnt == 30)
         {
 
             for(int i = 0; i <motion.angle.size(); i++)
@@ -126,14 +132,28 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
 
             mean_orientation /= motion.angle.size();
 
-            Log.d("duration: ", Long.toString(motion.duration));
-            Log.d("mean angle", Double.toString(mean_orientation));
-            Toast.makeText(this, "duration: " + Long.toString(motion.duration) + "mean angle: " + Double.toString(orientation), Toast.LENGTH_LONG);
+//            Log.d("cycle", Long.toString(time_for_cyrcle));
+//            Log.d("duration: ", Long.toString(motion.duration));
+//            Log.d("mean angle", Double.toString(mean_orientation));
+//            Toast.makeText(this, "duration: " + Long.toString(motion.duration) + "mean angle: " + Double.toString(orientation), Toast.LENGTH_LONG);
+
+            duration_sec = (double)motion.duration/ 1000;
+
+            step_cnt = (int)((duration_sec * 2) + 0.5);
+            distance = step_cnt * 0.65;
+
+//            Log.d("duration_sec", Double.toString(duration_sec));
+//            Log.d("distance", Double.toString(distance));
+//            Log.d("steps", Integer.toString(step_cnt));
+            Toast.makeText(this, "duration: " + distance + "mean angle: " + Double.toString(mean_orientation), Toast.LENGTH_LONG).show();
+
+
             motion.duration = (long)0;
             mean_orientation = 0;
             motion.sample_cnt = 0;
             motion.angle.clear();
         }
+
 
 
     }
