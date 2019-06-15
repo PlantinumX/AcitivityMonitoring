@@ -150,7 +150,7 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
             Log.d("distance", Double.toString(distance));
             Log.d("steps", Integer.toString(step_cnt));
             Toast.makeText(this, "duration: " + distance + "mean angle: " + Double.toString(mean_orientation), Toast.LENGTH_LONG).show();
-            particleFilter.moveParticles(distance,mean_orientation);
+//            particleFilter.moveParticles(distance,mean_orientation);
 
             motion.duration = (long)0;
             mean_orientation = 0;
