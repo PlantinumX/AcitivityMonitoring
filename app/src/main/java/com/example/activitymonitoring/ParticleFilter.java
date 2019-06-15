@@ -49,10 +49,10 @@ public class ParticleFilter {
             Log.d("P","NEW Particle " + newPosition.x + " " + newPosition.y);
 
             particle.setPos(newPosition);
-            checkParticles();
-            low_variance_resampling();
             id++;
         }
+        checkParticles();
+        low_variance_resampling();
     }
 
     //OOM not today
@@ -75,6 +75,7 @@ public class ParticleFilter {
 
         for (int i = 1; i < PARTICLES; i++) {
             p_resample += p_step;
+
 
             while (cdf_idx < (PARTICLES - 1) && (p_resample > cdf[cdf_idx] || particles[cdf_idx].getWeight() == 0.0)) {
                 cdf_idx++;
@@ -102,8 +103,10 @@ public class ParticleFilter {
     {
         int particleSize = 0;
         int id = 0;
+        int cnt = 0;
         for(Particle particle : particles)
         {
+            cnt++;
             Position position = particle.getPos();
             Position lastPosition = particle.getLastPos();
             boolean isCollided = false;
@@ -111,17 +114,19 @@ public class ParticleFilter {
             Log.d("PARTICLE ", "PARTICLE ID "+id+ " " + position.getX() + " " + position.getY());
             Log.d("PARTICLE ", "LAST POSITION "+ " " + lastPosition.getX() + " " + lastPosition.getY());
 
+
             for(Wall wall : this.map.walls) {
                 //loat px1, float py1, float px2, float py2
-                Log.d("P", "TOP LEFT "+wall.top_left.x + " " + wall.top_left.y);
-                Log.d("P", "BOOTOM RIGHT "+wall.bottom_right.x + " " + wall.bottom_right.y);
+//                Log.d("P", "TOP LEFT "+wall.top_left.x + " " + wall.top_left.y);
+//                Log.d("P", "BOOTOM RIGHT "+wall.bottom_right.x + " " + wall.bottom_right.y);
                 Position intersectionWithTopBorder = intersect(lastPosition,position,wall.top_left,wall.top_right);
 
                 Position intersectionWithBottomBorder = intersect(lastPosition,position,wall.bottom_left,wall.bottom_right);
                 Position intersectionWithRightBorder = intersect(lastPosition,position,wall.top_right,wall.bottom_right);
 
                 Position intersectionWithLeftBorder = intersect(lastPosition,position,wall.top_left,wall.top_right);
-                if(intersectionWithTopBorder != null || intersectionWithBottomBorder != null || intersectionWithRightBorder != null || intersectionWithLeftBorder != null) {
+                if(intersectionWithTopBorder != null || intersectionWithBottomBorder != null || intersectionWithRightBorder != null || intersectionWithLeftBorder != null)
+                {
                     Log.d("PARTICLE FILTEr", "COLLISION DETECTED\n");
                     particle.setWeight(0.f);
                     isCollided = true;
@@ -130,6 +135,7 @@ public class ParticleFilter {
 
             }
             if(!isCollided) {
+                Log.d("index not collidet", Integer.toString(cnt));
                 particleSize++;
             }
             id++;
@@ -139,9 +145,9 @@ public class ParticleFilter {
         for(Particle particle : particles)
         {
             if (Double.compare(particle.getWeight(), 0.f) != 0) {
-                continue;
+                particle.setWeight(1.f/(double)particleSize);
             }
-            particle.setWeight(1/particleSize);
+
 
 
         }
