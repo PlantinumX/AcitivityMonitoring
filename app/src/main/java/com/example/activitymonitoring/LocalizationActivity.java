@@ -94,9 +94,8 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
             orientation = event.values[0];
         }
 
-//        ImageView imageView = findViewById(R.id.image1);
-//        imageView.setImageBitmap(this.map.getOriginal_image());
-        ParticleFilter.intersect(new Position(4.39f,0.f),new Position(5.f,0.f),new Position(4.5f,1.f) ,new Position(4.5f,-1.f));
+        ImageView imageView = findViewById(R.id.image1);
+        imageView.setImageBitmap(this.map.getOriginal_image());
     }
 
     @Override
