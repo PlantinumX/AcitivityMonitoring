@@ -113,14 +113,14 @@ public class LocalizationActivity extends BaseActivity
             motion.sample_cnt = 0;
             motion.angle.clear();
         }
-        Bitmap map = this.map.getOriginal_image();
-        for(Particle particle: particleFilter.particles) {
-            map.setPixel((int)particle.getLastPos().x,(int)particle.getLastPos().y,0xFFFFFFFF);;
-            if(particle.getWeight() != 0.f) {
-                map.setPixel((int)particle.getPos().x,(int)particle.getPos().y,0xFF00FF00);
-            }
-
-        }
+//        Bitmap map = this.map.getOriginal_image();
+//        for(Particle particle: particleFilter.particles) {
+//            map.setPixel((int)particle.getLastPos().x,(int)particle.getLastPos().y,0xFFFFFFFF);;
+//            if(particle.getWeight() != 0.f) {
+//                map.setPixel((int)particle.getPos().x,(int)particle.getPos().y,0xFF00FF00);
+//            }
+//
+//        }
         ImageView imageView = findViewById(R.id.image1);
         imageView.setImageBitmap(this.map.getOriginal_image());
 
