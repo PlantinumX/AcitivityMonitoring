@@ -27,7 +27,6 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
     private Motion motion = new Motion();
     private double orientation;
     private double mean_orientation = 0;
-    private int duration = 0;
     private double duration_sec;
     private int step_cnt = 0;
     private double distance = 0;
@@ -42,8 +41,8 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
         try {
 
             classifier = new Classifier(this);
-            this.map = new Map(this);
-            this.map.prepareMap();
+//            this.map = new Map(this);
+//            this.map.prepareMap();
             this.particleFilter =  new ParticleFilter(this.map);
         } catch (Exception e) {
             e.printStackTrace();
@@ -95,9 +94,9 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
             orientation = event.values[0];
         }
 
-        ImageView imageView = findViewById(R.id.image1);
-        imageView.setImageBitmap(this.map.getOriginal_image());
-        ParticleFilter.intersect(150.0f,400.0f,300.f,200.f,200.f,200.f,200.f,400.f);
+//        ImageView imageView = findViewById(R.id.image1);
+//        imageView.setImageBitmap(this.map.getOriginal_image());
+        ParticleFilter.intersect(new Position(4.39f,0.f),new Position(5.f,0.f),new Position(4.5f,1.f) ,new Position(4.5f,-1.f));
     }
 
     @Override
@@ -150,7 +149,7 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
             Log.d("distance", Double.toString(distance));
             Log.d("steps", Integer.toString(step_cnt));
             Toast.makeText(this, "duration: " + distance + "mean angle: " + Double.toString(mean_orientation), Toast.LENGTH_LONG).show();
-//            particleFilter.moveParticles(distance,mean_orientation);
+            particleFilter.moveParticles(distance,mean_orientation);
 
             motion.duration = (long)0;
             mean_orientation = 0;

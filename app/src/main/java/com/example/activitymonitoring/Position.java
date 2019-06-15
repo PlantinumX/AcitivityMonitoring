@@ -1,8 +1,8 @@
 package com.example.activitymonitoring;
 
 public class Position {
-    private int x;
-    private int y;
+    public double x;
+    public double y;
 
     public Position() {
         this.x = 0;
@@ -14,12 +14,12 @@ public class Position {
         this.y = position.y;
     }
 
-    public Position(int x, int y) {
+    public Position(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
-    public int getX()
+    public double getX()
     {
         return x;
     }
@@ -29,7 +29,7 @@ public class Position {
         this.x = x;
     }
 
-    public int getY()
+    public double getY()
     {
         return y;
     }
