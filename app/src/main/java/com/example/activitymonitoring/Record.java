@@ -20,6 +20,8 @@ public class Record {
 	public long duration;
 	double distance;
 	int classLabel;
+	public double orientation;
+
 	//TODO timestamp and user maybe needed
 
 	Record() {
@@ -37,6 +39,7 @@ public class Record {
 		this.featureResultant = 0;
 		this.classLabel = 0;
 		this.duration = 0;
+
 	}
 
 	void clacDistanc(Record sample) {

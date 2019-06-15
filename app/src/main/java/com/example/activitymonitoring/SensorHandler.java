@@ -37,8 +37,13 @@ public class SensorHandler implements SensorEventListener {
 	private List<Double> accelerometerValuesXAxis;
 	private List<Double> accelerometerValuesYAxis;
 	private List<Double> accelerometerValuesZAxis;
+	private double orientations;
 	long duration = 0;
-
+	float[] gData = new float[3]; // accelerometer
+	float[] mData = new float[3]; // magnetometer
+	float[] rMat = new float[9];
+	float[] iMat = new float[9];
+	float[] orientation = new float[3];
 	public  SensorHandler(BaseActivity activity) {
 		this.activity = activity;
 		accelerometerValuesXAxis = new ArrayList<>();
@@ -65,32 +70,35 @@ public class SensorHandler implements SensorEventListener {
 			accelerometerValuesXAxis.add((double) sensorEvent.values[0]);
 			accelerometerValuesYAxis.add((double)sensorEvent.values[1]);
 			accelerometerValuesZAxis.add((double)sensorEvent.values[2]);
+			gData = sensorEvent.values.clone();
 		}
 
 		//NEEDED FOR A2
-		if (sensor.getType() == Sensor.TYPE_GYROSCOPE) {
-			float[] rotationMatrix = new float[16];
-			float[] remappedRotationMatrix = new float[16];
-			float[] orientations = new float[3];
-			SensorManager.getRotationMatrixFromVector(rotationMatrix,sensorEvent.values);
-			SensorManager.remapCoordinateSystem(rotationMatrix, SensorManager.AXIS_X, SensorManager.AXIS_Z, remappedRotationMatrix);
-			SensorManager.getOrientation(remappedRotationMatrix,orientations);
-
-			Gyroscope gyroscope = new Gyroscope(Math.toDegrees(orientations[0]), Math.toDegrees(orientations[1]), Math.toDegrees(orientations[2]));
-			gyroscopeValues.add(gyroscope);
+		if (sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+			mData = sensorEvent.values.clone();
 		}
 
-		if(accelerometerValuesXAxis.size() == Record.WINDOW_SIZE - 1 && accelerometerValuesYAxis.size() >= Record.WINDOW_SIZE - 1 && accelerometerValuesZAxis.size() >= Record.WINDOW_SIZE - 1) {
+
+		if ( SensorManager.getRotationMatrix( rMat, iMat, gData, mData ) ) {
+			int mAzimuth= (int) ( Math.toDegrees( SensorManager.getOrientation( rMat, orientation )[0] ) + 360 ) % 360;
+			orientations = ((double)mAzimuth);
+		}
+
+		if(accelerometerValuesXAxis.size() == Record.WINDOW_SIZE - 1 && accelerometerValuesYAxis.size() >= Record.WINDOW_SIZE - 1 && accelerometerValuesZAxis.size() >= Record.WINDOW_SIZE - 1 ) {
 			duration = System.currentTimeMillis() - duration;
 			records = new Record();
 			records.toDoubleArray(accelerometerValuesXAxis, 0);
 			records.toDoubleArray(accelerometerValuesYAxis, 1);
 			records.toDoubleArray(accelerometerValuesZAxis, 2);
+			Log.d("SENSORHANDLER", "AZIMUTH " + orientations);
+
 			records.saveDirectionvalues(gyroscopeValues);
+			records.orientation = orientations;
 			records.duration = duration;
 			activity.updateEditView(records);
 			accelerometerValuesXAxis.clear();
 			accelerometerValuesYAxis.clear();
+			accelerometerValuesZAxis.clear();
 			accelerometerValuesZAxis.clear();
 			gyroscopeValues.clear();
 			duration = 0;

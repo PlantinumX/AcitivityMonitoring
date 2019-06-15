@@ -49,9 +49,7 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
         }
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
-        sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_FASTEST);
-        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_GAME);
-        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION), SensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     //TODO more sensitive
@@ -89,11 +87,6 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
             arrowImageView.startAnimation(rotateAnimation);
             currentDegree = degree;
         }
-        if (event.sensor.getType() == Sensor.TYPE_ORIENTATION)
-        {
-            orientation = event.values[0];
-        }
-
         ImageView imageView = findViewById(R.id.image1);
         imageView.setImageBitmap(this.map.getOriginal_image());
 
@@ -112,7 +105,7 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
 
         float[] result = classifier.predict(record);
 
-        motion.angle.add(orientation);
+        motion.angle.add(record.orientation);
 
         //sitting = [1]
         //walking = [0]
@@ -126,7 +119,7 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
         if(motion.sample_cnt == 30)
         {
 
-            for(int i = 0; i <motion.angle.size(); i++)
+            for(int i = 0; i < motion.angle.size(); i++)
             {
                 mean_orientation += motion.angle.get(i);
             }
@@ -135,20 +128,22 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
 
 //            Log.d("cycle", Long.toString(time_for_cyrcle));
 //            Log.d("duration: ", Long.toString(motion.duration));
-//            Log.d("mean angle", Double.toString(mean_orientation));
 //            Toast.makeText(this, "duration: " + Long.toString(motion.duration) + "mean angle: " + Double.toString(orientation), Toast.LENGTH_LONG);
 
             duration_sec = (double)motion.duration/ 1000;
 
             step_cnt = (int)((duration_sec * 2) + 0.5);
             distance = step_cnt * 0.65;
-            Log.d("activity 0 ",Double.toString(result[0]));
-            Log.d("activity 1 ",Double.toString(result[1]));
-            Log.d("activity 2 ",Double.toString(result[2]));
-            Log.d("duration_sec", Double.toString(duration_sec));
-            Log.d("distance", Double.toString(distance));
-            Log.d("steps", Integer.toString(step_cnt));
-            Toast.makeText(this, "duration: " + distance + "mean angle: " + Double.toString(mean_orientation), Toast.LENGTH_LONG).show();
+//            Log.d("activity 0 ",Double.toString(result[0]));
+//            Log.d("activity 1 ",Double.toString(result[1]));
+//            Log.d("activity 2 ",Double.toString(result[2]));
+//            Log.d("duration_sec", Double.toString(duration_sec));
+//            Log.d("distance", Double.toString(distance));
+//            Log.d("steps", Integer.toString(step_cnt));
+//
+//            Log.d("mean angle", Double.toString(mean_orientation));
+//            Log.d("motion angle size", Double.toString(motion.angle.size()));
+//            Toast.makeText(this, "duration: " + distance + "mean angle: " + mean_orientation , Toast.LENGTH_LONG).show();
             if(Double.compare(distance,0.f) != 0) {
 
                 particleFilter.moveParticles(distance,mean_orientation);
