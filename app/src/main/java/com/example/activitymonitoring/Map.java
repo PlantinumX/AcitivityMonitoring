@@ -16,6 +16,8 @@ public class Map
 //    public List<Bitmap> rooms;
     public List<Wall> walls;
     int pixelMeterCoefficient;
+    public ArrayList<Pixel> pixels_in_use = new ArrayList<Pixel>();
+
     public Map(BaseActivity baseActivity)
     {
         this.original_image = BitmapFactory.decodeResource(baseActivity.getResources(), R.drawable.map_tug);
@@ -38,8 +40,8 @@ public class Map
 
                     if((original_image.getPixel(x,y) << 8) == 0xFFFFFF00) // shift right
                     {
-                        this.original_image.setPixel(x ,y , 0xFF0000FF);
-
+                        //this.original_image.setPixel(x ,y , 0xFF0000FF);
+                        pixels_in_use.add(new Pixel(x, y, false));
                     }
                     else if((original_image.getPixel(x,y) << 8) == 0xFD050500) {
                         int top_left_x = x;
