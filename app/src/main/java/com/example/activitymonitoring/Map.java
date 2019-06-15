@@ -16,12 +16,14 @@ public class Map
 //    public List<Bitmap> rooms;
     public List<Wall> walls;
     int pixelMeterCoefficient;
-    public ArrayList<Pixel> pixels_in_use = new ArrayList<Pixel>();
+    public ArrayList<Pixel> pixels_in_use;
 
     public Map(BaseActivity baseActivity)
     {
         this.original_image = BitmapFactory.decodeResource(baseActivity.getResources(), R.drawable.map_tug);
         this.walls = new ArrayList<>();
+        this.pixels_in_use = new ArrayList<>();
+
         this.pixelMeterCoefficient = 0;
     }
 
