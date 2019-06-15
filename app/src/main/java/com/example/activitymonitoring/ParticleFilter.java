@@ -19,7 +19,7 @@ public class ParticleFilter {
 
 
     public int init() {
-        double weight = 1 / PARTICLES; //first
+        double weight = 1.f / (double)PARTICLES; //first
         initParticlesIntoMap(weight);
 
 
