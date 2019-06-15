@@ -188,6 +188,10 @@ public class Record {
 		}
 
 	}
+
+	public  static  double calculateEuclidenDistance(Position current, Position lastPos) {
+		return Math.sqrt(Math.pow(current.getX() - lastPos.getX(),2) + Math.pow(current.getY() - lastPos.getY(),2));
+	}
 }
 
 

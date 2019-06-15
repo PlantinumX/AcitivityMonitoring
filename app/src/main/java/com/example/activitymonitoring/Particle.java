@@ -1,35 +1,28 @@
 package com.example.activitymonitoring;
 
 public class Particle {
-    private Position last_pos;
-    private Position pos;
+    private Position lastPos;
+    private Position pos; //bitmap positions
+    private double distance;
     private double direction; // look into it
-    private double likelihood;
     private double weight;
+    public int color;
 
 
-    Particle(double likelihood)
+    Particle(double direction, Position position, double weight)
     {
-
-    }
-
-    Particle(double likelihood, double direction, Position position, Position last_position, double weight)
-    {
-        this.likelihood = likelihood;
         this.direction = direction;
         this.pos = new Position(position);
-        this.last_pos = new Position(last_position);
         this.weight = weight;
+        this.color = 0xFFFFFF00;
     }
 
-    public Position getLast_pos()
-    {
-        return last_pos;
-    }
-
-    public void setLast_pos(Position last_pos)
-    {
-        this.last_pos = last_pos;
+    public Particle(Particle particle) {
+        this.pos = particle.pos;
+        this.lastPos = particle.lastPos;
+        this.direction = particle.direction;
+        this.weight = particle.weight;
+        this.color = particle.color;
     }
 
     public Position getPos()
@@ -52,13 +45,19 @@ public class Particle {
         this.direction = direction;
     }
 
-    public double getLikelihood()
-    {
-        return likelihood;
+    public double getWeight() {
+        return weight;
     }
 
-    public void setLikelihood(double likelihood)
-    {
-        this.likelihood = likelihood;
+    public Position getLastPos() {
+        return lastPos;
+    }
+
+    public void setLastPos(Position lastPos) {
+        this.lastPos = lastPos;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
     }
 }

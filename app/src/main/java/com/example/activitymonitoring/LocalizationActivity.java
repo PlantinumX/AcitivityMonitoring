@@ -2,13 +2,13 @@ package com.example.activitymonitoring;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.animation.Animation;
-import android.util.Log;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -34,7 +34,7 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
             classifier = new Classifier(this);
             this.map = new Map(this);
             this.map.prepareMap();
-            this.particleFilter =  new ParticleFilter();
+            this.particleFilter =  new ParticleFilter(this.map);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -81,7 +81,8 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
             currentDegree = degree;
         }
         ImageView imageView = findViewById(R.id.image1);
-        imageView.setImageBitmap(this.map.getImage());
+        imageView.setImageBitmap(this.map.getOriginal_image());
+        ParticleFilter.intersect(150.0f,400.0f,300.f,200.f,200.f,200.f,200.f,400.f);
     }
 
     @Override
