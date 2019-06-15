@@ -8,6 +8,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
@@ -142,12 +143,14 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
 
             step_cnt = (int)((duration_sec * 2) + 0.5);
             distance = step_cnt * 0.65;
-
-//            Log.d("duration_sec", Double.toString(duration_sec));
-//            Log.d("distance", Double.toString(distance));
-//            Log.d("steps", Integer.toString(step_cnt));
+            Log.d("activity 0 ",Double.toString(result[0]));
+            Log.d("activity 1 ",Double.toString(result[1]));
+            Log.d("activity 2 ",Double.toString(result[2]));
+            Log.d("duration_sec", Double.toString(duration_sec));
+            Log.d("distance", Double.toString(distance));
+            Log.d("steps", Integer.toString(step_cnt));
             Toast.makeText(this, "duration: " + distance + "mean angle: " + Double.toString(mean_orientation), Toast.LENGTH_LONG).show();
-
+            particleFilter.moveParticles(distance,mean_orientation);
 
             motion.duration = (long)0;
             mean_orientation = 0;

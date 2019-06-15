@@ -28,10 +28,16 @@ public class ParticleFilter
         return 0;
     }
 
+    void meterToPixelConverter(double distance) {
+
+
+    }
 
     //TODO move particles gives me direction and distance
-    public void moveParticles(float distance,float direction) //mobile phone detected movement calculated distance we got stride + directioon
+    public void moveParticles(double distance,double direction) //mobile phone detected movement calculated distance we got stride + directioon
     {
+        meterToPixelConverter(distance);
+        direction = Math.toRadians(direction);
         for(Particle particle : particles)
         {
             Position position = particle.getPos();
@@ -82,7 +88,7 @@ public class ParticleFilter
     }
 
 //https://stackoverflow.com/questions/5184815/java-intersection-point-of-a-polygon-and-line
-    public  static boolean intersect(float lx1, float ly1, float lx2, float ly2,
+    public  static float[] intersect(float lx1, float ly1, float lx2, float ly2,
                                      float px1, float py1, float px2, float py2) {
         float ml,mp;
         // calc slope
@@ -107,8 +113,7 @@ public class ParticleFilter
 
     float x = (bp - bl) / (ml - mp);
     float y = ml * x + bl;
-
-    return true;
+    return new float[]{x,y};
 }
 
     void initParticlesIntoMap(double initialweights) {
