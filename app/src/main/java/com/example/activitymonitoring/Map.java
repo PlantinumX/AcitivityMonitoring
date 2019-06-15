@@ -28,6 +28,7 @@ public class Map
         this.positions[2] = new Position();
         this.positions[3] = new Position();
         this.walls = new ArrayList<>();
+        this.pixels_in_use = new ArrayList<>();
 
     }
 

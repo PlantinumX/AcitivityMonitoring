@@ -3,12 +3,13 @@ package com.example.activitymonitoring;
 
 import android.graphics.Bitmap;
 import android.support.constraint.solver.widgets.Rectangle;
+import android.util.Log;
 
 import java.util.Random;
 
 public class ParticleFilter
 {
-    private final int PARTICLES = 7500; //AMOUNT OF PARTICLES
+    private final int PARTICLES = 15000; //AMOUNT OF PARTICLES
     public Particle[] particles;
     public Map map;
     ParticleFilter(Map map)
@@ -117,26 +118,53 @@ public class ParticleFilter
 }
 
     void initParticlesIntoMap(double initialweights) {
-        Random xAxis = new Random();
-        Random yAxis = new Random();
+//        Random xAxis = new Random();
+//        Random yAxis = new Random();
+        Random rand = new Random();
         Bitmap map  = this.map.getOriginal_image();
         int height = map.getHeight();
         int width = map.getWidth();
         int particleCounter = 0;
-        for(int x = 0; x < width;x++)
+//        for(int x = 0; x < width;x++)
+//        {
+//
+//
+//            for(int y = 0; y < height;y++)
+//            {
+//                if((map.getPixel(x,y) << 8) == 0xFF0000FF)//FILLING THE MAP -> further steps split into rooms
+//                {
+//                    //double direction, Position position, Position last_position, double weight
+//                    if(particleCounter == PARTICLES) {
+//                        break;
+//                    }
+//                    this.particles[particleCounter++] = new Particle(0,new Position(x,y),initialweights);
+//                }
+//            }
+//        }
+
+        for(int i = 0; i < PARTICLES; i++)
         {
-            for(int y = 0; y < height;y++)
+            Pixel pixel = new Pixel();
+            int random = rand.nextInt(this.map.pixels_in_use.size() - 1);
+            Log.d("random", Integer.toString(random));
+            pixel = this.map.pixels_in_use.get(random);
+            Log.d("XY pixel", Integer.toString(pixel.getX()) + " " + Integer.toString(pixel.getY()));
+            Log.d("is used", Boolean.toString(pixel.isUsed()));
+            while(pixel.isUsed() == true)
             {
-                if((map.getPixel(x,y) << 8) == 0xFF0000FF)//FILLING THE MAP -> further steps split into rooms
-                {
-                    //double direction, Position position, Position last_position, double weight
-                    if(particleCounter == PARTICLES) {
-                        break;
-                    }
-                    this.particles[particleCounter++] = new Particle(0,new Position(x,y),initialweights);
-                }
+                random = rand.nextInt(this.map.pixels_in_use.size() - 1);
+                pixel = this.map.pixels_in_use.get(random);
             }
+
+            this.map.pixels_in_use.get(random).setUsed(true);
+
+            Position tmp = new Position(pixel.getX(), pixel.getY());
+            this.particles[i] = new Particle(0, tmp, initialweights);
+            this.map.getOriginal_image().setPixel(tmp.getX(), tmp.getY(), 0xFF00FF00);
         }
+
+
+
 
     }
 }

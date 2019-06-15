@@ -20,6 +20,13 @@ public class Pixel
         this.used = false;
     }
 
+    public Pixel(Position pos)
+    {
+        this.x = pos.getX();
+        this.y = pos.getY();
+        this.used = false;
+    }
+
 
     public int getX() {
         return x;
