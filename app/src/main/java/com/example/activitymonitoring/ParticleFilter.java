@@ -59,6 +59,7 @@ public class ParticleFilter {
     //https://github.com/JuliaStats/StatsBase.jl/issues/124 looked into this code
     public boolean low_variance_resampling() //calculate new weights but how
     {
+        Log.d("MAP","LOW VARIANCE RESAMPLING");
         Particle[] resampled_particles = new Particle[PARTICLES];
         double r = new Random().nextDouble();
         // compute particle cdf
