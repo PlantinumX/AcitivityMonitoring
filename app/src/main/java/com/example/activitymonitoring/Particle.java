@@ -13,6 +13,7 @@ public class Particle {
     {
         this.direction = direction;
         this.pos = new Position(position);
+        this.lastPos = new Position();
         this.weight = weight;
         this.color = 0xFFFFFF00;
     }

@@ -95,7 +95,7 @@ public class ParticleFilter
 
                 Position intersectionWithLeftBorder = intersect(lastPosition,position,wall.top_left,wall.top_right);
                 if(intersectionWithTopBorder != null || intersectionWithBottomBorder != null || intersectionWithRightBorder != null || intersectionWithLeftBorder != null) {
-                    Log.d("PARTICLE FILTEr", "COLLISION DETECTED\n");
+//                    Log.d("PARTICLE FILTEr", "COLLISION DETECTED\n");
                     particle.setWeight(0.f);
                     isCollided = true;
                     break;
@@ -157,10 +157,10 @@ public class ParticleFilter
         {
             Pixel pixel = new Pixel();
             int random = rand.nextInt(this.map.pixels_in_use.size() - 1);
-            Log.d("random", Integer.toString(random));
+//            Log.d("random", Integer.toString(random));
             pixel = this.map.pixels_in_use.get(random);
-            Log.d("XY pixel", Integer.toString(pixel.getX()) + " " + Integer.toString(pixel.getY()));
-            Log.d("is used", Boolean.toString(pixel.isUsed()));
+//            Log.d("XY pixel", Integer.toString(pixel.getX()) + " " + Integer.toString(pixel.getY()));
+//            Log.d("is used", Boolean.toString(pixel.isUsed()));
             while(pixel.isUsed() == true)
             {
                 random = rand.nextInt(this.map.pixels_in_use.size() - 1);
