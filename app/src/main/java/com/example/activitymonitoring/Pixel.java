@@ -22,8 +22,8 @@ public class Pixel
 
     public Pixel(Position pos)
     {
-        this.x = pos.getX();
-        this.y = pos.getY();
+        this.x = (int)pos.getX();
+        this.y = (int)pos.getY();
         this.used = false;
     }
 

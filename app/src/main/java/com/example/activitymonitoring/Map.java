@@ -15,21 +15,16 @@ public class Map
            
 //    public List<Bitmap> rooms;
     public List<Wall> walls;
-    Position[] positions = new Position[4]; // to get a smaller rectange for traversing through map
     int pixelMeterCoefficient;
     public ArrayList<Pixel> pixels_in_use = new ArrayList<Pixel>();
 
     public Map(BaseActivity baseActivity)
     {
         this.original_image = BitmapFactory.decodeResource(baseActivity.getResources(), R.drawable.map_tug);
-//        this.rooms = new ArrayList<>();
-        this.positions[0] = new Position();//IF THERE IS TIME
-        this.positions[1] = new Position();
-        this.positions[2] = new Position();
-        this.positions[3] = new Position();
         this.walls = new ArrayList<>();
         this.pixels_in_use = new ArrayList<>();
 
+        this.pixelMeterCoefficient = 0;
     }
 
 
