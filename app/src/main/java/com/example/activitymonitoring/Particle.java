@@ -3,7 +3,6 @@ package com.example.activitymonitoring;
 public class Particle {
     private Position lastPos;
     private Position pos; //bitmap positions
-    private double distance;
     private double direction; // look into it
     private double weight;
     public int color;
@@ -55,7 +54,8 @@ public class Particle {
     }
 
     public void setLastPos(Position lastPos) {
-        this.lastPos = lastPos;
+        this.lastPos.x = lastPos.x;
+        this.lastPos.y = lastPos.y;
     }
 
     public void setWeight(double weight) {

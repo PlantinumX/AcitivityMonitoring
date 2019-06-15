@@ -34,18 +34,24 @@ public class ParticleFilter {
     //TODO move particles gives me direction and distance
     public void moveParticles(double distance, double direction) //mobile phone detected movement calculated distance we got stride + directioon
     {
-
+        Log.d("PARTICLE FILTER ", "D: " + distance + " DIR: " + direction);
         double pixel_distance = meterToPixelConverter(distance);
+        Log.d("PARTICLE FILTER ", "PD: " + pixel_distance);
         direction = Math.toRadians(direction);
+        int id = 0;
         for (Particle particle : particles) {
             Position position = particle.getPos();
+            Log.d("P","Particle " + id + " " + position.x + " " + position.y);
             particle.setLastPos(new Position(position));
             Position newPosition = new Position();
             newPosition.setX((int) (position.getX() + pixel_distance * Math.cos(direction)));//TODO WE MUST DO SOMETHIG ABOUT NOISE
-            newPosition.setY((int) (position.getX() + pixel_distance * Math.sin(direction)));//TODO WE MUST DO SOMETHING ABOUT NOISE
+            newPosition.setY((int) (position.getY() + pixel_distance * Math.sin(direction)));//TODO WE MUST DO SOMETHING ABOUT NOISE
+            Log.d("P","NEW Particle " + newPosition.x + " " + newPosition.y);
+
             particle.setPos(newPosition);
             checkParticles();
             low_variance_resampling();
+            id++;
         }
     }
 
@@ -95,15 +101,20 @@ public class ParticleFilter {
     public void checkParticles()
     {
         int particleSize = 0;
+        int id = 0;
         for(Particle particle : particles)
         {
             Position position = particle.getPos();
             Position lastPosition = particle.getLastPos();
             boolean isCollided = false;
 
+            Log.d("PARTICLE ", "PARTICLE ID "+id+ " " + position.getX() + " " + position.getY());
+            Log.d("PARTICLE ", "LAST POSITION "+ " " + lastPosition.getX() + " " + lastPosition.getY());
+
             for(Wall wall : this.map.walls) {
                 //loat px1, float py1, float px2, float py2
-
+                Log.d("P", "TOP LEFT "+wall.top_left.x + " " + wall.top_left.y);
+                Log.d("P", "BOOTOM RIGHT "+wall.bottom_right.x + " " + wall.bottom_right.y);
                 Position intersectionWithTopBorder = intersect(lastPosition,position,wall.top_left,wall.top_right);
 
                 Position intersectionWithBottomBorder = intersect(lastPosition,position,wall.bottom_left,wall.bottom_right);
@@ -121,7 +132,7 @@ public class ParticleFilter {
             if(!isCollided) {
                 particleSize++;
             }
-
+            id++;
         }
         Log.d("PARTICLE FILTER ","particle size " + particleSize);
 
@@ -165,6 +176,7 @@ public class ParticleFilter {
     }
 
     void initParticlesIntoMap(double initialweights) {
+//        Log.d("P","INIT PARTICLES");
         Random rand = new Random();
         Bitmap map  = this.map.getOriginal_image();
         int height = map.getHeight();
@@ -190,6 +202,8 @@ public class ParticleFilter {
             Position tmp = new Position(pixel.getX(), pixel.getY());
             this.particles[i] = new Particle(0, tmp, initialweights);
             this.map.getOriginal_image().setPixel((int)tmp.getX(), (int)tmp.getY(), 0xFF00FF00);
+//            Log.d("P","PAINTED MAP At " + tmp.x + " " +tmp.y);
+
         }
 
 

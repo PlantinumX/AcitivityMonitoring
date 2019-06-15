@@ -33,7 +33,7 @@ public class Map
         this.original_image = this.original_image.copy(this.original_image.getConfig(),true);
         int height = this.original_image.getHeight();
         int width = this.original_image.getWidth();
-
+        Log.d("MAP", "height " + height + " width " + width);
             for(int x = 0; x < width;x++)
             {
                 for(int y = 0; y < height; y++)
@@ -102,18 +102,21 @@ public class Map
         //this.rooms.add()
         Log.d("MAP","finished preparing map");
         //TODO DEBUGGING PURPOSES
-            //        for(Wall wall : this.walls) {
-//            height = wall.bottom_right.getY() - wall.top_left.getY();
-//            width = wall.bottom_right.getX() - wall.top_left.getX();
-//            for(int x = 0; x < width;x++)
-//            {
-//                for(int y = 0; y < height; y++)
-//                {
-//                    this.original_image.setPixel(wall.top_left.getX()+ x,wall.top_left.getY() + y,wall.color);
-//
-//                }
-//            }
-//        }
+        for(Wall wall : this.walls) {
+            height = (int)(wall.bottom_right.getY() - wall.top_left.getY());
+            width = (int )(wall.bottom_right.getX() - wall.top_left.getX());
+            Log.d("MAP", "TOP LEFT "+wall.top_left.x + " " + wall.top_left.y);
+            Log.d("MAP", "BOOTOM RIGHT "+wall.bottom_right.x + " " + wall.bottom_right.y);
+            for(int x = 0; x < width;x++)
+            {
+                for(int y = 0; y < height; y++)
+                {
+                    this.original_image.setPixel((int)wall.top_left.getX()+ x,(int)wall.top_left.getY() + y,wall.color);
+
+                }
+            }
+            Log.d("MAP", "COLLOR " + Integer.toHexString(wall.color));
+        }
         Log.d("MAP", "finished wallls");
     }
 

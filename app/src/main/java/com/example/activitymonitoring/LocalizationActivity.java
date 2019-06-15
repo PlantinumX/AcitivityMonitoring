@@ -15,17 +15,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-public class LocalizationActivity extends BaseActivity implements SensorEventListener
+public class LocalizationActivity extends BaseActivity
 {
 
     private Classifier classifier;
     public SensorHandler sensorHandler;
     public SensorManager sensorManager;
-    private float currentDegree = 0f;
     public ParticleFilter particleFilter;
     private Map map;
     private Motion motion = new Motion();
-    private double orientation;
     private double mean_orientation = 0;
     private double duration_sec;
     private int step_cnt = 0;
@@ -52,50 +50,7 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
         sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_FASTEST);
     }
 
-    //TODO more sensitive
-    @Override
-    public void onSensorChanged(SensorEvent event)
-    {
-        if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
 
-
-            // get the angle around the z-axis rotated
-            float degree = Math.round(event.values[0]);
-
-            //if(event.values[0])
-
-//            Log.d("50", Float.toString(degree));
-            Button arrowImageView = findViewById(R.id.green_arrow);
-
-
-            // create a rotation animation (reverse turn degree degrees)
-            RotateAnimation rotateAnimation = new RotateAnimation(
-                    currentDegree,
-                    -degree,
-                    Animation.RELATIVE_TO_SELF, 0.5f,
-                    Animation.RELATIVE_TO_SELF,
-                    0.5f);
-
-            // how long the animation will take place
-            rotateAnimation.setDuration(210);
-
-            // set the animation after the end of the reservation status
-            rotateAnimation.setFillAfter(true);
-
-            // Start the animation
-
-            arrowImageView.startAnimation(rotateAnimation);
-            currentDegree = degree;
-        }
-        ImageView imageView = findViewById(R.id.image1);
-        imageView.setImageBitmap(this.map.getOriginal_image());
-
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        // not in use
-    }
 
     public void updateEditView(Record record)
     {
@@ -154,7 +109,8 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
             motion.sample_cnt = 0;
             motion.angle.clear();
         }
-
+        ImageView imageView = findViewById(R.id.image1);
+        imageView.setImageBitmap(this.map.getOriginal_image());
 
 
     }
