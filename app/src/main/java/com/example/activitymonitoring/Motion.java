@@ -1,33 +1,22 @@
 package com.example.activitymonitoring;
 
+import java.util.ArrayList;
+
 public class Motion
 {
-    private boolean is_moving;
-    private  double angle;
+    public ArrayList<Double> angle;
+    public Long duration;
+    int sample_cnt;
 
-    public Motion(boolean is_moving, double angle)
+    public Motion()
     {
-        this.is_moving = is_moving;
-        this.angle = angle;
+        this.sample_cnt = 0;
+        this.angle = new ArrayList<>();
+        this.duration = (long)0;
     }
 
-    public boolean getIsMoving()
-    {
-        return is_moving;
-    }
 
-    public void setIsMoving(boolean is_moving)
-    {
-        this.is_moving = is_moving;
-    }
 
-    public double getAngle()
-    {
-        return angle;
-    }
 
-    public void setAngle(double angle)
-    {
-        this.angle = angle;
-    }
+
 }

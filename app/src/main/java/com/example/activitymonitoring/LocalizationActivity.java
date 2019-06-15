@@ -12,6 +12,7 @@ import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 public class LocalizationActivity extends BaseActivity implements SensorEventListener
 {
@@ -22,6 +23,14 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
     private float currentDegree = 0f;
     public ParticleFilter particleFilter;
     private Map map;
+    private Motion motion = new Motion();
+    private double orientation;
+    private double mean_orientation = 0;
+    private int duration = 0;
+    private double duration_sec;
+    private int step_cnt = 0;
+    private double distance = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -80,6 +89,11 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
             arrowImageView.startAnimation(rotateAnimation);
             currentDegree = degree;
         }
+        if (event.sensor.getType() == Sensor.TYPE_ORIENTATION)
+        {
+            orientation = event.values[0];
+        }
+
         ImageView imageView = findViewById(R.id.image1);
         imageView.setImageBitmap(this.map.getOriginal_image());
         ParticleFilter.intersect(150.0f,400.0f,300.f,200.f,200.f,200.f,200.f,400.f);
@@ -92,9 +106,55 @@ public class LocalizationActivity extends BaseActivity implements SensorEventLis
 
     public void updateEditView(Record record)
     {
+        //TAKE SMALLER WINDOW
 
-            //TAKE SMALLER WINDOW
-            float[] result = classifier.predict(record);
+        motion.sample_cnt++;
+
+        float[] result = classifier.predict(record);
+
+        motion.angle.add(orientation);
+
+        //sitting = [1]
+        //walking = [0]
+        //standing = [2]
+        if(result[0] > result[1] && result[0] > result[2])
+        {
+            motion.duration += record.duration;
+        }
+
+
+        if(motion.sample_cnt == 30)
+        {
+
+            for(int i = 0; i <motion.angle.size(); i++)
+            {
+                mean_orientation += motion.angle.get(i);
+            }
+
+            mean_orientation /= motion.angle.size();
+
+//            Log.d("cycle", Long.toString(time_for_cyrcle));
+//            Log.d("duration: ", Long.toString(motion.duration));
+//            Log.d("mean angle", Double.toString(mean_orientation));
+//            Toast.makeText(this, "duration: " + Long.toString(motion.duration) + "mean angle: " + Double.toString(orientation), Toast.LENGTH_LONG);
+
+            duration_sec = (double)motion.duration/ 1000;
+
+            step_cnt = (int)((duration_sec * 2) + 0.5);
+            distance = step_cnt * 0.65;
+
+//            Log.d("duration_sec", Double.toString(duration_sec));
+//            Log.d("distance", Double.toString(distance));
+//            Log.d("steps", Integer.toString(step_cnt));
+            Toast.makeText(this, "duration: " + distance + "mean angle: " + Double.toString(mean_orientation), Toast.LENGTH_LONG).show();
+
+
+            motion.duration = (long)0;
+            mean_orientation = 0;
+            motion.sample_cnt = 0;
+            motion.angle.clear();
+        }
+
 
 
     }
