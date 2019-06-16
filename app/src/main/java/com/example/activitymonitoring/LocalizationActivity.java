@@ -104,7 +104,7 @@ public class LocalizationActivity extends BaseActivity
 //            Log.d("motion angle size", Double.toString(motion.angle.size()));
 //            Toast.makeText(this, "duration: " + distance + "mean angle: " + mean_orientation , Toast.LENGTH_LONG).show();
             if(Double.compare(distance,0.f) != 0) {
-
+                Log.d("LOCALIZATIONACTIVITY", "PARTICLE FILTER " + particleFilter.particles.length);
                 particleFilter.moveParticles(distance,mean_orientation);
             }
 
@@ -113,16 +113,19 @@ public class LocalizationActivity extends BaseActivity
             motion.sample_cnt = 0;
             motion.angle.clear();
         }
-//        Bitmap map = this.map.getOriginal_image();
-//        for(Particle particle: particleFilter.particles) {
-//            map.setPixel((int)particle.getLastPos().x,(int)particle.getLastPos().y,0xFFFFFFFF);;
-//            if(particle.getWeight() != 0.f) {
-//                map.setPixel((int)particle.getPos().x,(int)particle.getPos().y,0xFF00FF00);
-//            }
-//
-//        }
+        Bitmap map = this.map.getOriginal_image();
+        for(Particle particle: particleFilter.particles) {
+            if(particle != null && particle.getPos().x >= 0 &&particle.getPos().y >= 0 && particle.getPos().x < map.getWidth() && particle.getPos().y < map.getHeight()) {
+                map.setPixel((int)particle.getLastPos().x,(int)particle.getLastPos().y,0xFFFFFFFF);;
+                if(particle.getWeight() != 0.f) {
+                    map.setPixel((int)particle.getPos().x,(int)particle.getPos().y,0xFF00FF00);
+                }
+
+            }
+
+        }
         ImageView imageView = findViewById(R.id.image1);
-        imageView.setImageBitmap(this.map.getOriginal_image());
+        imageView.setImageBitmap(map);
 
 
     }

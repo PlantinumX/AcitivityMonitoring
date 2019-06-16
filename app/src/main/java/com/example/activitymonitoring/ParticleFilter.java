@@ -40,16 +40,19 @@ public class ParticleFilter {
         direction = Math.toRadians(direction);
         int id = 0;
         for (Particle particle : particles) {
-            Position position = particle.getPos();
-//            Log.d("P","Particle " + id + " " + position.x + " " + position.y);
-            particle.setLastPos(new Position(position));
-            Position newPosition = new Position();
-            newPosition.setX((int) (position.getX() + pixel_distance * Math.cos(direction)));//TODO WE MUST DO SOMETHIG ABOUT NOISE
-            newPosition.setY((int) (position.getY() + pixel_distance * Math.sin(direction)));//TODO WE MUST DO SOMETHING ABOUT NOISE
+            if(particle != null) {
+                Position position = particle.getPos();
+                Log.d("P","Particle " + id + " " + position.x + " " + position.y);
+                particle.setLastPos(new Position(position));
+                Position newPosition = new Position();
+                newPosition.setX((int) (position.getX() + pixel_distance * Math.cos(direction)));//TODO WE MUST DO SOMETHIG ABOUT NOISE
+                newPosition.setY((int) (position.getY() + pixel_distance * Math.sin(direction)));//TODO WE MUST DO SOMETHING ABOUT NOISE
 //            Log.d("P","NEW Particle " + newPosition.x + " " + newPosition.y);
 
-            particle.setPos(newPosition);
-            id++;
+                particle.setPos(newPosition);
+                id++;
+            }
+
         }
         checkParticles();
         low_variance_resampling();
@@ -85,10 +88,14 @@ public class ParticleFilter {
             // if the resample particle weight is 0.0 (should only occur for the last part of the
             // cdf) then we take a
             // particle with non-zero weight..
-            if (particles[cdf_idx].getWeight() == 0.0)
-                resampled_particles[i] = new Particle(resampled_particles[i - 1]);
-            else
-                resampled_particles[i] = new Particle(particles[cdf_idx]);
+            if(particles[cdf_idx] != null) {
+                if (particles[cdf_idx].getWeight() == 0.0)
+                    resampled_particles[i] = new Particle(resampled_particles[i - 1]);
+                else{
+                    resampled_particles[i] = new Particle(particles[cdf_idx]);
+                }
+
+            }
 
             resampled_particles[i].setWeight(p_step);
         }
@@ -107,46 +114,52 @@ public class ParticleFilter {
         int cnt = 0;
         for(Particle particle : particles)
         {
-            cnt++;
-            Position position = particle.getPos();
-            Position lastPosition = particle.getLastPos();
-            boolean isCollided = false;
+            if(particle != null) {
+                cnt++;
+                Position position = particle.getPos();
+                Position lastPosition = particle.getLastPos();
+                boolean isCollided = false;
 
-            Log.d("PARTICLE ", "PARTICLE ID "+id+ " " + position.getX() + " " + position.getY());
-            Log.d("PARTICLE ", "LAST POSITION "+ " " + lastPosition.getX() + " " + lastPosition.getY());
+//            Log.d("PARTICLE ", "PARTICLE ID "+id+ " " + position.getX() + " " + position.getY());
+//            Log.d("PARTICLE ", "LAST POSITION "+ " " + lastPosition.getX() + " " + lastPosition.getY());
 
 
-            for(Wall wall : this.map.walls) {
-                //loat px1, float py1, float px2, float py2
+                for(Wall wall : this.map.walls) {
+                    //loat px1, float py1, float px2, float py2
 //                Log.d("P", "TOP LEFT "+wall.top_left.x + " " + wall.top_left.y);
 //                Log.d("P", "BOOTOM RIGHT "+wall.bottom_right.x + " " + wall.bottom_right.y);
-                Position intersectionWithTopBorder = intersect(lastPosition,position,wall.top_left,wall.top_right);
+                    Position intersectionWithTopBorder = intersect(lastPosition,position,wall.top_left,wall.top_right);
 
-                Position intersectionWithBottomBorder = intersect(lastPosition,position,wall.bottom_left,wall.bottom_right);
-                Position intersectionWithRightBorder = intersect(lastPosition,position,wall.top_right,wall.bottom_right);
+                    Position intersectionWithBottomBorder = intersect(lastPosition,position,wall.bottom_left,wall.bottom_right);
+                    Position intersectionWithRightBorder = intersect(lastPosition,position,wall.top_right,wall.bottom_right);
 
-                Position intersectionWithLeftBorder = intersect(lastPosition,position,wall.top_left,wall.top_right);
-                if(intersectionWithTopBorder != null || intersectionWithBottomBorder != null || intersectionWithRightBorder != null || intersectionWithLeftBorder != null)
-                {
-                    Log.d("PARTICLE FILTEr", "COLLISION DETECTED\n");
-                    particle.setWeight(0.f);
-                    isCollided = true;
-                    break;
+                    Position intersectionWithLeftBorder = intersect(lastPosition,position,wall.top_left,wall.top_right);
+                    if(intersectionWithTopBorder != null || intersectionWithBottomBorder != null || intersectionWithRightBorder != null || intersectionWithLeftBorder != null)
+                    {
+//                    Log.d("PARTICLE FILTEr", "COLLISION DETECTED\n");
+                        particle.setWeight(0.f);
+                        isCollided = true;
+                        break;
+                    }
+
                 }
+                if(!isCollided) {
+//                Log.d("index not collidet", Integer.toString(cnt));
+                    particleSize++;
+                }
+                id++;
 
             }
-            if(!isCollided) {
-                Log.d("index not collidet", Integer.toString(cnt));
-                particleSize++;
-            }
-            id++;
         }
         Log.d("PARTICLE FILTER ","particle size " + particleSize);
 
         for(Particle particle : particles)
         {
-            if (Double.compare(particle.getWeight(), 0.f) != 0) {
-                particle.setWeight(1.f/(double)particleSize);
+            if(particle != null) {
+                if (Double.compare(particle.getWeight(), 0.f) != 0) {
+                    particle.setWeight(1.f/(double)particleSize);
+                }
+
             }
 
 
