@@ -70,7 +70,7 @@ public class ParticleFilter {
         // compute particle cdf
         double[] cdf = new double[PARTICLES];
         cdf[0] = 0.0;
-        for (int i = 0; i < PARTICLES; i++) {
+        for (int i = 1; i < PARTICLES; i++) {
             cdf[i] = cdf[i - 1] + particles[i].getWeight();
         }
 
