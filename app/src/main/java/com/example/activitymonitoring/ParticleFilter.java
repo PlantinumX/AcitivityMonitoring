@@ -38,15 +38,18 @@ public class ParticleFilter {
         double pixel_distance = meterToPixelConverter(distance);
         Log.d("PARTICLE FILTER ", "PD: " + pixel_distance);
         direction = Math.toRadians(direction);
+        Bitmap bitmap = map.getOriginal_image();
         int id = 0;
         for (Particle particle : particles) {
-                Position position = particle.getPos();
-                Log.d("P","Particle " + id + " " + position.x + " " + position.y);
-                particle.setLastPos(new Position(position));
+            bitmap.setPixel((int)particle.getPos().x,(int)particle.getPos().y,0xFFFFFFFF);
+            Position position = particle.getPos();
+            Log.d("P","Particle " + id + " " + position.x + " " + position.y);
+
+            particle.setLastPos(new Position(position));
                 Position newPosition = new Position();
                 newPosition.setX((int) (position.getX() + pixel_distance * Math.cos(direction)));//TODO WE MUST DO SOMETHIG ABOUT NOISE
                 newPosition.setY((int) (position.getY() + pixel_distance * Math.sin(direction)));//TODO WE MUST DO SOMETHING ABOUT NOISE
-//            Log.d("P","NEW Particle " + newPosition.x + " " + newPosition.y);
+            Log.d("P","NEW Particle " + newPosition.x + " " + newPosition.y);
 
                 particle.setPos(newPosition);
                 id++;
@@ -54,6 +57,7 @@ public class ParticleFilter {
         }
         checkParticles();
         low_variance_resampling();
+        map.setOriginal_image(bitmap);
     }
 
     //OOM not today
