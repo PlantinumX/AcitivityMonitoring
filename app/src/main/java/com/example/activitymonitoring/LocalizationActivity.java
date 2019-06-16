@@ -16,6 +16,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.util.Collections;
+
 public class LocalizationActivity extends BaseActivity
 {
 
@@ -26,6 +28,7 @@ public class LocalizationActivity extends BaseActivity
     private Map map;
     private Motion motion = new Motion();
     private double mean_orientation = 0;
+    private double median_orientation = 0;
     private double duration_sec;
     private int step_cnt = 0;
     private double distance = 0;
@@ -85,6 +88,16 @@ public class LocalizationActivity extends BaseActivity
 
             mean_orientation /= motion.angle.size();
 
+            Collections.sort(motion.angle);
+
+            median_orientation = (motion.angle.get(motion.angle.size()/2));
+
+//            Log.d("median", Double.toString(motion.angle.get(motion.angle.size()/2)));
+
+
+
+
+
 //            Log.d("cycle", Long.toString(time_for_cyrcle));
 //            Log.d("duration: ", Long.toString(motion.duration));
 //            Toast.makeText(this, "duration: " + Long.toString(motion.duration) + "mean angle: " + Double.toString(orientation), Toast.LENGTH_LONG);
@@ -100,16 +113,17 @@ public class LocalizationActivity extends BaseActivity
 //            Log.d("distance", Double.toString(distance));
 //            Log.d("steps", Integer.toString(step_cnt));
 //
-//            Log.d("mean angle", Double.toString(mean_orientation));
+            Log.d("mean angle", Double.toString(mean_orientation));
 //            Log.d("motion angle size", Double.toString(motion.angle.size()));
 //            Toast.makeText(this, "duration: " + distance + "mean angle: " + mean_orientation , Toast.LENGTH_LONG).show();
             if(Double.compare(distance,0.f) != 0) {
                 Log.d("LOCALIZATIONACTIVITY", "PARTICLE FILTER " + particleFilter.particles.length);
-                particleFilter.moveParticles(distance,mean_orientation);
+                particleFilter.moveParticles(distance,median_orientation);
             }
 
             motion.duration = (long)0;
             mean_orientation = 0;
+            median_orientation = 0;
             motion.sample_cnt = 0;
             motion.angle.clear();
         }
