@@ -80,7 +80,7 @@ public class SensorHandler implements SensorEventListener {
 
 
 		if ( SensorManager.getRotationMatrix( rMat, iMat, gData, mData ) ) {
-			int mAzimuth= (int) ( Math.toDegrees( SensorManager.getOrientation( rMat, orientation )[0] ) + 360 -46) % 360;
+			int mAzimuth= (int) ( Math.toDegrees( SensorManager.getOrientation( rMat, orientation )[0] ) + 360 -50) % 360;
 			orientations = ((double)mAzimuth);
 		}
 
