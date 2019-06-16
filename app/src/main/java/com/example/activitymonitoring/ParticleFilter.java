@@ -132,7 +132,7 @@ public class ParticleFilter {
                     Position intersectionWithRightBorder = intersect(lastPosition,position,wall.top_right,wall.bottom_right);
 
                     Position intersectionWithLeftBorder = intersect(lastPosition,position,wall.top_left,wall.top_right);
-                    if(intersectionWithTopBorder != null || intersectionWithBottomBorder != null || intersectionWithRightBorder != null || intersectionWithLeftBorder != null || particle.getPos().x > 1200 || particle.getPos().x < 0 || particle.getPos().y > 500|| particle.getPos().y < 250 )
+                    if(intersectionWithTopBorder != null || intersectionWithBottomBorder != null || intersectionWithRightBorder != null || intersectionWithLeftBorder != null || particle.getPos().x > 1500 || particle.getPos().x < 0 || particle.getPos().y > 900|| particle.getPos().y < 250 )
                     {
 //                    Log.d("PARTICLE FILTEr", "COLLISION DETECTED\n");
                         particle.setWeight(0.f);
@@ -149,6 +149,12 @@ public class ParticleFilter {
 
         }
         Log.d("PARTICLE FILTER ","particle size " + particleSize);
+
+        if(particleSize < 40)
+        {
+            init();
+        }
+
 
         double sumweight = 0.f;
         for(Particle particle : particles)
