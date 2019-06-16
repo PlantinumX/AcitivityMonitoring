@@ -37,22 +37,21 @@ public class ParticleFilter {
         Log.d("PARTICLE FILTER ", "D: " + distance + " DIR: " + direction);
         double pixel_distance = meterToPixelConverter(distance);
         Log.d("PARTICLE FILTER ", "PD: " + pixel_distance);
-        direction = Math.toRadians(direction);
         Bitmap bitmap = map.getOriginal_image();
         int id = 0;
+        double tmpDirection = direction;
         for (Particle particle : particles) {
             bitmap.setPixel((int)particle.getPos().x,(int)particle.getPos().y,0xFFFFFFFF);
             Position position = particle.getPos();
+            tmpDirection = Math.toRadians(direction) + 0.15 * new Random().nextGaussian(); //some noise
             Log.d("P","Particle " + id + " " + position.x + " " + position.y);
 
             particle.setLastPos(new Position(position));
-                Position newPosition = new Position();
-                newPosition.setX((int) (position.getX() + pixel_distance * Math.cos(direction)));//TODO WE MUST DO SOMETHIG ABOUT NOISE
-                newPosition.setY((int) (position.getY() + pixel_distance * Math.sin(direction)));//TODO WE MUST DO SOMETHING ABOUT NOISE
+            Position newPosition = new Position();newPosition.setX((int) (position.getX() +  0.25 * new Random().nextGaussian() + 0.9  * pixel_distance * Math.cos(tmpDirection)));
+            newPosition.setY((int) (position.getY() + 0.05 * new Random().nextGaussian() + 0.85f * pixel_distance * Math.sin(tmpDirection)));
             Log.d("P","NEW Particle " + newPosition.x + " " + newPosition.y);
-
-                particle.setPos(newPosition);
-                id++;
+            particle.setPos(newPosition);
+            id++;
 
         }
         checkParticles();
