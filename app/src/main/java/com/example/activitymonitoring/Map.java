@@ -15,7 +15,7 @@ public class Map
            
 //    public List<Bitmap> rooms;
     public List<Wall> walls;
-    int pixelMeterCoefficient;
+    double pixelMeterCoefficient;
     public ArrayList<Pixel> pixels_in_use;
 
     public Map(BaseActivity baseActivity)
@@ -89,7 +89,7 @@ public class Map
                                 while((original_image.getPixel(x_steps,y) << 8) == 0x00ff0000) {
                                     x_steps++;
                                 }
-                                this.pixelMeterCoefficient = x_steps - x;
+                                this.pixelMeterCoefficient = (x_steps - x) / (double)5;
                             }
 
                         }
