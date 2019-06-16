@@ -34,13 +34,12 @@ public class ParticleFilter {
     //TODO move particles gives me direction and distance
     public void moveParticles(double distance, double direction) //mobile phone detected movement calculated distance we got stride + directioon
     {
-//        Log.d("PARTICLE FILTER ", "D: " + distance + " DIR: " + direction);
+        Log.d("PARTICLE FILTER ", "D: " + distance + " DIR: " + direction);
         double pixel_distance = meterToPixelConverter(distance);
-//        Log.d("PARTICLE FILTER ", "PD: " + pixel_distance);
+        Log.d("PARTICLE FILTER ", "PD: " + pixel_distance);
         direction = Math.toRadians(direction);
         int id = 0;
         for (Particle particle : particles) {
-            if(particle != null) {
                 Position position = particle.getPos();
                 Log.d("P","Particle " + id + " " + position.x + " " + position.y);
                 particle.setLastPos(new Position(position));
@@ -51,7 +50,6 @@ public class ParticleFilter {
 
                 particle.setPos(newPosition);
                 id++;
-            }
 
         }
         checkParticles();
@@ -77,7 +75,7 @@ public class ParticleFilter {
         double p_resample = (rng.nextDouble() - 1) * p_step;
         int cdf_idx = 0;
 
-        for (int i = 1; i < PARTICLES; i++) {
+        for (int i = 0; i < PARTICLES; i++) {
             p_resample += p_step;
 
 
@@ -88,14 +86,11 @@ public class ParticleFilter {
             // if the resample particle weight is 0.0 (should only occur for the last part of the
             // cdf) then we take a
             // particle with non-zero weight..
-            if(particles[cdf_idx] != null) {
                 if (particles[cdf_idx].getWeight() == 0.0)
                     resampled_particles[i] = new Particle(resampled_particles[i - 1]);
                 else{
                     resampled_particles[i] = new Particle(particles[cdf_idx]);
                 }
-
-            }
 
             resampled_particles[i].setWeight(p_step);
         }
@@ -114,7 +109,6 @@ public class ParticleFilter {
         int cnt = 0;
         for(Particle particle : particles)
         {
-            if(particle != null) {
                 cnt++;
                 Position position = particle.getPos();
                 Position lastPosition = particle.getLastPos();
@@ -134,7 +128,7 @@ public class ParticleFilter {
                     Position intersectionWithRightBorder = intersect(lastPosition,position,wall.top_right,wall.bottom_right);
 
                     Position intersectionWithLeftBorder = intersect(lastPosition,position,wall.top_left,wall.top_right);
-                    if(intersectionWithTopBorder != null || intersectionWithBottomBorder != null || intersectionWithRightBorder != null || intersectionWithLeftBorder != null)
+                    if(intersectionWithTopBorder != null || intersectionWithBottomBorder != null || intersectionWithRightBorder != null || intersectionWithLeftBorder != null || particle.getPos().x > 1200 || particle.getPos().x < 0 || particle.getPos().y > 500|| particle.getPos().y < 250 )
                     {
 //                    Log.d("PARTICLE FILTEr", "COLLISION DETECTED\n");
                         particle.setWeight(0.f);
@@ -149,22 +143,21 @@ public class ParticleFilter {
                 }
                 id++;
 
-            }
         }
         Log.d("PARTICLE FILTER ","particle size " + particleSize);
 
+        double sumweight = 0.f;
         for(Particle particle : particles)
         {
-            if(particle != null) {
-                if (Double.compare(particle.getWeight(), 0.f) != 0) {
-                    particle.setWeight(1.f/(double)particleSize);
-                }
-
-            }
-
-
-
+            sumweight += particle.getWeight();
         }
+        for(Particle particle : particles)
+        {
+            if (Double.compare(particle.getWeight(), 0.f) != 0) {
+                particle.setWeight(particle.getWeight()/(double)sumweight);
+            }
+        }
+
 
     }
 

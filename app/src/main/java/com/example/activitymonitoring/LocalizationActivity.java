@@ -115,7 +115,7 @@ public class LocalizationActivity extends BaseActivity
         }
         Bitmap map = this.map.getOriginal_image();
         for(Particle particle: particleFilter.particles) {
-            if(particle != null && particle.getPos().x >= 0 &&particle.getPos().y >= 0 && particle.getPos().x < map.getWidth() && particle.getPos().y < map.getHeight()) {
+            if(particle.getPos().x >= 0 &&particle.getPos().y >= 0 && particle.getPos().x < map.getWidth() && particle.getPos().y < map.getHeight()) {
                 map.setPixel((int)particle.getLastPos().x,(int)particle.getLastPos().y,0xFFFFFFFF);;
                 if(particle.getWeight() != 0.f) {
                     map.setPixel((int)particle.getPos().x,(int)particle.getPos().y,0xFF00FF00);
