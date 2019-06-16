@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 //HARDCODED VALUES FOR OUR ROOMS
 
@@ -17,9 +18,11 @@ public class Map
     public List<Wall> walls;
     double pixelMeterCoefficient;
     public ArrayList<Pixel> pixels_in_use;
+    public Position estimated_pos;
 
     public Map(BaseActivity baseActivity)
     {
+        this.estimated_pos = new Position();
         this.original_image = BitmapFactory.decodeResource(baseActivity.getResources(), R.drawable.map_tug);
         this.walls = new ArrayList<>();
         this.pixels_in_use = new ArrayList<>();
@@ -136,4 +139,47 @@ public class Map
         }
         return true;
     }
+
+    public void draw_estimated_Position(Particle particles[])
+    {
+        ArrayList<Double> x = new ArrayList<Double>();
+        ArrayList<Double> y = new ArrayList<Double>();
+
+
+        for(int i = 0; i < particles.length; i++)
+        {
+            x.add(particles[i].getPos().x);
+            y.add(particles[i].getPos().y);
+
+        }
+
+        Collections.sort(x);
+        Collections.sort(y);
+
+        estimated_pos.x = x.get(x.size()/2);
+        estimated_pos.y = y.get(y.size()/2);
+
+
+
+        for (int vert = -10; vert < 10; vert++)
+        {
+            for(int hor = -10; hor < 10; hor++)
+            {
+                this.original_image.setPixel((int)estimated_pos.x + hor ,(int)estimated_pos.y + vert, 0xFFFF0000);
+            }
+        }
+
+    }
+
+    public void delete_estimated_postion()
+    {
+        for (int vert = -10; vert < 10; vert++)
+        {
+            for(int hor = -10; hor < 10; hor++)
+            {
+                this.original_image.setPixel((int)estimated_pos.x + hor ,(int)estimated_pos.y + vert, 0xFFFFFFFF);
+            }
+        }
+    }
+
 }

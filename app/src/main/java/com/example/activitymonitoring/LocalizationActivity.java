@@ -128,9 +128,16 @@ public class LocalizationActivity extends BaseActivity
             motion.angle.clear();
         }
         Bitmap map = this.map.getOriginal_image();
-        for(Particle particle: particleFilter.particles) {
-            if(particle.getPos().x >= 0 &&particle.getPos().y >= 0 && particle.getPos().x < map.getWidth() && particle.getPos().y < map.getHeight()) {
-                map.setPixel((int)particle.getLastPos().x,(int)particle.getLastPos().y,0xFFFFFFFF);;
+
+        if(this.map.estimated_pos.x != 0 && this.map.estimated_pos.y != 0)
+        {
+            this.map.delete_estimated_postion();
+        }
+
+        for(Particle particle: particleFilter.particles)
+        {
+            if(particle.getPos().x >= 0 && particle.getPos().y >= 0 && particle.getPos().x < map.getWidth() && particle.getPos().y < map.getHeight()) {
+                map.setPixel((int)particle.getLastPos().x,(int)particle.getLastPos().y,0xFFFFFFFF);
                 if(particle.getWeight() != 0.f) {
                     map.setPixel((int)particle.getPos().x,(int)particle.getPos().y,0xFF0000FF);
                 }
@@ -138,6 +145,7 @@ public class LocalizationActivity extends BaseActivity
             }
 
         }
+        this.map.draw_estimated_Position( particleFilter.particles);
         ImageView imageView = findViewById(R.id.image1);
         imageView.setImageBitmap(map);
 
