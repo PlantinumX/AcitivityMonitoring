@@ -48,7 +48,7 @@ public class ParticleFilter {
 
             particle.setLastPos(new Position(position));
             Position newPosition = new Position();newPosition.setX((int) (position.getX() +  0.25 * new Random().nextGaussian() + 0.9  * pixel_distance * Math.cos(tmpDirection)));
-            newPosition.setY((int) (position.getY() + 0.05 * new Random().nextGaussian() + 0.85f * pixel_distance * Math.sin(tmpDirection)));
+            newPosition.setY((int) (position.getY() + 0.05 * new Random().nextGaussian() + 0.75f * pixel_distance * Math.sin(tmpDirection)));
             Log.d("P","NEW Particle " + newPosition.x + " " + newPosition.y);
             particle.setPos(newPosition);
             id++;
@@ -149,7 +149,7 @@ public class ParticleFilter {
         }
         Log.d("PARTICLE FILTER ","particle size " + particleSize);
 
-        if(particleSize < 40)
+        if(particleSize < 20)
         {
             init();
         }

@@ -102,7 +102,7 @@ public class LocalizationActivity extends BaseActivity
 //            Log.d("duration: ", Long.toString(motion.duration));
 //            Toast.makeText(this, "duration: " + Long.toString(motion.duration) + "mean angle: " + Double.toString(orientation), Toast.LENGTH_LONG);
 
-            duration_sec = (double)motion.duration/ 1000;
+            duration_sec = (double)motion.duration/ 200;
 
             step_cnt = (int)((duration_sec * 2) + 0.5);
             distance = step_cnt * 0.65;
@@ -132,7 +132,7 @@ public class LocalizationActivity extends BaseActivity
             if(particle.getPos().x >= 0 &&particle.getPos().y >= 0 && particle.getPos().x < map.getWidth() && particle.getPos().y < map.getHeight()) {
                 map.setPixel((int)particle.getLastPos().x,(int)particle.getLastPos().y,0xFFFFFFFF);;
                 if(particle.getWeight() != 0.f) {
-                    map.setPixel((int)particle.getPos().x,(int)particle.getPos().y,0xFF00FF00);
+                    map.setPixel((int)particle.getPos().x,(int)particle.getPos().y,0xFF0000FF);
                 }
 
             }
