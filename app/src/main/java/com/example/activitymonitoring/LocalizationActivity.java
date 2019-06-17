@@ -132,7 +132,7 @@ public class LocalizationActivity extends BaseActivity
         }
 
 
-        if(motion.sample_cnt == 30)
+        if(motion.duration > 1500)
         {
 
             for(int i = 0; i < motion.angle.size(); i++)
@@ -181,12 +181,12 @@ public class LocalizationActivity extends BaseActivity
                     sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),SensorManager.SENSOR_DELAY_FASTEST);
                     sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),SensorManager.SENSOR_DELAY_FASTEST);
                 }
-            }
             motion.duration = (long)0;
             mean_orientation = 0;
             median_orientation = 0;
             motion.sample_cnt = 0;
             motion.angle.clear();
+            }
+        }
 
-    }
 }
