@@ -32,24 +32,25 @@ public class ParticleFilter {
     }
 
     //TODO move particles gives me direction and distance
+    //TODO move particles gives me direction and distance
     public void moveParticles(double distance, double direction) //mobile phone detected movement calculated distance we got stride + directioon
     {
         Log.d("PARTICLE FILTER ", "D: " + distance + " DIR: " + direction);
         double pixel_distance = meterToPixelConverter(distance);
         Log.d("PARTICLE FILTER ", "PD: " + pixel_distance);
+        Bitmap bitmap = map.getOriginal_image();
         int id = 0;
-        Random random =  new Random();
-
-        double tmpDirection = Math.toRadians(direction) + 0.005 * random.nextGaussian(); //some noise
+        double tmpDirection = direction;
         for (Particle particle : particles) {
-            double noise = random.nextGaussian();
             Position position = particle.getPos();
+            tmpDirection = Math.toRadians(direction) + 0.15 * new Random().nextGaussian(); //some noise
             Log.d("P","Particle " + id + " " + position.x + " " + position.y);
 
             particle.setLastPos(new Position(position));
-            position.setX((int) (position.getX() +  0.05 * noise + 0.95  * pixel_distance * Math.cos(tmpDirection)));
-            position.setY((int) (position.getY() + 0.05 * noise + 0.90f * pixel_distance * Math.sin(tmpDirection)));
-            Log.d("P","NEW Particle " + position.x + " " + position.y);
+            Position newPosition = new Position();newPosition.setX((int) (position.getX() +  0.25 * new Random().nextGaussian() + 0.9  * pixel_distance * Math.cos(tmpDirection)));
+            newPosition.setY((int) (position.getY() + 0.05 * new Random().nextGaussian() + 0.75f * pixel_distance * Math.sin(tmpDirection)));
+            Log.d("P","NEW Particle " + newPosition.x + " " + newPosition.y);
+            particle.setPos(newPosition);
             id++;
 
         }

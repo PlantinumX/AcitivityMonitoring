@@ -46,8 +46,8 @@ public class LocalizationActivity extends BaseActivity
         }
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_GAME);
-        sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     @Override
@@ -127,7 +127,7 @@ public class LocalizationActivity extends BaseActivity
         }
 
 
-        if(motion.duration > 1500)
+        if(motion.duration > 500)
         {
 
             for(int i = 0; i < motion.angle.size(); i++)
@@ -151,7 +151,7 @@ public class LocalizationActivity extends BaseActivity
 //            Log.d("duration: ", Long.toString(motion.duration));
 //            Toast.makeText(this, "duration: " + Long.toString(motion.duration) + "mean angle: " + Double.toString(orientation), Toast.LENGTH_LONG);
 
-            duration_sec = (double)motion.duration/ 6000;
+            duration_sec = (double)motion.duration/ 1000;
                 step_cnt = duration_sec * 2 + 0.5;
                 distance = step_cnt * 0.65;
 //            Log.d("activity 0 ",Double.toString(result[0]));
@@ -174,8 +174,8 @@ public class LocalizationActivity extends BaseActivity
                         Log.d("LOCALIZATIONACTIVITY", "WAITNING");
                     };
 
-                    sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),SensorManager.SENSOR_DELAY_GAME);
-                    sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),SensorManager.SENSOR_DELAY_GAME);
+                    sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),SensorManager.SENSOR_DELAY_FASTEST);
+                    sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),SensorManager.SENSOR_DELAY_FASTEST);
                 }
             motion.duration = (long)0;
             mean_orientation = 0;
