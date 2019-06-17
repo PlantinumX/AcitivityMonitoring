@@ -25,8 +25,8 @@ public class LocalizationActivity extends BaseActivity
     public SensorHandler sensorHandler;
     public SensorManager sensorManager;
     public ParticleFilter particleFilter;
-    private  ParticleUpdateThread particleUpdateThread;
-    GuiUpdateThread guiUpdateThread;
+    private ParticleUpdateThread particleUpdateThread;
+    private GuiUpdateThread guiUpdateThread;
     private Map map;
     private Motion motion = new Motion();
     private double mean_orientation = 0;
@@ -54,8 +54,8 @@ public class LocalizationActivity extends BaseActivity
         }
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_FASTEST);
-        sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), SensorManager.SENSOR_DELAY_GAME);
     }
 
     @Override
@@ -64,21 +64,25 @@ public class LocalizationActivity extends BaseActivity
     }
 
     private class ParticleUpdateThread implements Runnable {
+        boolean needWait;
         public  ParticleUpdateThread() {
-
+            this.needWait = false;
         }
 
         @Override
         public void run() {
             Log.d("PARTICLEUPDATETHREAD ", "RUN METHOD");
             particleFilter.moveParticles(distance,median_orientation);
+            this.needWait = true;
         }
     }
 
     private class GuiUpdateThread implements Runnable {
         LocalizationActivity localizationActivity;
+        volatile boolean needWait;
         public  GuiUpdateThread(LocalizationActivity localizationActivity) {
             this.localizationActivity = localizationActivity;
+            this.needWait = false;
         }
 
         @Override
@@ -105,6 +109,7 @@ public class LocalizationActivity extends BaseActivity
             ImageView imageView = findViewById(R.id.image1);
             imageView.setImageBitmap(map);
             Log.d("GUIUPDATETHREAD", "FINISHED");
+            this.needWait = true;
         }
     }
 
@@ -152,7 +157,6 @@ public class LocalizationActivity extends BaseActivity
 //            Toast.makeText(this, "duration: " + Long.toString(motion.duration) + "mean angle: " + Double.toString(orientation), Toast.LENGTH_LONG);
 
             duration_sec = (double)motion.duration/ 1000;
-            if(Double.compare(duration_sec,0.4f) > 0) {
                 step_cnt = duration_sec * 2 + 0.5;
                 distance = step_cnt * 0.65;
 //            Log.d("activity 0 ",Double.toString(result[0]));
@@ -167,9 +171,15 @@ public class LocalizationActivity extends BaseActivity
 //            Toast.makeText(this, "duration: " + distance + "mean angle: " + mean_orientation , Toast.LENGTH_LONG).show();
                 if (Double.compare(distance, 0.f) != 0) {
                     Log.d("LOCALIZATIONACTIVITY", "PARTICLE FILTER " + particleFilter.particles.length);
+                    sensorManager.unregisterListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
+                    sensorManager.unregisterListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD));
                     particleUpdateThread.run();
                     guiUpdateThread.run();
+                    while (particleUpdateThread.needWait == false || guiUpdateThread.needWait == false) {
+                    };
 
+                    sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),SensorManager.SENSOR_DELAY_FASTEST);
+                    sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),SensorManager.SENSOR_DELAY_FASTEST);
                 }
             }
             motion.duration = (long)0;
@@ -177,14 +187,6 @@ public class LocalizationActivity extends BaseActivity
             median_orientation = 0;
             motion.sample_cnt = 0;
             motion.angle.clear();
-        }else if(motion.sample_cnt == 30) {
-            Log.d("LOCALIZATIONACTIVITY", "CLEARING ");
-            motion.duration = (long)0;
-            mean_orientation = 0;
-            median_orientation = 0;
-            motion.sample_cnt = 0;
-            motion.angle.clear();
-        }
 
     }
 }
