@@ -41,7 +41,6 @@ public class ParticleFilter {
         int id = 0;
         double tmpDirection = direction;
         for (Particle particle : particles) {
-            bitmap.setPixel((int)particle.getPos().x,(int)particle.getPos().y,0xFFFFFFFF);
             Position position = particle.getPos();
             tmpDirection = Math.toRadians(direction) + 0.15 * new Random().nextGaussian(); //some noise
             Log.d("P","Particle " + id + " " + position.x + " " + position.y);
@@ -56,7 +55,6 @@ public class ParticleFilter {
         }
         checkParticles();
         low_variance_resampling();
-        map.setOriginal_image(bitmap);
     }
 
     //OOM not today
@@ -201,8 +199,6 @@ public class ParticleFilter {
 //        Log.d("P","INIT PARTICLES");
         Random rand = new Random();
         Bitmap map  = this.map.getOriginal_image();
-        int height = map.getHeight();
-        int width = map.getWidth();
 
 
         for(int i = 0; i < PARTICLES; i++)
@@ -223,7 +219,6 @@ public class ParticleFilter {
 
             Position tmp = new Position(pixel.getX(), pixel.getY());
             this.particles[i] = new Particle(0, tmp, initialweights);
-            this.map.getOriginal_image().setPixel((int)tmp.getX(), (int)tmp.getY(), 0xFF00FF00);
 //            Log.d("P","PAINTED MAP At " + tmp.x + " " +tmp.y);
 
         }

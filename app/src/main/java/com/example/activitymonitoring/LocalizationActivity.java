@@ -127,11 +127,11 @@ public class LocalizationActivity extends BaseActivity
             motion.sample_cnt = 0;
             motion.angle.clear();
         }
-        Bitmap map = this.map.getOriginal_image();
+        Bitmap map = this.map.getOriginal_image().copy(this.map.getOriginal_image().getConfig(), true);
 
         if(this.map.estimated_pos.x != 0 && this.map.estimated_pos.y != 0)
         {
-            this.map.delete_estimated_postion();
+            this.map.delete_estimated_postion(map);
         }
 
         for(Particle particle: particleFilter.particles)
@@ -145,7 +145,7 @@ public class LocalizationActivity extends BaseActivity
             }
 
         }
-        this.map.draw_estimated_Position( particleFilter.particles);
+        this.map.draw_estimated_Position( particleFilter.particles, map);
         ImageView imageView = findViewById(R.id.image1);
         imageView.setImageBitmap(map);
 
