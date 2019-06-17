@@ -140,7 +140,7 @@ public class Map
         return true;
     }
 
-    public void draw_estimated_Position(Particle particles[])
+    public void draw_estimated_Position(Particle particles[],Bitmap map)
     {
         ArrayList<Double> x = new ArrayList<Double>();
         ArrayList<Double> y = new ArrayList<Double>();
@@ -165,19 +165,19 @@ public class Map
         {
             for(int hor = -10; hor < 10; hor++)
             {
-                this.original_image.setPixel((int)estimated_pos.x + hor ,(int)estimated_pos.y + vert, 0xFFFF0000);
+                map.setPixel((int)estimated_pos.x + hor ,(int)estimated_pos.y + vert, 0xFFFF0000);
             }
         }
 
     }
 
-    public void delete_estimated_postion()
+    public void delete_estimated_postion(Bitmap map)
     {
         for (int vert = -10; vert < 10; vert++)
         {
             for(int hor = -10; hor < 10; hor++)
             {
-                this.original_image.setPixel((int)estimated_pos.x + hor ,(int)estimated_pos.y + vert, 0xFFFFFFFF);
+                map.setPixel((int)estimated_pos.x + hor ,(int)estimated_pos.y + vert, 0xFFFFFFFF);
             }
         }
     }

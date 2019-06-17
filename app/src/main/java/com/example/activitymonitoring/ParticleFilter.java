@@ -5,6 +5,9 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
 
 public class ParticleFilter {
     private final int PARTICLES = 15000; //AMOUNT OF PARTICLES
@@ -37,26 +40,23 @@ public class ParticleFilter {
         Log.d("PARTICLE FILTER ", "D: " + distance + " DIR: " + direction);
         double pixel_distance = meterToPixelConverter(distance);
         Log.d("PARTICLE FILTER ", "PD: " + pixel_distance);
-        Bitmap bitmap = map.getOriginal_image();
         int id = 0;
-        double tmpDirection = direction;
+        Random random =  new Random();
+        double tmpDirection = Math.toRadians(direction) + 0.15 *random.nextGaussian(); //some noise
         for (Particle particle : particles) {
-            bitmap.setPixel((int)particle.getPos().x,(int)particle.getPos().y,0xFFFFFFFF);
             Position position = particle.getPos();
-            tmpDirection = Math.toRadians(direction) + 0.15 * new Random().nextGaussian(); //some noise
             Log.d("P","Particle " + id + " " + position.x + " " + position.y);
 
             particle.setLastPos(new Position(position));
-            Position newPosition = new Position();newPosition.setX((int) (position.getX() +  0.25 * new Random().nextGaussian() + 0.9  * pixel_distance * Math.cos(tmpDirection)));
-            newPosition.setY((int) (position.getY() + 0.05 * new Random().nextGaussian() + 0.75f * pixel_distance * Math.sin(tmpDirection)));
-            Log.d("P","NEW Particle " + newPosition.x + " " + newPosition.y);
-            particle.setPos(newPosition);
+            position.setX((int) (position.getX() +  0.25 * random.nextGaussian() + 0.9  * pixel_distance * Math.cos(tmpDirection)));
+            position.setY((int) (position.getY() + 0.05 * random.nextGaussian() + 0.75f * pixel_distance * Math.sin(tmpDirection)));
+            Log.d("P","NEW Particle " + position.x + " " + position.y);
             id++;
 
         }
         checkParticles();
         low_variance_resampling();
-        map.setOriginal_image(bitmap);
+//        map.setOriginal_image(bitmap);
     }
 
     //OOM not today
@@ -131,9 +131,9 @@ public class ParticleFilter {
                     Position intersectionWithRightBorder = intersect(lastPosition,position,wall.top_right,wall.bottom_right);
 
                     Position intersectionWithLeftBorder = intersect(lastPosition,position,wall.top_left,wall.top_right);
-                    if(intersectionWithTopBorder != null || intersectionWithBottomBorder != null || intersectionWithRightBorder != null || intersectionWithLeftBorder != null || particle.getPos().x > 1500 || particle.getPos().x < 0 || particle.getPos().y > 900|| particle.getPos().y < 250 )
+                    if(intersectionWithTopBorder != null || intersectionWithBottomBorder != null || intersectionWithRightBorder != null || intersectionWithLeftBorder != null || particle.getPos().x > 1500 || particle.getPos().x < 0 || particle.getPos().y > 900|| particle.getPos().y < 250)
                     {
-//                    Log.d("PARTICLE FILTEr", "COLLISION DETECTED\n");
+                        Log.d("PARTICLE FILTEr", "COLLISION DETECTED\n");
                         particle.setWeight(0.f);
                         isCollided = true;
                         break;
@@ -201,8 +201,6 @@ public class ParticleFilter {
 //        Log.d("P","INIT PARTICLES");
         Random rand = new Random();
         Bitmap map  = this.map.getOriginal_image();
-        int height = map.getHeight();
-        int width = map.getWidth();
 
 
         for(int i = 0; i < PARTICLES; i++)
@@ -223,7 +221,7 @@ public class ParticleFilter {
 
             Position tmp = new Position(pixel.getX(), pixel.getY());
             this.particles[i] = new Particle(0, tmp, initialweights);
-            this.map.getOriginal_image().setPixel((int)tmp.getX(), (int)tmp.getY(), 0xFF00FF00);
+//            this.map.getOriginal_image().setPixel((int)tmp.getX(), (int)tmp.getY(), 0xFF00FF00);
 //            Log.d("P","PAINTED MAP At " + tmp.x + " " +tmp.y);
 
         }

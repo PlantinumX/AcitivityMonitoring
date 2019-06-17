@@ -90,7 +90,7 @@ public class SensorHandler implements SensorEventListener {
 			records.toDoubleArray(accelerometerValuesXAxis, 0);
 			records.toDoubleArray(accelerometerValuesYAxis, 1);
 			records.toDoubleArray(accelerometerValuesZAxis, 2);
-//			Log.d("SENSORHANDLER", "AZIMUTH " + orientations);
+			Log.d("SENSORHANDLER", "AZIMUTH " + orientations);
 
 			records.saveDirectionvalues(gyroscopeValues);
 			records.orientation = orientations;
