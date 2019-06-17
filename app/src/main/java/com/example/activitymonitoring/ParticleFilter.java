@@ -43,13 +43,14 @@ public class ParticleFilter {
         double tmpDirection = direction;
         for (Particle particle : particles) {
             Position position = particle.getPos();
-            tmpDirection = Math.toRadians(direction) + 0.15 * new Random().nextGaussian(); //some noise
-            Log.d("P","Particle " + id + " " + position.x + " " + position.y);
+            tmpDirection = Math.toRadians(direction) + 0.35 * new Random().nextGaussian(); //some noise
+//            Log.d("P","Particle " + id + " " + position.x + " " + position.y);
 
             particle.setLastPos(new Position(position));
-            Position newPosition = new Position();newPosition.setX((int) (position.getX() +  0.25 * new Random().nextGaussian() + 0.9  * pixel_distance * Math.cos(tmpDirection)));
-            newPosition.setY((int) (position.getY() + 0.05 * new Random().nextGaussian() + 0.75f * pixel_distance * Math.sin(tmpDirection)));
-            Log.d("P","NEW Particle " + newPosition.x + " " + newPosition.y);
+            Position newPosition = new Position();
+            newPosition.setY((int) (position.getY() + 0.15 * new Random().nextGaussian() + 0.65f * pixel_distance * Math.sin(tmpDirection)));
+            newPosition.setX((int) (position.getX() +  0.65 * new Random().nextGaussian() + 0.95  * pixel_distance * Math.cos(tmpDirection)));
+//            Log.d("P","NEW Particle " + newPosition.x + " " + newPosition.y);
             particle.setPos(newPosition);
             id++;
 
@@ -82,14 +83,14 @@ public class ParticleFilter {
             p_resample += p_step;
 
 
-            while (cdf_idx < (PARTICLES - 1) && (p_resample > cdf[cdf_idx] || particles[cdf_idx].getWeight() == 0.0)) {
+            while (cdf_idx < (PARTICLES - 1) && (Double.compare(p_resample ,cdf[cdf_idx] ) > 0 || Double.compare(particles[cdf_idx].getWeight() ,0.0f) == 0)) {
                 cdf_idx++;
             }
 
             // if the resample particle weight is 0.0 (should only occur for the last part of the
             // cdf) then we take a
             // particle with non-zero weight..
-                if (particles[cdf_idx].getWeight() == 0.0)
+                if (Double.compare(particles[cdf_idx].getWeight(),0.0) == 0)
                     resampled_particles[i] = new Particle(resampled_particles[i - 1]);
                 else{
                     resampled_particles[i] = new Particle(particles[cdf_idx]);
@@ -131,7 +132,7 @@ public class ParticleFilter {
                     Position intersectionWithRightBorder = intersect(lastPosition,position,wall.top_right,wall.bottom_right);
 
                     Position intersectionWithLeftBorder = intersect(lastPosition,position,wall.top_left,wall.top_right);
-                    if(intersectionWithTopBorder != null || intersectionWithBottomBorder != null || intersectionWithRightBorder != null || intersectionWithLeftBorder != null || particle.getPos().x > 1500 || particle.getPos().x < 0 || particle.getPos().y > 900|| particle.getPos().y < 250)
+                    if(intersectionWithTopBorder != null || intersectionWithBottomBorder != null || intersectionWithRightBorder != null || intersectionWithLeftBorder != null || particle.getPos().x > 1500 || particle.getPos().x < 0 || particle.getPos().y > 900|| particle.getPos().y < 250 || this.map.getOriginal_image().getPixel((int)particle.getPos().x,(int)particle.getPos().y ) != 0xFFFFFFFF)
                     {
                         Log.d("PARTICLE FILTEr", "COLLISION DETECTED\n");
                         particle.setWeight(0.f);
@@ -162,7 +163,7 @@ public class ParticleFilter {
         }
         for(Particle particle : particles)
         {
-            if (Double.compare(particle.getWeight(), 0.f) != 0) {
+            if (Double.compare(particle.getWeight(), 0.f) > 0) {
                 particle.setWeight(particle.getWeight()/(double)sumweight);
             }
         }

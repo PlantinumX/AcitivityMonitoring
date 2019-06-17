@@ -151,9 +151,9 @@ public class LocalizationActivity extends BaseActivity
 //            Log.d("duration: ", Long.toString(motion.duration));
 //            Toast.makeText(this, "duration: " + Long.toString(motion.duration) + "mean angle: " + Double.toString(orientation), Toast.LENGTH_LONG);
 
-            duration_sec = (double)motion.duration/ 1000;
+            duration_sec = (double)motion.duration / 1000;
                 step_cnt = duration_sec * 2 + 0.5;
-                distance = step_cnt * 0.65;
+                distance = step_cnt * 0.95;
 //            Log.d("activity 0 ",Double.toString(result[0]));
 //            Log.d("activity 1 ",Double.toString(result[1]));
 //            Log.d("activity 2 ",Double.toString(result[2]));

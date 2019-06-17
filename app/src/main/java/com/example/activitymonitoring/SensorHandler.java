@@ -80,7 +80,7 @@ public class SensorHandler implements SensorEventListener {
 
 
 		if ( SensorManager.getRotationMatrix( rMat, iMat, gData, mData ) ) {
-			int mAzimuth= (int) ( Math.toDegrees( SensorManager.getOrientation( rMat, orientation )[0] ) + 360 -50) % 360;
+			int mAzimuth= (int) ( Math.toDegrees( SensorManager.getOrientation( rMat, orientation )[0] ) + 360 - 47) % 360;
 			orientations = ((double)mAzimuth);
 		}
 
@@ -90,7 +90,7 @@ public class SensorHandler implements SensorEventListener {
 			records.toDoubleArray(accelerometerValuesXAxis, 0);
 			records.toDoubleArray(accelerometerValuesYAxis, 1);
 			records.toDoubleArray(accelerometerValuesZAxis, 2);
-			Log.d("SENSORHANDLER", "AZIMUTH " + orientations);
+//			Log.d("SENSORHANDLER", "AZIMUTH " + orientations);
 
 			records.saveDirectionvalues(gyroscopeValues);
 			records.orientation = orientations;
