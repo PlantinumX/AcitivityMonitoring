@@ -127,7 +127,7 @@ public class LocalizationActivity extends BaseActivity
         }
 
 
-        if(motion.sample_cnt == 30)
+        if(motion.duration > 1500)
         {
 
             for(int i = 0; i < motion.angle.size(); i++)
@@ -152,7 +152,6 @@ public class LocalizationActivity extends BaseActivity
 //            Toast.makeText(this, "duration: " + Long.toString(motion.duration) + "mean angle: " + Double.toString(orientation), Toast.LENGTH_LONG);
 
             duration_sec = (double)motion.duration/ 1000;
-            if(Double.compare(duration_sec,0.4f) > 0) {
                 step_cnt = duration_sec * 2 + 0.5;
                 distance = step_cnt * 0.65;
 //            Log.d("activity 0 ",Double.toString(result[0]));
@@ -171,20 +170,12 @@ public class LocalizationActivity extends BaseActivity
                     guiUpdateThread.run();
 
                 }
+            motion.duration = (long)0;
+            mean_orientation = 0;
+            median_orientation = 0;
+            motion.sample_cnt = 0;
+            motion.angle.clear();
             }
-            motion.duration = (long)0;
-            mean_orientation = 0;
-            median_orientation = 0;
-            motion.sample_cnt = 0;
-            motion.angle.clear();
-        }else if(motion.sample_cnt == 30) {
-            Log.d("LOCALIZATIONACTIVITY", "CLEARING ");
-            motion.duration = (long)0;
-            mean_orientation = 0;
-            median_orientation = 0;
-            motion.sample_cnt = 0;
-            motion.angle.clear();
         }
 
-    }
 }
