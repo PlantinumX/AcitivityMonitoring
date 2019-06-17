@@ -5,9 +5,6 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
 
 public class ParticleFilter {
     private final int PARTICLES = 15000; //AMOUNT OF PARTICLES
@@ -42,26 +39,28 @@ public class ParticleFilter {
         Log.d("PARTICLE FILTER ", "PD: " + pixel_distance);
         int id = 0;
         Random random =  new Random();
-        double tmpDirection = Math.toRadians(direction) + 0.15 *random.nextGaussian(); //some noise
+
+        double tmpDirection = Math.toRadians(direction) + 0.005 * random.nextGaussian(); //some noise
         for (Particle particle : particles) {
+            double noise = random.nextGaussian();
             Position position = particle.getPos();
             Log.d("P","Particle " + id + " " + position.x + " " + position.y);
 
             particle.setLastPos(new Position(position));
-            position.setX((int) (position.getX() +  0.25 * random.nextGaussian() + 0.9  * pixel_distance * Math.cos(tmpDirection)));
-            position.setY((int) (position.getY() + 0.05 * random.nextGaussian() + 0.75f * pixel_distance * Math.sin(tmpDirection)));
+            position.setX((int) (position.getX() +  0.05 * noise + 0.95  * pixel_distance * Math.cos(tmpDirection)));
+            position.setY((int) (position.getY() + 0.05 * noise + 0.90f * pixel_distance * Math.sin(tmpDirection)));
             Log.d("P","NEW Particle " + position.x + " " + position.y);
             id++;
 
         }
         checkParticles();
-        low_variance_resampling();
+        systematicVarianceResampling();
 //        map.setOriginal_image(bitmap);
     }
 
     //OOM not today
     //https://github.com/JuliaStats/StatsBase.jl/issues/124 looked into this code
-    public boolean low_variance_resampling() //calculate new weights but how
+    public boolean systematicVarianceResampling() //calculate new weights but how
     {
         Log.d("MAP","LOW VARIANCE RESAMPLING");
         Particle[] resampled_particles = new Particle[PARTICLES];

@@ -1,20 +1,12 @@
 package com.example.activitymonitoring;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import java.util.Collections;
 
@@ -25,7 +17,7 @@ public class LocalizationActivity extends BaseActivity
     public SensorHandler sensorHandler;
     public SensorManager sensorManager;
     public ParticleFilter particleFilter;
-    private ParticleUpdateThread particleUpdateThread;
+    private ParticleThread particleThread;
     private GuiUpdateThread guiUpdateThread;
     private Map map;
     private Motion motion = new Motion();
@@ -43,7 +35,7 @@ public class LocalizationActivity extends BaseActivity
         sensorHandler = new SensorHandler(this);
         try {
 
-            this.particleUpdateThread = new ParticleUpdateThread();
+            this.particleThread = new ParticleThread();
             classifier = new Classifier(this);
             this.map = new Map(this);
             this.map.prepareMap();
@@ -63,9 +55,9 @@ public class LocalizationActivity extends BaseActivity
         super.onDestroy();
     }
 
-    private class ParticleUpdateThread implements Runnable {
+    private class ParticleThread implements Runnable {
         boolean needWait;
-        public  ParticleUpdateThread() {
+        public ParticleThread() {
             this.needWait = false;
         }
 
@@ -87,6 +79,9 @@ public class LocalizationActivity extends BaseActivity
 
         @Override
         public void run() {
+            while (particleThread.needWait == false){
+                Log.d("GUIUPDATETHEREAD", "WAITING FOR PARTICLE THREAD TO FINISH");
+            };
             Log.d("GUIUPDATETHREAD ", "RUN METHOD");
             Bitmap map = this.localizationActivity.map.getOriginal_image().copy(this.localizationActivity.map.getOriginal_image().getConfig(),true);
 
@@ -156,7 +151,7 @@ public class LocalizationActivity extends BaseActivity
 //            Log.d("duration: ", Long.toString(motion.duration));
 //            Toast.makeText(this, "duration: " + Long.toString(motion.duration) + "mean angle: " + Double.toString(orientation), Toast.LENGTH_LONG);
 
-            duration_sec = (double)motion.duration/ 1000;
+            duration_sec = (double)motion.duration/ 6000;
                 step_cnt = duration_sec * 2 + 0.5;
                 distance = step_cnt * 0.65;
 //            Log.d("activity 0 ",Double.toString(result[0]));
@@ -173,13 +168,14 @@ public class LocalizationActivity extends BaseActivity
                     Log.d("LOCALIZATIONACTIVITY", "PARTICLE FILTER " + particleFilter.particles.length);
                     sensorManager.unregisterListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
                     sensorManager.unregisterListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD));
-                    particleUpdateThread.run();
+                    particleThread.run();
                     guiUpdateThread.run();
-                    while (particleUpdateThread.needWait == false || guiUpdateThread.needWait == false) {
+                    while (particleThread.needWait == false || guiUpdateThread.needWait == false) {
+                        Log.d("LOCALIZATIONACTIVITY", "WAITNING");
                     };
 
-                    sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),SensorManager.SENSOR_DELAY_FASTEST);
-                    sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),SensorManager.SENSOR_DELAY_FASTEST);
+                    sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),SensorManager.SENSOR_DELAY_GAME);
+                    sensorManager.registerListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),SensorManager.SENSOR_DELAY_GAME);
                 }
             motion.duration = (long)0;
             mean_orientation = 0;
