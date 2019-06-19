@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/W32TeX) (preloaded format=pdflatex 2018.4.17)  19 JUN 2019 12:34
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/W32TeX) (preloaded format=pdflatex 2018.4.17)  19 JUN 2019 15:30
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -428,9 +428,7 @@ LaTeX Font Info:    Try loading font information for U+msb on input line 29.
 (d:/Program Files/texlive/2017/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 32.
-LaTeX Font Info:    Try loading font information for OT1+pcr on input line 98.
+LaTeX Font Info:    Try loading font information for OT1+pcr on input line 97.
 
 (d:/Program Files/texlive/2017/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
@@ -439,14 +437,14 @@ File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 
 
 ]
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 207.
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 206.
 
 
 (d:/Program Files/texlive/2017/texmf-dist/tex/latex/psnfss/omsptm.fd
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 207.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 206.
  [2]
 
 ** Conference Paper **
@@ -463,11 +461,11 @@ Before submitting the final camera ready copy, remember to:
 
 ] (./conference_041818.aux) ) 
 Here is how much of TeX's memory you used:
- 4438 strings out of 492982
- 65245 string characters out of 6129689
+ 4425 strings out of 492982
+ 65116 string characters out of 6129689
  132894 words of memory out of 5000000
- 7924 multiletter control sequences out of 15000+600000
- 53160 words of font info for 113 fonts, out of 8000000 for 9000
+ 7916 multiletter control sequences out of 15000+600000
+ 49989 words of font info for 105 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  41i,12n,35p,590b,302s stack positions out of 5000i,500n,10000p,200000b,80000s
 {d:/Program Files/texlive/2017/texmf-dist/fonts/en
@@ -483,7 +481,7 @@ dist/fonts/type1/urw/times/utmb8a.pfb><d:/Program Files/texlive/2017/texmf-dist
 /fonts/type1/urw/times/utmbi8a.pfb><d:/Program Files/texlive/2017/texmf-dist/fo
 nts/type1/urw/times/utmr8a.pfb><d:/Program Files/texlive/2017/texmf-dist/fonts/
 type1/urw/times/utmri8a.pfb>
-Output written on conference_041818.pdf (3 pages, 123164 bytes).
+Output written on conference_041818.pdf (3 pages, 121948 bytes).
 PDF statistics:
  59 PDF objects out of 1000 (max. 8388607)
  42 compressed objects within 1 object stream
