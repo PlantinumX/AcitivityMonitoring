@@ -149,11 +149,11 @@ public class ParticleFilter {
 
 
         double sumweight = 0.f;
-        for(Particle particle : particles)
+        for(Particle particle : particles) //calculate normalization of our particle weights
         {
             sumweight += particle.getWeight();
         }
-        for(Particle particle : particles)
+        for(Particle particle : particles) // normalize the ones with no zero weight
         {
             if (Double.compare(particle.getWeight(), 0.f) > 0) {
                 particle.setWeight(particle.getWeight()/(double)sumweight);
@@ -163,8 +163,7 @@ public class ParticleFilter {
 
     }
 
-//https://stackoverflow.com/questions/15514906/how-to-check-intersection-between-a-line-and-a-rectangle
-    //TODO CHECK IF IT WORKS
+    //https://stackoverflow.com/questions/15514906/how-to-check-intersection-between-a-line-and-a-rectangle
     public  static Position intersect(Position start_1,Position end_1,Position start_2,Position end_2) {
 
         Position result = null;
@@ -172,7 +171,6 @@ public class ParticleFilter {
         double
                 s1_x = end_1.x - start_1.x,
                 s1_y = end_1.y - start_1.y,
-
                 s2_x = end_2.x - start_2.x,
                 s2_y = end_2.y - start_2.y,
 

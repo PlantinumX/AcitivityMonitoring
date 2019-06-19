@@ -79,7 +79,7 @@ public class LocalizationActivity extends BaseActivity
 
         @Override
         public void run() {
-            while (particleThread.needWait == false){
+            while (!particleThread.needWait){
                 Log.d("GUIUPDATETHEREAD", "WAITING FOR PARTICLE THREAD TO FINISH");
             };
             Log.d("GUIUPDATETHREAD ", "RUN METHOD");
@@ -152,8 +152,8 @@ public class LocalizationActivity extends BaseActivity
 //            Toast.makeText(this, "duration: " + Long.toString(motion.duration) + "mean angle: " + Double.toString(orientation), Toast.LENGTH_LONG);
 
             duration_sec = (double)motion.duration / 1000;
-                step_cnt = duration_sec * 2 + 0.5;
-                distance = step_cnt * 0.95;
+            step_cnt = duration_sec * 2 + 0.5;
+            distance = step_cnt * 0.95;
 //            Log.d("activity 0 ",Double.toString(result[0]));
 //            Log.d("activity 1 ",Double.toString(result[1]));
 //            Log.d("activity 2 ",Double.toString(result[2]));
@@ -170,7 +170,7 @@ public class LocalizationActivity extends BaseActivity
                     sensorManager.unregisterListener(sensorHandler, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD));
                     particleThread.run();
                     guiUpdateThread.run();
-                    while (particleThread.needWait == false || guiUpdateThread.needWait == false) {
+                    while (!particleThread.needWait|| !guiUpdateThread.needWait ) {
                         Log.d("LOCALIZATIONACTIVITY", "WAITNING");
                     };
 
