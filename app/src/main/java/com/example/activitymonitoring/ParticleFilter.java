@@ -31,7 +31,6 @@ public class ParticleFilter {
     }
 
     //TODO move particles gives me direction and distance
-    //TODO move particles gives me direction and distance
     public void moveParticles(double distance, double direction) //mobile phone detected movement calculated distance we got stride + directioon
     {
 //        Log.d("PARTICLE FILTER ", "D: " + distance + " DIR: " + direction);
@@ -58,7 +57,7 @@ public class ParticleFilter {
     }
 
     //OOM not today
-    public boolean systematicVarianceResampling() //calculate new weights but how
+    public void systematicVarianceResampling() //calculate new weights but how
     {
 //        Log.d("MAP", "SYSTEMATIC VARIANCE RESAMPLING");
         Particle[] resampled_particles = new Particle[PARTICLES];
@@ -92,9 +91,7 @@ public class ParticleFilter {
             //set old weight  1/N
             resampled_particles[i].setWeight(p_step);
         }
-
         particles = resampled_particles;
-        return true;
     }
 
 
