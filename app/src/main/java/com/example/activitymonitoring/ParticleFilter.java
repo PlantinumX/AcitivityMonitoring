@@ -26,7 +26,7 @@ public class ParticleFilter {
         return 0;
     }
 
-    double meterToPixelConverter(double distance) {
+    private double meterToPixelConverter(double distance) {
         return distance * this.map.pixelMeterCoefficient;
 
     }
@@ -79,7 +79,7 @@ public class ParticleFilter {
         for (int i = 0; i < PARTICLES; i++) {
             p_resample += p_step; // that is threshold and is incremented in each iteration
 
-            //skip until next threshold is reached
+            //skip until next threshold is reached or weight of current particle is zero
             while (cum_index < (PARTICLES - 1) && (Double.compare(p_resample ,cum[cum_index] ) > 0 || Double.compare(particles[cum_index].getWeight() ,0.0f) == 0)) {
                 cum_index++;
             }
