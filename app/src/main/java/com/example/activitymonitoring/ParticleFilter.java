@@ -38,18 +38,17 @@ public class ParticleFilter {
         Log.d("PARTICLE FILTER ", "D: " + distance + " DIR: " + direction);
         double pixel_distance = meterToPixelConverter(distance);
         Log.d("PARTICLE FILTER ", "PD: " + pixel_distance);
-        Bitmap bitmap = map.getOriginal_image();
         int id = 0;
         double tmpDirection = direction;
         for (Particle particle : particles) {
             Position position = particle.getPos();
-            tmpDirection = Math.toRadians(direction) + 0.35 * new Random().nextGaussian(); //some noise
+            tmpDirection = Math.toRadians(direction) + 0.35 * new Random().nextDouble(); //some noise
 //            Log.d("P","Particle " + id + " " + position.x + " " + position.y);
 
             particle.setLastPos(new Position(position));
             Position newPosition = new Position();
-            newPosition.setY((int) (position.getY() + 0.15 * new Random().nextGaussian() + 0.65f * pixel_distance * Math.sin(tmpDirection)));
-            newPosition.setX((int) (position.getX() +  0.65 * new Random().nextGaussian() + 0.95  * pixel_distance * Math.cos(tmpDirection)));
+            newPosition.setY((int) (position.getY() + 0.15 * new Random().nextDouble() + 0.65f * pixel_distance * Math.sin(tmpDirection)));
+            newPosition.setX((int) (position.getX() +  0.65 * new Random().nextDouble() + 0.95  * pixel_distance * Math.cos(tmpDirection)));
 //            Log.d("P","NEW Particle " + newPosition.x + " " + newPosition.y);
             particle.setPos(newPosition);
             id++;
@@ -57,43 +56,38 @@ public class ParticleFilter {
         }
         checkParticles();
         systematicVarianceResampling();
-//        map.setOriginal_image(bitmap);
     }
 
     //OOM not today
-    //https://github.com/JuliaStats/StatsBase.jl/issues/124 looked into this code
     public boolean systematicVarianceResampling() //calculate new weights but how
     {
         Log.d("MAP","LOW VARIANCE RESAMPLING");
         Particle[] resampled_particles = new Particle[PARTICLES];
-        double r = new Random().nextDouble();
         // compute particle cdf
-        double[] cdf = new double[PARTICLES];
-        cdf[0] = 0.0;
+        double[] cum = new double[PARTICLES];
+        cum[0] = 0.0;
         for (int i = 1; i < PARTICLES; i++) {
-            cdf[i] = cdf[i - 1] + particles[i].getWeight();
+            cum[i] = cum[i - 1] + particles[i].getWeight();
         }
 
         Random rng = new Random();
         double p_step = 1.0 / PARTICLES; // probability step size for resampling (new sample weight)
         double p_resample = (rng.nextDouble() - 1) * p_step;
-        int cdf_idx = 0;
+        int cum_index = 0;
 
         for (int i = 0; i < PARTICLES; i++) {
             p_resample += p_step;
 
 
-            while (cdf_idx < (PARTICLES - 1) && (Double.compare(p_resample ,cdf[cdf_idx] ) > 0 || Double.compare(particles[cdf_idx].getWeight() ,0.0f) == 0)) {
-                cdf_idx++;
+            while (cum_index < (PARTICLES - 1) && (Double.compare(p_resample ,cum[cum_index] ) > 0 || Double.compare(particles[cum_index].getWeight() ,0.0f) == 0)) {
+                cum_index++;
             }
 
-            // if the resample particle weight is 0.0 (should only occur for the last part of the
-            // cdf) then we take a
-            // particle with non-zero weight..
-                if (Double.compare(particles[cdf_idx].getWeight(),0.0) == 0)
+
+                if (Double.compare(particles[cum_index].getWeight(),0.0) == 0)
                     resampled_particles[i] = new Particle(resampled_particles[i - 1]);
                 else{
-                    resampled_particles[i] = new Particle(particles[cdf_idx]);
+                    resampled_particles[i] = new Particle(particles[cum_index]);
                 }
 
             resampled_particles[i].setWeight(p_step);
@@ -191,8 +185,8 @@ public class ParticleFilter {
         {
             // Collision detected
             result = new Position(
-                    (int) (start_1.x /*pLine1.x1 */+ (t * s1_x)),
-                    (int) (start_1.y/*pLine1.y1 */+ (t * s1_y)));
+                    (int) (start_1.x + (t * s1_x)),
+                    (int) (start_1.y + (t * s1_y)));
         }   // end if
 
         return result;
