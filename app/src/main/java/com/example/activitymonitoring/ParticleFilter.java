@@ -37,16 +37,17 @@ public class ParticleFilter {
         double pixel_distance = meterToPixelConverter(distance);
 //        Log.d("PARTICLE FILTER ", "PD: " + pixel_distance);
         int id = 0;
-        double tmpDirection = direction;
+        Random random  = new Random();
+        double tmpDirection;
         for (Particle particle : particles) {
             Position position = particle.getPos();
-            tmpDirection = Math.toRadians(direction) + 0.35 * new Random().nextDouble(); //some noise
+            tmpDirection = Math.toRadians(direction) + 0.35f * random.nextDouble(); //some noise
 //            Log.d("P","Particle " + id + " " + position.x + " " + position.y);
 
-            particle.setLastPos(new Position(position));
+            particle.setLastPos(position);
             Position newPosition = new Position();
-            newPosition.setY((int) (position.getY() + 0.15 * new Random().nextDouble() + 0.65f * pixel_distance * Math.sin(tmpDirection)));
-            newPosition.setX((int) (position.getX() + 0.65 * new Random().nextDouble() + 0.95 * pixel_distance * Math.cos(tmpDirection)));
+            newPosition.setY((int) (position.getY() + 0.15f * random.nextDouble() + 0.65f * pixel_distance * Math.sin(tmpDirection)));
+            newPosition.setX((int) (position.getX() + 0.65f * random.nextDouble() + 0.95f * pixel_distance * Math.cos(tmpDirection)));
 //            Log.d("P","NEW Particle " + newPosition.x + " " + newPosition.y);
             particle.setPos(newPosition);
             id++;
