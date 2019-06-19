@@ -1,7 +1,6 @@
 package com.example.activitymonitoring;
 
 
-import android.graphics.Bitmap;
 import android.util.Log;
 
 import java.util.Random;
@@ -19,7 +18,7 @@ public class ParticleFilter {
 
 
     public int init() {
-        double weight = 1.f / (double)PARTICLES; //first
+        double weight = 1.f / (double) PARTICLES; //first
         initParticlesIntoMap(weight);
 
 
@@ -35,9 +34,9 @@ public class ParticleFilter {
     //TODO move particles gives me direction and distance
     public void moveParticles(double distance, double direction) //mobile phone detected movement calculated distance we got stride + directioon
     {
-        Log.d("PARTICLE FILTER ", "D: " + distance + " DIR: " + direction);
+//        Log.d("PARTICLE FILTER ", "D: " + distance + " DIR: " + direction);
         double pixel_distance = meterToPixelConverter(distance);
-        Log.d("PARTICLE FILTER ", "PD: " + pixel_distance);
+//        Log.d("PARTICLE FILTER ", "PD: " + pixel_distance);
         int id = 0;
         double tmpDirection = direction;
         for (Particle particle : particles) {
@@ -48,7 +47,7 @@ public class ParticleFilter {
             particle.setLastPos(new Position(position));
             Position newPosition = new Position();
             newPosition.setY((int) (position.getY() + 0.15 * new Random().nextDouble() + 0.65f * pixel_distance * Math.sin(tmpDirection)));
-            newPosition.setX((int) (position.getX() +  0.65 * new Random().nextDouble() + 0.95  * pixel_distance * Math.cos(tmpDirection)));
+            newPosition.setX((int) (position.getX() + 0.65 * new Random().nextDouble() + 0.95 * pixel_distance * Math.cos(tmpDirection)));
 //            Log.d("P","NEW Particle " + newPosition.x + " " + newPosition.y);
             particle.setPos(newPosition);
             id++;
@@ -61,7 +60,7 @@ public class ParticleFilter {
     //OOM not today
     public boolean systematicVarianceResampling() //calculate new weights but how
     {
-        Log.d("MAP","SYSTEMATIC VARIANCE RESAMPLING");
+//        Log.d("MAP", "SYSTEMATIC VARIANCE RESAMPLING");
         Particle[] resampled_particles = new Particle[PARTICLES];
         // compute particle cdf
         double[] cum = new double[PARTICLES];
@@ -80,16 +79,16 @@ public class ParticleFilter {
             p_resample += p_step; // that is threshold and is incremented in each iteration
 
             //skip until next threshold is reached or weight of current particle is zero
-            while (cum_index < (PARTICLES - 1) && (Double.compare(p_resample ,cum[cum_index] ) > 0 || Double.compare(particles[cum_index].getWeight() ,0.0f) == 0)) {
+            while (cum_index < (PARTICLES - 1) && (Double.compare(p_resample, cum[cum_index]) > 0 || Double.compare(particles[cum_index].getWeight(), 0.0f) == 0)) {
                 cum_index++;
             }
 
-                //insert into new particle array
-                if (Double.compare(particles[cum_index].getWeight(),0.0) == 0)
-                    resampled_particles[i] = new Particle(resampled_particles[i - 1]);
-                else { //insert into new particle array
-                    resampled_particles[i] = new Particle(particles[cum_index]);
-                }
+            //insert into new particle array
+            if (Double.compare(particles[cum_index].getWeight(), 0.0) == 0)
+                resampled_particles[i] = new Particle(resampled_particles[i - 1]);
+            else { //insert into new particle array
+                resampled_particles[i] = new Particle(particles[cum_index]);
+            }
             //set old weight  1/N
             resampled_particles[i].setWeight(p_step);
         }
@@ -101,62 +100,58 @@ public class ParticleFilter {
 
     //TODO hardcodde walls if there is time
     //we should do a line and check if line is intersectin
-    public void checkParticles()
-    {
+    public void checkParticles() {
         int particleSize = 0;
-        for(Particle particle : particles)
-        {
-                Position position = particle.getPos();
-                Position lastPosition = particle.getLastPos();
-                boolean isCollided = false;
+        for (Particle particle : particles) {
+            Position position = particle.getPos();
+            Position lastPosition = particle.getLastPos();
+            boolean isCollided = false;
 
 //            Log.d("PARTICLE ", "PARTICLE ID "+id+ " " + position.getX() + " " + position.getY());
 //            Log.d("PARTICLE ", "LAST POSITION "+ " " + lastPosition.getX() + " " + lastPosition.getY());
 
 
-                for(Wall wall : this.map.walls) {
+            for (Wall wall : this.map.walls) {
 //                Log.d("P", "TOP LEFT "+wall.top_left.x + " " + wall.top_left.y);
 //                Log.d("P", "BOOTOM RIGHT "+wall.bottom_right.x + " " + wall.bottom_right.y);
-                    Position intersectionWithTopBorder = intersect(lastPosition,position,wall.top_left,wall.top_right);
+                Position intersectionWithTopBorder = intersect(lastPosition, position, wall.top_left, wall.top_right);
 
-                    Position intersectionWithBottomBorder = intersect(lastPosition,position,wall.bottom_left,wall.bottom_right);
-                    Position intersectionWithRightBorder = intersect(lastPosition,position,wall.top_right,wall.bottom_right);
+                Position intersectionWithBottomBorder = intersect(lastPosition, position, wall.bottom_left, wall.bottom_right);
+                Position intersectionWithRightBorder = intersect(lastPosition, position, wall.top_right, wall.bottom_right);
 
-                    Position intersectionWithLeftBorder = intersect(lastPosition,position,wall.top_left,wall.top_right);
-                    if(intersectionWithTopBorder != null || intersectionWithBottomBorder != null || intersectionWithRightBorder != null || intersectionWithLeftBorder != null || particle.getPos().x > 1500 || particle.getPos().x < 0 || particle.getPos().y > 900|| particle.getPos().y < 250 || this.map.getOriginal_image().getPixel((int)particle.getPos().x,(int)particle.getPos().y ) != 0xFFFFFFFF)
-                    {
-                        Log.d("PARTICLE FILTEr", "COLLISION DETECTED\n");
-                        particle.setWeight(0.f);
-                        isCollided = true;
-                        break;
-                    }
-
+                Position intersectionWithLeftBorder = intersect(lastPosition, position, wall.top_left, wall.top_right);
+                if (intersectionWithTopBorder != null || intersectionWithBottomBorder != null || intersectionWithRightBorder != null || intersectionWithLeftBorder != null || particle.getPos().x > 1500 || particle.getPos().x < 0 || particle.getPos().y > 900 || particle.getPos().y < 250 || this.map.getOriginal_image().getPixel((int) particle.getPos().x, (int) particle.getPos().y) != 0xFFFFFFFF) {
+//                    Log.d("PARTICLE FILTEr", "COLLISION DETECTED\n");
+                    particle.setWeight(0.f);
+                    isCollided = true;
+                    break;
                 }
-                if(!isCollided) {
+
+            }
+            if (!isCollided) {
 //                Log.d("index not collidet", Integer.toString(cnt));
-                    particleSize++;
-                }
+                particleSize++;
+            }
 
         }
-        Log.d("PARTICLE FILTER ","particle size " + particleSize);
+//        Log.d("PARTICLE FILTER ", "particle size " + particleSize);
 
 
         //IF THERE ARE LESS THAN 20 PARTICLES LEFT LOCALIZATION IS NOT ACCURATE SO START FROM SCRATCH AGAIN
-        if(particleSize < 20)
-        {
+        if (particleSize < 20) {
             init();
         }
 
 
         double sumweight = 0.f;
-        for(Particle particle : particles) //calculate normalization of our particle weights
+        for (Particle particle : particles) //calculate normalization of our particle weights
         {
             sumweight += particle.getWeight();
         }
-        for(Particle particle : particles) // normalize the ones with no zero weight
+        for (Particle particle : particles) // normalize the ones with no zero weight
         {
             if (Double.compare(particle.getWeight(), 0.f) > 0) {
-                particle.setWeight(particle.getWeight()/(double)sumweight);
+                particle.setWeight(particle.getWeight() / (double) sumweight);
             }
         }
 
@@ -164,7 +159,7 @@ public class ParticleFilter {
     }
 
     //https://stackoverflow.com/questions/15514906/how-to-check-intersection-between-a-line-and-a-rectangle
-    public  static Position intersect(Position start_1,Position end_1,Position start_2,Position end_2) {
+    public static Position intersect(Position start_1, Position end_1, Position start_2, Position end_2) {
 
         Position result = null;
 
@@ -174,11 +169,10 @@ public class ParticleFilter {
                 s2_x = end_2.x - start_2.x,
                 s2_y = end_2.y - start_2.y,
 
-                s = (-s1_y * (start_1.x - start_2.x) + s1_x * ( start_1.y - start_2.y)) / (-s2_x * s1_y + s1_x * s2_y),
-                t = ( s2_x * (start_1.y - start_2.y) - s2_y * ( start_1.x - start_2.x)) / (-s2_x * s1_y + s1_x * s2_y);
+                s = (-s1_y * (start_1.x - start_2.x) + s1_x * (start_1.y - start_2.y)) / (-s2_x * s1_y + s1_x * s2_y),
+                t = (s2_x * (start_1.y - start_2.y) - s2_y * (start_1.x - start_2.x)) / (-s2_x * s1_y + s1_x * s2_y);
 
-        if (s >= 0 && s <= 1 && t >= 0 && t <= 1)
-        {
+        if (s >= 0 && s <= 1 && t >= 0 && t <= 1) {
             result = new Position(
                     (int) (start_1.x + (t * s1_x)),
                     (int) (start_1.y + (t * s1_y)));
@@ -191,16 +185,14 @@ public class ParticleFilter {
 //        Log.d("P","INIT PARTICLES");
         Random rand = new Random();
 
-        for(int i = 0; i < PARTICLES; i++)
-        {
+        for (int i = 0; i < PARTICLES; i++) {
             Pixel pixel = new Pixel();
             int random = rand.nextInt(this.map.pixels_in_use.size() - 1);
 //            Log.d("random", Integer.toString(random));
             pixel = this.map.pixels_in_use.get(random);
 //            Log.d("XY pixel", Integer.toString(pixel.getX()) + " " + Integer.toString(pixel.getY()));
 //            Log.d("is used", Boolean.toString(pixel.isUsed()));
-            while(pixel.isUsed() == true)
-            {
+            while (pixel.isUsed() == true) {
                 random = rand.nextInt(this.map.pixels_in_use.size() - 1);
                 pixel = this.map.pixels_in_use.get(random);
             }

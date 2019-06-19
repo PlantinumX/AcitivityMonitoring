@@ -8,8 +8,7 @@ public class Particle {
     public int color;
 
 
-    Particle(double direction, Position position, double weight)
-    {
+    Particle(double direction, Position position, double weight) {
         this.direction = direction;
         this.pos = position;
         this.lastPos = new Position();
@@ -25,23 +24,19 @@ public class Particle {
         this.color = particle.color;
     }
 
-    public Position getPos()
-    {
+    public Position getPos() {
         return pos;
     }
 
-    public void setPos(Position pos)
-    {
+    public void setPos(Position pos) {
         this.pos = pos;
     }
 
-    public double getDirection()
-    {
+    public double getDirection() {
         return direction;
     }
 
-    public void setDirection(double direction)
-    {
+    public void setDirection(double direction) {
         this.direction = direction;
     }
 

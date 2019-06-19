@@ -10,88 +10,74 @@ import android.widget.Button;
 import android.widget.Toast;
 
 
-public class MainActivity extends AppCompatActivity
-{
-	public static final String GENERATE_DATA = "GENERATE DATA";
+public class MainActivity extends AppCompatActivity {
+    public static final String GENERATE_DATA = "GENERATE DATA";
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
 
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.content_main_activity);
-		Button startButton = findViewById(R.id.start_button_activity);
-		Button startLocalizationButton = findViewById(R.id.start_button_localization);
-		Button startDataMining = findViewById(R.id.data_button_activity);
-		View.OnClickListener mHandler = new View.OnClickListener()
-		{
-			@Override
-			public void onClick(View v)
-			{
-				Intent myIntent = new Intent(MainActivity.this,ClassifierActivity.class);
-				myIntent.putExtra(GENERATE_DATA,false);
-				MainActivity.this.startActivity(myIntent);
-			}
-		};
-		View.OnClickListener mDataHandler = new View.OnClickListener()
-		{
-			@Override
-			public void onClick(View v)
-			{
-				Intent myIntent = new Intent(MainActivity.this,ClassifierActivity.class);
-				myIntent.putExtra(GENERATE_DATA,true);
-				MainActivity.this.startActivity(myIntent);
-			}
-		};
-		View.OnClickListener mHandlerLocalization = new View.OnClickListener()
-		{
-			@Override
-			public void onClick(View v)
-			{
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.content_main_activity);
+        Button startButton = findViewById(R.id.start_button_activity);
+        Button startLocalizationButton = findViewById(R.id.start_button_localization);
+        Button startDataMining = findViewById(R.id.data_button_activity);
+        View.OnClickListener mHandler = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(MainActivity.this, ClassifierActivity.class);
+                myIntent.putExtra(GENERATE_DATA, false);
+                MainActivity.this.startActivity(myIntent);
+            }
+        };
+        View.OnClickListener mDataHandler = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(MainActivity.this, ClassifierActivity.class);
+                myIntent.putExtra(GENERATE_DATA, true);
+                MainActivity.this.startActivity(myIntent);
+            }
+        };
+        View.OnClickListener mHandlerLocalization = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 //				String text  = getString(R.string.NotImplemented);
 //				Toast.makeText(getApplicationContext(), text,Toast.LENGTH_LONG).show();
-				//TODO implement Localization
-				Intent myIntent = new Intent(MainActivity.this,LocalizationActivity.class);
-				MainActivity.this.startActivity(myIntent);
-			}
-		};
-		startButton.setOnClickListener(mHandler);
-		startDataMining.setOnClickListener(mDataHandler);
-		startLocalizationButton.setOnClickListener(mHandlerLocalization);
-	}
+                //TODO implement Localization
+                Intent myIntent = new Intent(MainActivity.this, LocalizationActivity.class);
+                MainActivity.this.startActivity(myIntent);
+            }
+        };
+        startButton.setOnClickListener(mHandler);
+        startDataMining.setOnClickListener(mDataHandler);
+        startLocalizationButton.setOnClickListener(mHandlerLocalization);
+    }
 
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
-	{
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.menu_main, menu);
-		return true;
-	}
+        return super.onOptionsItemSelected(item);
+    }
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-
-		//noinspection SimplifiableIfStatement
-		if (id == R.id.action_settings)
-		{
-			return true;
-		}
-
-		return super.onOptionsItemSelected(item);
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-	}
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
 }
