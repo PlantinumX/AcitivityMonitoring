@@ -62,7 +62,7 @@ public class LocalizationActivity extends BaseActivity {
 
         @Override
         public void run() {
-            Log.d("PARTICLEUPDATETHREAD ", "RUN METHOD");
+//            Log.d("PARTICLEUPDATETHREAD ", "RUN METHOD");
             particleFilter.moveParticles(distance, median_orientation);
             this.needWait = true;
         }
@@ -80,10 +80,10 @@ public class LocalizationActivity extends BaseActivity {
         @Override
         public void run() {
             while (!particleThread.needWait) {
-                Log.d("GUIUPDATETHEREAD", "WAITING FOR PARTICLE THREAD TO FINISH");
+//                Log.d("GUIUPDATETHEREAD", "WAITING FOR PARTICLE THREAD TO FINISH");
             }
             ;
-            Log.d("GUIUPDATETHREAD ", "RUN METHOD");
+//            Log.d("GUIUPDATETHREAD ", "RUN METHOD");
             Bitmap map = this.localizationActivity.map.getOriginal_image().copy(this.localizationActivity.map.getOriginal_image().getConfig(), true);
 
             if (this.localizationActivity.map.estimated_pos.x != 0 && this.localizationActivity.map.estimated_pos.y != 0) {
@@ -102,7 +102,7 @@ public class LocalizationActivity extends BaseActivity {
 
             ImageView imageView = findViewById(R.id.image1);
             imageView.setImageBitmap(map);
-            Log.d("GUIUPDATETHREAD", "FINISHED");
+//            Log.d("GUIUPDATETHREAD", "FINISHED");
             this.needWait = true;
         }
     }

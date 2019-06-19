@@ -96,7 +96,7 @@ public class Map {
         //We are going to divide into for rooms
 
         //this.rooms.add()
-        Log.d("MAP", "finished preparing map");
+//        Log.d("MAP", "finished preparing map");
         //TODO DEBUGGING PURPOSES
 //        for(Wall wall : this.walls) {
 //            height = (int)(wall.bottom_right.getY() - wall.top_left.getY());
@@ -113,7 +113,7 @@ public class Map {
 //            }
 //            Log.d("MAP", "COLLOR " + Integer.toHexString(wall.color));
 //        }
-        Log.d("MAP", "finished wallls");
+//        Log.d("MAP", "finished wallls");
     }
 
     public Bitmap getOriginal_image() {
