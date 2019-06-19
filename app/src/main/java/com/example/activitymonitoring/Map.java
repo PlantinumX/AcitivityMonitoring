@@ -140,7 +140,7 @@ public class Map
         return true;
     }
 
-    public void draw_estimated_Position(Particle particles[], Bitmap map)
+    public void draw_estimated_Position(Particle particles[],Bitmap map)
     {
         ArrayList<Double> x = new ArrayList<Double>();
         ArrayList<Double> y = new ArrayList<Double>();

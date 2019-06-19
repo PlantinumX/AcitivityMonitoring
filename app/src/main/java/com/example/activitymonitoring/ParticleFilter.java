@@ -32,67 +32,65 @@ public class ParticleFilter {
     }
 
     //TODO move particles gives me direction and distance
+    //TODO move particles gives me direction and distance
     public void moveParticles(double distance, double direction) //mobile phone detected movement calculated distance we got stride + directioon
     {
         Log.d("PARTICLE FILTER ", "D: " + distance + " DIR: " + direction);
         double pixel_distance = meterToPixelConverter(distance);
         Log.d("PARTICLE FILTER ", "PD: " + pixel_distance);
-        Bitmap bitmap = map.getOriginal_image();
         int id = 0;
         double tmpDirection = direction;
         for (Particle particle : particles) {
             Position position = particle.getPos();
-            tmpDirection = Math.toRadians(direction) + 0.15 * new Random().nextGaussian(); //some noise
-            Log.d("P","Particle " + id + " " + position.x + " " + position.y);
+            tmpDirection = Math.toRadians(direction) + 0.35 * new Random().nextDouble(); //some noise
+//            Log.d("P","Particle " + id + " " + position.x + " " + position.y);
 
             particle.setLastPos(new Position(position));
-            Position newPosition = new Position();newPosition.setX((int) (position.getX() +  0.25 * new Random().nextGaussian() + 0.9  * pixel_distance * Math.cos(tmpDirection)));
-            newPosition.setY((int) (position.getY() + 0.05 * new Random().nextGaussian() + 0.75f * pixel_distance * Math.sin(tmpDirection)));
-            Log.d("P","NEW Particle " + newPosition.x + " " + newPosition.y);
+            Position newPosition = new Position();
+            newPosition.setY((int) (position.getY() + 0.15 * new Random().nextDouble() + 0.65f * pixel_distance * Math.sin(tmpDirection)));
+            newPosition.setX((int) (position.getX() +  0.65 * new Random().nextDouble() + 0.95  * pixel_distance * Math.cos(tmpDirection)));
+//            Log.d("P","NEW Particle " + newPosition.x + " " + newPosition.y);
             particle.setPos(newPosition);
             id++;
 
         }
         checkParticles();
-        low_variance_resampling();
+        systematicVarianceResampling();
     }
 
     //OOM not today
-    //https://github.com/JuliaStats/StatsBase.jl/issues/124 looked into this code
-    public boolean low_variance_resampling() //calculate new weights but how
+    public boolean systematicVarianceResampling() //calculate new weights but how
     {
-        Log.d("MAP","LOW VARIANCE RESAMPLING");
+        Log.d("MAP","SYSTEMATIC VARIANCE RESAMPLING");
         Particle[] resampled_particles = new Particle[PARTICLES];
-        double r = new Random().nextDouble();
         // compute particle cdf
-        double[] cdf = new double[PARTICLES];
-        cdf[0] = 0.0;
+        double[] cum = new double[PARTICLES];
+        cum[0] = 0.0;
+        //generate pdf
         for (int i = 1; i < PARTICLES; i++) {
-            cdf[i] = cdf[i - 1] + particles[i].getWeight();
+            cum[i] = cum[i - 1] + particles[i].getWeight();
         }
 
         Random rng = new Random();
         double p_step = 1.0 / PARTICLES; // probability step size for resampling (new sample weight)
         double p_resample = (rng.nextDouble() - 1) * p_step;
-        int cdf_idx = 0;
+        int cum_index = 0;
 
         for (int i = 0; i < PARTICLES; i++) {
-            p_resample += p_step;
+            p_resample += p_step; // that is threshold and is incremented in each iteration
 
-
-            while (cdf_idx < (PARTICLES - 1) && (p_resample > cdf[cdf_idx] || particles[cdf_idx].getWeight() == 0.0)) {
-                cdf_idx++;
+            //skip until next threshold is reached
+            while (cum_index < (PARTICLES - 1) && (Double.compare(p_resample ,cum[cum_index] ) > 0 || Double.compare(particles[cum_index].getWeight() ,0.0f) == 0)) {
+                cum_index++;
             }
 
-            // if the resample particle weight is 0.0 (should only occur for the last part of the
-            // cdf) then we take a
-            // particle with non-zero weight..
-                if (particles[cdf_idx].getWeight() == 0.0)
+                //insert into new particle array
+                if (Double.compare(particles[cum_index].getWeight(),0.0) == 0)
                     resampled_particles[i] = new Particle(resampled_particles[i - 1]);
-                else{
-                    resampled_particles[i] = new Particle(particles[cdf_idx]);
+                else { //insert into new particle array
+                    resampled_particles[i] = new Particle(particles[cum_index]);
                 }
-
+            //set old weight  1/N
             resampled_particles[i].setWeight(p_step);
         }
 
@@ -106,11 +104,8 @@ public class ParticleFilter {
     public void checkParticles()
     {
         int particleSize = 0;
-        int id = 0;
-        int cnt = 0;
         for(Particle particle : particles)
         {
-                cnt++;
                 Position position = particle.getPos();
                 Position lastPosition = particle.getLastPos();
                 boolean isCollided = false;
@@ -120,7 +115,6 @@ public class ParticleFilter {
 
 
                 for(Wall wall : this.map.walls) {
-                    //loat px1, float py1, float px2, float py2
 //                Log.d("P", "TOP LEFT "+wall.top_left.x + " " + wall.top_left.y);
 //                Log.d("P", "BOOTOM RIGHT "+wall.bottom_right.x + " " + wall.bottom_right.y);
                     Position intersectionWithTopBorder = intersect(lastPosition,position,wall.top_left,wall.top_right);
@@ -129,9 +123,9 @@ public class ParticleFilter {
                     Position intersectionWithRightBorder = intersect(lastPosition,position,wall.top_right,wall.bottom_right);
 
                     Position intersectionWithLeftBorder = intersect(lastPosition,position,wall.top_left,wall.top_right);
-                    if(intersectionWithTopBorder != null || intersectionWithBottomBorder != null || intersectionWithRightBorder != null || intersectionWithLeftBorder != null || particle.getPos().x > 1500 || particle.getPos().x < 0 || particle.getPos().y > 900|| particle.getPos().y < 250 )
+                    if(intersectionWithTopBorder != null || intersectionWithBottomBorder != null || intersectionWithRightBorder != null || intersectionWithLeftBorder != null || particle.getPos().x > 1500 || particle.getPos().x < 0 || particle.getPos().y > 900|| particle.getPos().y < 250 || this.map.getOriginal_image().getPixel((int)particle.getPos().x,(int)particle.getPos().y ) != 0xFFFFFFFF)
                     {
-//                    Log.d("PARTICLE FILTEr", "COLLISION DETECTED\n");
+                        Log.d("PARTICLE FILTEr", "COLLISION DETECTED\n");
                         particle.setWeight(0.f);
                         isCollided = true;
                         break;
@@ -142,11 +136,12 @@ public class ParticleFilter {
 //                Log.d("index not collidet", Integer.toString(cnt));
                     particleSize++;
                 }
-                id++;
 
         }
         Log.d("PARTICLE FILTER ","particle size " + particleSize);
 
+
+        //IF THERE ARE LESS THAN 20 PARTICLES LEFT LOCALIZATION IS NOT ACCURATE SO START FROM SCRATCH AGAIN
         if(particleSize < 20)
         {
             init();
@@ -160,7 +155,7 @@ public class ParticleFilter {
         }
         for(Particle particle : particles)
         {
-            if (Double.compare(particle.getWeight(), 0.f) != 0) {
+            if (Double.compare(particle.getWeight(), 0.f) > 0) {
                 particle.setWeight(particle.getWeight()/(double)sumweight);
             }
         }
@@ -175,22 +170,21 @@ public class ParticleFilter {
         Position result = null;
 
         double
-                s1_x = end_1.x - start_1.x /*pLine1.x2 - pLine1.x1*/,
-                s1_y = end_1.y - start_1.y /*pLine1.y2 - pLine1.y1*/,
+                s1_x = end_1.x - start_1.x,
+                s1_y = end_1.y - start_1.y,
 
-                s2_x = end_2.x - start_2.x /*pLine2.x2 - pLine2.x1*/,
-                s2_y = end_2.y - start_2.y /*pLine2.y2 - pLine2.y1*/,
+                s2_x = end_2.x - start_2.x,
+                s2_y = end_2.y - start_2.y,
 
-                s = (-s1_y * (start_1.x - start_2.x /*pLine1.x1 - pLine2.x1*/) + s1_x * ( start_1.y - start_2.y /*pLine1.y1 - pLine2.y1*/)) / (-s2_x * s1_y + s1_x * s2_y),
-                t = ( s2_x * (start_1.y - start_2.y /*pLine1.y1 - pLine2.y1*/) - s2_y * ( start_1.x - start_2.x /*pLine1.x1 - pLine2.x1*/)) / (-s2_x * s1_y + s1_x * s2_y);
+                s = (-s1_y * (start_1.x - start_2.x) + s1_x * ( start_1.y - start_2.y)) / (-s2_x * s1_y + s1_x * s2_y),
+                t = ( s2_x * (start_1.y - start_2.y) - s2_y * ( start_1.x - start_2.x)) / (-s2_x * s1_y + s1_x * s2_y);
 
         if (s >= 0 && s <= 1 && t >= 0 && t <= 1)
         {
-            // Collision detected
             result = new Position(
-                    (int) (start_1.x /*pLine1.x1 */+ (t * s1_x)),
-                    (int) (start_1.y/*pLine1.y1 */+ (t * s1_y)));
-        }   // end if
+                    (int) (start_1.x + (t * s1_x)),
+                    (int) (start_1.y + (t * s1_y)));
+        }
 
         return result;
     }
@@ -198,8 +192,6 @@ public class ParticleFilter {
     void initParticlesIntoMap(double initialweights) {
 //        Log.d("P","INIT PARTICLES");
         Random rand = new Random();
-        Bitmap map  = this.map.getOriginal_image();
-
 
         for(int i = 0; i < PARTICLES; i++)
         {
@@ -219,6 +211,7 @@ public class ParticleFilter {
 
             Position tmp = new Position(pixel.getX(), pixel.getY());
             this.particles[i] = new Particle(0, tmp, initialweights);
+//            this.map.getOriginal_image().setPixel((int)tmp.getX(), (int)tmp.getY(), 0xFF00FF00);
 //            Log.d("P","PAINTED MAP At " + tmp.x + " " +tmp.y);
 
         }
