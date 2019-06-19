@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/W32TeX) (preloaded format=pdflatex 2018.4.17)  19 JUN 2019 15:48
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/W32TeX) (preloaded format=pdflatex 2018.4.17)  19 JUN 2019 16:26
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -428,17 +428,14 @@ LaTeX Font Info:    Try loading font information for U+msb on input line 29.
 (d:/Program Files/texlive/2017/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 32.
+
+LaTeX Warning: Citation `1' on page 1 undefined on input line 41.
 
 
-LaTeX Warning: Citation `1' on page 1 undefined on input line 47.
+LaTeX Warning: Reference `AA' on page 1 undefined on input line 53.
 
 
-LaTeX Warning: Reference `AA' on page 1 undefined on input line 59.
-
-
-LaTeX Warning: Reference `SCM' on page 1 undefined on input line 59.
+LaTeX Warning: Reference `SCM' on page 1 undefined on input line 53.
 
 [1{d:/Program Files/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
@@ -463,20 +460,20 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 4376 strings out of 492982
- 64322 string characters out of 6129689
- 129844 words of memory out of 5000000
- 7874 multiletter control sequences out of 15000+600000
- 46951 words of font info for 103 fonts, out of 8000000 for 9000
+ 4353 strings out of 492982
+ 64080 string characters out of 6129689
+ 128844 words of memory out of 5000000
+ 7859 multiletter control sequences out of 15000+600000
+ 42223 words of font info for 89 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 41i,11n,35p,355b,302s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 41i,11n,35p,803b,302s stack positions out of 5000i,500n,10000p,200000b,80000s
 {d:/Program Files/texlive/2017/texmf-dist/fonts/enc/dvips/base/8r.enc}<d:/Pro
 gram Files/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><d
 :/Program Files/texlive/2017/texmf-dist/fonts/type1/urw/times/utmb8a.pfb><d:/Pr
 ogram Files/texlive/2017/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb><d:/Progr
 am Files/texlive/2017/texmf-dist/fonts/type1/urw/times/utmr8a.pfb><d:/Program F
 iles/texlive/2017/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on conference_041818.pdf (2 pages, 65357 bytes).
+Output written on conference_041818.pdf (2 pages, 64027 bytes).
 PDF statistics:
  32 PDF objects out of 1000 (max. 8388607)
  22 compressed objects within 1 object stream
