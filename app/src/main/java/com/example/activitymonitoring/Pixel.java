@@ -1,29 +1,25 @@
 package com.example.activitymonitoring;
 
-public class Pixel
-{
+public class Pixel {
     private int x;
     private int y;
     private boolean used;
 
-    public Pixel(int x, int y, boolean used)
-    {
+    public Pixel(int x, int y, boolean used) {
         this.x = x;
         this.y = y;
         this.used = used;
     }
 
-    public Pixel()
-    {
+    public Pixel() {
         this.x = 0;
         this.y = 0;
         this.used = false;
     }
 
-    public Pixel(Position pos)
-    {
-        this.x = (int)pos.getX();
-        this.y = (int)pos.getY();
+    public Pixel(Position pos) {
+        this.x = (int) pos.getX();
+        this.y = (int) pos.getY();
         this.used = false;
     }
 
