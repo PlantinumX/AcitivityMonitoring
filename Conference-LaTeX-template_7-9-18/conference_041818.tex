@@ -34,6 +34,7 @@ For this course an Activity recognition and an localization application for andr
 
 \section{Introduction}
 To keep track of the Activity of the user the Acceleration sensor of the Android phone was used. After a view values of the Acceleration sensor the samples were classified with an k Nearest Neighbor(k-NN) Algorithm. The Algorithm is able to classify the three activities sitting, standing and walking. For Localization the Activity recognition was used to keep track if the user is walking or not walking. With this Information an Particle Filter was used to classify were the user is if he walks arround. The Particle Filter didn't use any additional sensor Informations so it does not have your exact   position when the app is started. The user needs to walk arround a little bit and after that the Particle Filter notice where the Person is in the 16 Inffeldgasse building.
+The Source Code can be seen here: https://github.com/PlantinumX/AcitivityMonitoring
 
 \section{Activity recognition}
 The mobile phone has many sensors. Some of them can be used to track the activity of a person.  After collecting sensor data the patterns in the data can be retrieved and can be used to classify between activities e.g jogging,running, walking.
@@ -60,8 +61,11 @@ for you.
 
 \section*{Localization}
 
+\subsection*{approach step counter}
+The first approach of the Motion Modell was via an step counter. The Plan was to implement it by calculation the mean value in the motion and calculate the standard deviation and if the user takes a step the step counter increases by one. The Problem here was that every movment the user takes would be recognized as a step and it would not be this accurate. The idea then was to make an Fast Fourier Transformation(FFT) to see how often this movment is made and compare it with an threshold. This was discarded because we already had an Activity recognition that is easy to use.
+
 \subsection*{Motion Model}
-For the Motion Model of the Localization application the mentioned Activity recognition with the k-NN was used. The k-NN uses 20 samples for each classifikation. For the Motion Model an set of 30 classifikations were used this took round 1.5seconds. The duration for every 20 samples were measured and if the classifikation said that the probability that the user was walking was the highest the duration for this 20 samples were added to the walking duration. So if the user were walking we would know after 1.5sec for how long he was walking. With this knowledge the steps the user takes were calculated by dividing the duration in seconds by 0.5, because an average person takes 2 steps every second while walking. 
+For the Motion Model of the Localization application the mentioned Activity recognition with the k-NN was used. The k-NN uses 20 samples for each classifikation. For the Motion Model an set of 30 classifikations were used this took round 1.5seconds. The duration for every 20 samples were measured and if the classifikation said that the probability that the user was walking was the highest the duration for this 20 samples were added to the walking duration. So if the user were walking we would know after 1.5sec for how long he was walking. With this knowledge the steps the user takes were calculated by dividing the duration in seconds by 0.5, because an average person takes 2 steps every second while walking. This stepcount was multiplied by 0,95 to get the distance the user was walking.
 
 \subsection*{Particle Filter}
 Please number citations consecutively within brackets \cite{b1}. The 
@@ -82,6 +86,10 @@ element symbols.
 
 For papers published in translation journals, please give the English 
 citation first, followed by the original foreign-language citation \cite{b6}.
+
+\subsection*{Localization}
+For the Localization Application the two above described Motion Model and Particle Filter were used. To calculate the Position of the user in the room. The Motion Model calculates how long the user walked for and the particle Filter calculates were the Person in the room was.
+
 \subsection*{Optimizations particle filter}
 \begin{thebibliography}{00}
 \bibitem{b1} G. Eason, B. Noble, and I. N. Sneddon, ``On certain integrals of Lipschitz-Hankel type involving products of Bessel functions,'' Phil. Trans. Roy. Soc. London, vol. A247, pp. 529--551, April 1955.
