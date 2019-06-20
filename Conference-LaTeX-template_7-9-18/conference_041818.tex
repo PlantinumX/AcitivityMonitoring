@@ -89,26 +89,18 @@ an ``e'' after the ``g''. Avoid the stilted expression ``one of us (R. B.
 G.) thanks $\ldots$''. Instead, try ``R. B. G. thanks$\ldots$''. Put sponsor 
 acknowledgments in the unnumbered footnote on the first page.
 
+
+\subsection*{Floorplan}
+For the Paritcle Filter to Work, an Floorplan of the building were we want to classify the position of the user is needed. So an floorplan of the 16 Inffeldgasse building is taken and edited, All the sections that should not be classified are coloured light grey. Then because the wall has Pixel holes an wall finding Algorithm was written and the walls were colored red so continues walls were created. In the floor plan was a scale were one rectangle was 5 meters, so that was coloured green and then our programm looked how wide one rectangle was and calculated how many Pixels the rectangle was wide, so an factor for Meter to Pixel was created. After this the orientation sensor has to be calibrated for the building, to have the perfect angle we added an offset of 47 degress to our orientation. So with this method our programm can be used on every building with very little things to rethink.
+
+
 \subsection*{Particle Filter}
 
-Please number citations consecutively within brackets \cite{b1}. The 
-sentence punctuation follows the bracket \cite{b2}. Refer simply to the reference 
-number, as in \cite{b3}---do not use ``Ref. \cite{b3}'' or ``reference \cite{b3}'' except at 
-the beginning of a sentence: ``Reference \cite{b3} was the first $\ldots$''
+After everything with the floorplan was done the Particle Filter was implemented. 
+First the Particle Filter executes the init step. In the init step the Particle Filter distributes random 15000 Particle in the sections of the Floorplan that should be classified. All this Particles have a weight of $\frac{1}{15000} $ where the 15000 are the number of particles distributed.
+Then when the Motion Model classifies that the user started moving the particles starts moving in the direction and distance the user is moving. For each Particle an bias is added to the movement direction and distance of the user so not all particles are moving the same. This is to work against uncertainness of the movement. When an Particle collides with an wall of the floorplan or is in an Position it's not allowed to be the weight of the particle is set to 0. All particles that are still valid are get a new weight. The weight is  $\frac{1}{num_particles_survived} $. After this step the Algorithm checks is a weight of a particle is 0 it is distributed new. The new Position of the invalid Particle is an Position of an old Particle. Because of the Bias that is added to the movment and orientation in the next step the Particles should be on different positions. The new resampled Particles get an weight of $\frac{1}{15000}.$. For the estimated Position the x and y Position for each Paritcle is taken and an median Filter is applied on the x and y postion. So the estimated position is the middle x and the middle y position of all Particles.
 
-Number footnotes separately in superscripts. Place the actual footnote at 
-the bottom of the column in which it was cited. Do not put footnotes in the 
-abstract or reference list. Use letters for table footnotes.
 
-Unless there are six authors or more give all authors' names; do not use 
-``et al.''. Papers that have not been published, even if they have been 
-submitted for publication, should be cited as ``unpublished'' \cite{b4}. Papers 
-that have been accepted for publication should be cited as ``in press'' \cite{b5}. 
-Capitalize only the first word in a paper title, except for proper nouns and 
-element symbols.
-
-For papers published in translation journals, please give the English 
-citation first, followed by the original foreign-language citation \cite{b6}.
 \subsection*{Optimizations particle filter}
 \begin{thebibliography}{00}
 \bibitem{b1} Jennifer R. Kwapisz, Gary M. Weiss, Samuel A. Moore, ``Activity Recognition using Cell Phone Accelerometers,''  Department of Computer and Information Science  Fordham University  441 East Fordham Road  Bronx, NY 10458.
