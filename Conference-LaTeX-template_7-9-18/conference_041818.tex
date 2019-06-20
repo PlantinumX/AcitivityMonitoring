@@ -44,22 +44,34 @@ The Localization was splited into two parts, the first part was an Activity reco
 \section{Activity recognition}
 The mobile phone has many sensors. Some of them can be used to track the activity of a person.  After collecting sensor data the patterns in the data can be retrieved and can be used to classify between activities e.g jogging,running, walking.
 \subsection{Tensorflow approach for Convolutional Neural Network}
-Our first approach was to use the popular tensorflow framework from Google. The idea was to train and write the cody in python and export a tensorflow model which can be used by our mobile phone. The trainingsdata was taken from the Wireless Sensor Data Mining group\cite{b1}. We decided to use a CNN network because it can be used to analyze interesting fatures in the data set. The error rate for the trainings data was very low. Only 15 \% were missclassified. The export to the android device worked too but in the end it did not work as accurate enough. The problem was that our dataset and our own sensor data generated from our mobile phones were to different so the model missclassified most of the activites wrong. After days of debugging and fixing errors we came to the conclusion to go along with the K-NN approach\cite{b2}.
+Our first approach was to use the popular tensorflow framework from Google. The idea was to train and write the cody in python and export a tensorflow model which can be used by our mobile phone. The trainingsdata was taken from the Wireless Sensor Data Mining group\cite{b1}. We decided to use a CNN network because it can be used to analyze interesting fatures in the data set. The error rate for the trainings data was very low. Only 15 \% were missclassified. The export to the android device worked too but in the end it did not work as accurate enough. The problem was that our dataset and our own sensor data generated from our mobile phones were to different so the model missclassified most of the activites wrong. Afterwards we tried to After days of debugging and fixing errors we came to the conclusion to go along with the K-NN approach\cite{b2}.
 \subsection{K-NN approach}
 First of all the K-NN algorithm is one of the simplest and most used classification algorithms. The classification of an object/class uses the majority vote of its neighbours. There are many decisions to be made before implementing the K-NN. First of all which K should we take. The K stands for the number of neighbours to be taken in account. It should be an odd number. In our case it was 21. The calculation of the distance is another point to think about. We decided to use the euclidean distance for our K-NN. The formula of the euclidean distance:
 \begin{equation}
 D(w_i,v_i) = \sqrt{\sum{(w_i - v_i)^2}}
 \end{equation}
-The euclidean distance is easy to program and is very efficient. Afterwards we thought about the features to use for the data set and the window size. We took the same features as for our CNN.The mean for each axis of the accelerometer values, the max peaks in each axis,the min peaks in each axis and the variances of each axis.  In addition one record contains 20 samples too. The sample rate can be adjusted in android so we took the sampling rate $SENSOR\_DELAY\_FASTEST$. According to its name it should be the fastest one. The windows size are 20 samples. The sampling rate is dependable on the hardware in the mobile phone, so it is hard to give a window for 20 samples in seconds but it should be approximately 50ms. The reference dataset was  taken with the SensorHandler. These class takes the samples and writed them in a txt file. In our main activity we can click on the generate data button and generate data for our classificitation as shown in 
-\ref{fig:mainmenuactivity}.
-\\ 
+The euclidean distance is easy to program and is very efficient. 
+\subsection{Feature extraction}
+Afterwards we thought about the features to use for the data set and the window size. We took the same features as for our CNN.The mean for each axis of the accelerometer values, the max peaks in each axis,the min peaks in each axis and the variances of each axis. 
+In addition one record contains 20 samples too. The sample rate can be adjusted in android so we took the sampling rate $SENSOR\_DELAY\_FASTEST$. According to its name it should be the fastest one. The windows size are 20 samples. The sampling rate is dependable on the hardware in the mobile phone, so it is hard to give a window for 20 samples in seconds but it should be approximately 50ms. 
+\subsection{Data generation}
+The reference dataset was  taken with the SensorHandler. These class takes the samples and writed them in a txt file. In our main activity we can click on the generate data button and generate data for our classificitation as shown in 
+\ref{fig:mainmenuactivity}. \\ 
 \begin{figure}
-\includegraphics[scale=0.2]{MainActivity.jpeg}
+\includegraphics[height = 7.5cm,width = 5cm]{Images/MainActivity.jpeg}
 \centering
 \caption{MainMenuActivity of the application}
 \label{fig:mainmenuactivity}
+\end{figure}\\
+With our own dataset and the extracted features we could classify. We differentiated between 3 classes:Walking,Standing and Sitting. It should be explicitly noted that our activity recognition works with the phone in the pocket. 
+\subsection{Classifier}
+\begin{figure}
+\includegraphics[height = 7.5cm,width = 5cm]{Images/AcitivityRecognition.jpeg}
+\centering
+\caption{Activityrecognition with accelerometer values }
+\label{fig:classifier}
 \end{figure}
-For the classification we needed classes. We choose 3 activities as classes. 
+As seen in \ref{fig:classifier} the K-NN algorithm classified sitting right with an accuracy about 80 \%. The classifier is very fast because we use the fastest sampling rate possible. The best classification are walking and standing because the accelerometer values are much apparent to our classifier.
 Before you begin to format your paper, first write and save the content as a 
 separate text file. Complete all content and organizational editing before 
 formatting. Please note sections \ref{AA}--\ref{SCM} below for more information on 
