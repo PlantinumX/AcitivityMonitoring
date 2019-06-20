@@ -58,13 +58,14 @@ public class ParticleFilter {
     }
 
     //OOM not today
+    //http://www.ist.tugraz.at/steinbauer_mediawiki/images/a/aa/Ar19_uncertainty_II.pdf page 38
     public void systematicVarianceResampling() //calculate new weights but how
     {
 //        Log.d("MAP", "SYSTEMATIC VARIANCE RESAMPLING");
         Particle[] resampled_particles = new Particle[PARTICLES];
         // compute particle cdf
         double[] cum = new double[PARTICLES];
-        cum[0] = 0.0;
+        cum[0] = particles[0].getWeight();
         //generate pdf
         for (int i = 1; i < PARTICLES; i++) {
             cum[i] = cum[i - 1] + particles[i].getWeight();
@@ -72,14 +73,14 @@ public class ParticleFilter {
 
         Random rng = new Random();
         double p_step = 1.0 / PARTICLES; // probability step size for resampling (new sample weight)
-        double p_resample = (rng.nextDouble() - 1) * p_step;
+        double u = (rng.nextDouble() - 1) * p_step;
         int cum_index = 0;
 
         for (int i = 0; i < PARTICLES; i++) {
-            p_resample += p_step; // that is threshold and is incremented in each iteration
+            u += p_step; // that is threshold and is incremented in each iteration
 
             //skip until next threshold is reached or weight of current particle is zero
-            while (cum_index < (PARTICLES - 1) && (Double.compare(p_resample, cum[cum_index]) > 0 || Double.compare(particles[cum_index].getWeight(), 0.0f) == 0)) {
+            while (cum_index < (PARTICLES - 1) && (Double.compare(u, cum[cum_index]) > 0 || Double.compare(particles[cum_index].getWeight(), 0.0f) == 0)) {
                 cum_index++;
             }
 

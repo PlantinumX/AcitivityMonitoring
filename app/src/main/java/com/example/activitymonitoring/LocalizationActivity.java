@@ -79,16 +79,17 @@ public class LocalizationActivity extends BaseActivity {
 
         @Override
         public void run() {
-            while (!particleThread.needWait) {
-//                Log.d("GUIUPDATETHEREAD", "WAITING FOR PARTICLE THREAD TO FINISH");
-            }
-            ;
-//            Log.d("GUIUPDATETHREAD ", "RUN METHOD");
+             Log.d("GUIUPDATETHREAD ", "RUN METHOD");
             Bitmap map = this.localizationActivity.map.getOriginal_image().copy(this.localizationActivity.map.getOriginal_image().getConfig(), true);
 
             if (this.localizationActivity.map.estimated_pos.x != 0 && this.localizationActivity.map.estimated_pos.y != 0) {
                 this.localizationActivity.map.delete_estimated_postion(map);
             }
+            while (!particleThread.needWait) {
+//                Log.d("GUIUPDATETHEREAD", "WAITING FOR PARTICLE THREAD TO FINISH");
+            }
+            ;
+//
             for (Particle particle : particleFilter.particles) {
                 if (particle.getPos().x >= 0 && particle.getPos().y >= 0 && particle.getPos().x < map.getWidth() && particle.getPos().y < map.getHeight()) {
                     if (particle.getWeight() != 0.f) {
