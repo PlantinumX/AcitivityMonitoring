@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/W32TeX) (preloaded format=pdflatex 2018.4.17)  20 JUN 2019 13:21
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/W32TeX) (preloaded format=pdflatex 2018.4.17)  20 JUN 2019 13:30
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -430,43 +430,17 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 32.
-
-
-LaTeX Warning: File `Images/MainActivity.jpeg' not found on input line 61.
-
-
-! Package pdftex.def Error: File `Images/MainActivity.jpeg' not found: using dr
-aft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.61 ...5cm,width = 5cm]{Images/MainActivity.jpeg}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-LaTeX Font Info:    Try loading font information for OT1+pcr on input line 61.
-(d:/Program Files/texlive/2017/texmf-dist/tex/latex/psnfss/ot1pcr.fd
-File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
-)
-
-LaTeX Warning: File `Images/AcitivityRecognition.jpeg' not found on input line 
-69.
-
-
-! Package pdftex.def Error: File `Images/AcitivityRecognition.jpeg' not found: 
-using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.69 ...h = 5cm]{Images/AcitivityRecognition.jpeg}
-                                                  
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
+<Images/MainActivity.jpeg, id=1, 759.83875pt x 1606.0pt>
+File: Images/MainActivity.jpeg Graphic file (type jpg)
+<use Images/MainActivity.jpeg>
+Package pdftex.def Info: Images/MainActivity.jpeg  used on input line 61.
+(pdftex.def)             Requested size: 142.26071pt x 213.39438pt.
+<Images/AcitivityRecognition.jpeg, id=2, 759.83875pt x 1606.0pt>
+File: Images/AcitivityRecognition.jpeg Graphic file (type jpg)
+<use Images/AcitivityRecognition.jpeg>
+Package pdftex.def Info: Images/AcitivityRecognition.jpeg  used on input line 6
+9.
+(pdftex.def)             Requested size: 142.26071pt x 213.39438pt.
 
 
 LaTeX Warning: Reference `AA' on page 1 undefined on input line 77.
@@ -477,7 +451,7 @@ LaTeX Warning: Reference `SCM' on page 1 undefined on input line 77.
 [1{d:/Program Files/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 
-] [2]
+] [2 <./Images/MainActivity.jpeg> <./Images/AcitivityRecognition.jpeg>]
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -497,11 +471,11 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 4417 strings out of 492982
- 64924 string characters out of 6129689
+ 4390 strings out of 492982
+ 64673 string characters out of 6129689
  129860 words of memory out of 5000000
- 7906 multiletter control sequences out of 15000+600000
- 47466 words of font info for 105 fonts, out of 8000000 for 9000
+ 7884 multiletter control sequences out of 15000+600000
+ 46951 words of font info for 103 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  41i,11n,35p,1181b,302s stack positions out of 5000i,500n,10000p,200000b,80000s
 {d:/Program Files/texlive/2017/texmf-dist/fonts/enc/dvips/base/8r.enc}<d:/Pro
@@ -513,15 +487,14 @@ i5.pfb><d:/Program Files/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm
 s/cm/cmr10.pfb><d:/Program Files/texlive/2017/texmf-dist/fonts/type1/public/ams
 fonts/cm/cmr7.pfb><d:/Program Files/texlive/2017/texmf-dist/fonts/type1/public/
 amsfonts/cm/cmsy10.pfb><d:/Program Files/texlive/2017/texmf-dist/fonts/type1/ur
-w/courier/ucrr8a.pfb><d:/Program Files/texlive/2017/texmf-dist/fonts/type1/urw/
-times/utmb8a.pfb><d:/Program Files/texlive/2017/texmf-dist/fonts/type1/urw/time
-s/utmbi8a.pfb><d:/Program Files/texlive/2017/texmf-dist/fonts/type1/urw/times/u
-tmr8a.pfb><d:/Program Files/texlive/2017/texmf-dist/fonts/type1/urw/times/utmri
-8a.pfb>
-Output written on conference_041818.pdf (3 pages, 130930 bytes).
+w/times/utmb8a.pfb><d:/Program Files/texlive/2017/texmf-dist/fonts/type1/urw/ti
+mes/utmbi8a.pfb><d:/Program Files/texlive/2017/texmf-dist/fonts/type1/urw/times
+/utmr8a.pfb><d:/Program Files/texlive/2017/texmf-dist/fonts/type1/urw/times/utm
+ri8a.pfb>
+Output written on conference_041818.pdf (3 pages, 194288 bytes).
 PDF statistics:
- 63 PDF objects out of 1000 (max. 8388607)
- 45 compressed objects within 1 object stream
+ 61 PDF objects out of 1000 (max. 8388607)
+ 42 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 11 words of extra memory for PDF output out of 10000 (max. 10000000)
 
