@@ -29,26 +29,28 @@ halici@student.tugraz.at}
 \maketitle
 
 \begin{abstract}
-For this course an Activity recognition and an localization application for android were Implemented. The Activity Recognition keeps track if the user is moving or staying in the same Position. It is able to classify if the user is standing, sitting or walking. The localization App can be used calculate where the user is in the 16 building of the Inffeldgasse Graz. Because an Particle Filter was used it is only able to get an accurate Position of the user if the user walked around enough.
+This document is a model and instructions for \LaTeX.
+This and the IEEEtran.cls file define the components of your paper [title, text, heads, etc.]. *CRITICAL: Do Not Use Symbols, Special Characters, Footnotes, 
+or Math in Paper Title or Abstract.
 \end{abstract}
 
+\begin{IEEEkeywords}
+component, formatting, style, styling, insert
+\end{IEEEkeywords}
+
 \section{Introduction}
-To keep track of the Activity of the user the Acceleration sensor of the Android phone was used. After a view values of the Acceleration sensor the samples were classified with an k Nearest Neighbor(k-NN) Algorithm. The Algorithm is able to classify the three activities sitting, standing and walking. For Localization the Activity recognition was used to keep track if the user is walking or not walking. With this Information an Particle Filter was used to classify were the user is if he walks arround. The Particle Filter didn't use any additional sensor Informations so it does not have your exact   position when the app is started. The user needs to walk arround a little bit and after that the Particle Filter notice where the Person is in the 16 Inffeldgasse building.
-The Source Code can be seen here: https://github.com/PlantinumX/AcitivityMonitoring
+The Localization was splited into two parts, the first part was an Activity recognition and the second part was the localization Algorithm with the Particle Filter. The Activity recognition was implemented with an k-Nearest Neighbor(k-NN) algorithm. It was used to classify if the user is moving or not. 
 
 \section{Activity recognition}
 The mobile phone has many sensors. Some of them can be used to track the activity of a person.  After collecting sensor data the patterns in the data can be retrieved and can be used to classify between activities e.g jogging,running, walking.
-\subsection{Tensorflow approach}
-Our first approach was to use the popular tensorflow framework from Google. The idea was to train and write the cody in python and export a tensorflow model which can be used by our mobile phone. The trainingsdata was taken from the Wireless Sensor Data Mining group.\cite{1}
-The IEEEtran class file is used to format your paper and style the text. All margins, 
-column widths, line spaces, and text fonts are prescribed; please do not 
-alter them. You may note peculiarities. For example, the head margin
-measures proportionately more than is customary. This measurement 
-and others are deliberate, using specifications that anticipate your paper 
-as one part of the entire proceedings, and not as an independent document. 
-Please do not revise any of the current designations.
-
+\subsection{Tensorflow approach for Convolutional Neural Network}
+Our first approach was to use the popular tensorflow framework from Google. The idea was to train and write the cody in python and export a tensorflow model which can be used by our mobile phone. The trainingsdata was taken from the Wireless Sensor Data Mining group\cite{b1}. We decided to use a CNN network because it can be used to analyze interesting fatures in the data set. The error rate for the trainings data was very low. Only 15 \% were missclassified. The export to the android device worked too but in the end it did not work as accurate enough. The problem was that our dataset and our own sensor data generated from our mobile phones were to different so the model missclassified most of the activites wrong. After days of debugging and fixing errors we came to the conclusion to go along with the K-NN approach\cite{b2}.
 \subsection{K-NN approach}
+First of all the K-NN algorithm is one of the simplest and most used classification algorithms. The classification of an object/class uses the majority vote of its neighbours. There are many decisions to be made before implementing the K-NN. First of all which K should we take. The K stands for the number of neighbours to be taken in account. It should be an odd number. In our case it was 21. The calculation of the distance is another point to think about. We decided to use the euclidean distance for our K-NN. The formula of the euclidean distance:
+\begin{equation}
+D(w_i,v_i) = \sqrt{\sum{(w_i - v_i)^2}}
+\end{equation}
+The euclidean distance is easy to program and is very efficient. Afterwards we thought about the features to use for the data set and the window size. We took the same features as for our CNN.The mean for each axis of the accelerometer values, the max peaks in each axis,the min peaks in each axis and the variances of each axis.  In addition one record contains 20 samples too. The sample rate can be adjusted in android so we took the sampling rate $SENSOR\_DELAY\_FASTEST$. According to its name it should be the fastest one. The windows size are 20 samples. The sampling rate is dependable on the hardware in the mobile phone, so it is hard to give a window for 20 samples in seconds but it should be approximately 50ms. The reference dataset was  taken with the SensorHandler . These class takes the samples and writed them in a txt file. In our main activity we can click on the main button and generate data for our classificitation. For the classification we needed classes. We choose 3 activities as classes. 
 Before you begin to format your paper, first write and save the content as a 
 separate text file. Complete all content and organizational editing before 
 formatting. Please note sections \ref{AA}--\ref{SCM} below for more information on 
@@ -61,13 +63,13 @@ for you.
 
 \section*{Localization}
 
-\subsection*{approach step counter}
-The first approach of the Motion Modell was via an step counter. The Plan was to implement it by calculation the mean value in the motion and calculate the standard deviation and if the user takes a step the step counter increases by one. The Problem here was that every movment the user takes would be recognized as a step and it would not be this accurate. The idea then was to make an Fast Fourier Transformation(FFT) to see how often this movment is made and compare it with an threshold. This was discarded because we already had an Activity recognition that is easy to use.
-
-\subsection*{Motion Model}
-For the Motion Model of the Localization application the mentioned Activity recognition with the k-NN was used. The k-NN uses 20 samples for each classifikation. For the Motion Model an set of 30 classifikations were used this took round 1.5seconds. The duration for every 20 samples were measured and if the classifikation said that the probability that the user was walking was the highest the duration for this 20 samples were added to the walking duration. So if the user were walking we would know after 1.5sec for how long he was walking. With this knowledge the steps the user takes were calculated by dividing the duration in seconds by 0.5, because an average person takes 2 steps every second while walking. This stepcount was multiplied by 0,95 to get the distance the user was walking.
+The preferred spelling of the word ``acknowledgment'' in America is without 
+an ``e'' after the ``g''. Avoid the stilted expression ``one of us (R. B. 
+G.) thanks $\ldots$''. Instead, try ``R. B. G. thanks$\ldots$''. Put sponsor 
+acknowledgments in the unnumbered footnote on the first page.
 
 \subsection*{Particle Filter}
+
 Please number citations consecutively within brackets \cite{b1}. The 
 sentence punctuation follows the bracket \cite{b2}. Refer simply to the reference 
 number, as in \cite{b3}---do not use ``Ref. \cite{b3}'' or ``reference \cite{b3}'' except at 
@@ -86,14 +88,10 @@ element symbols.
 
 For papers published in translation journals, please give the English 
 citation first, followed by the original foreign-language citation \cite{b6}.
-
-\subsection*{Localization}
-For the Localization Application the two above described Motion Model and Particle Filter were used. To calculate the Position of the user in the room. The Motion Model calculates how long the user walked for and the particle Filter calculates were the Person in the room was.
-
 \subsection*{Optimizations particle filter}
 \begin{thebibliography}{00}
-\bibitem{b1} G. Eason, B. Noble, and I. N. Sneddon, ``On certain integrals of Lipschitz-Hankel type involving products of Bessel functions,'' Phil. Trans. Roy. Soc. London, vol. A247, pp. 529--551, April 1955.
-\bibitem{b2} J. Clerk Maxwell, A Treatise on Electricity and Magnetism, 3rd ed., vol. 2. Oxford: Clarendon, 1892, pp.68--73.
+\bibitem{b1} Jennifer R. Kwapisz, Gary M. Weiss, Samuel A. Moore, ``Activity Recognition using Cell Phone Accelerometers,''  Department of Computer and Information Science  Fordham University  441 East Fordham Road  Bronx, NY 10458.
+\bibitem{b2}https://aqibsaeed.github.io/2016-11-04-human-activity-recognition-cnn/
 \bibitem{b3} I. S. Jacobs and C. P. Bean, ``Fine particles, thin films and exchange anisotropy,'' in Magnetism, vol. III, G. T. Rado and H. Suhl, Eds. New York: Academic, 1963, pp. 271--350.
 \bibitem{b4} K. Elissa, ``Title of paper if known,'' unpublished.
 \bibitem{b5} R. Nicole, ``Title of paper with only first word capitalized,'' J. Name Stand. Abbrev., in press.
