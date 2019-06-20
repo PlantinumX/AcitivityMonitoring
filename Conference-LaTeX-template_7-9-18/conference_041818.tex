@@ -50,7 +50,16 @@ First of all the K-NN algorithm is one of the simplest and most used classificat
 \begin{equation}
 D(w_i,v_i) = \sqrt{\sum{(w_i - v_i)^2}}
 \end{equation}
-The euclidean distance is easy to program and is very efficient. Afterwards we thought about the features to use for the data set and the window size. We took the same features as for our CNN.The mean for each axis of the accelerometer values, the max peaks in each axis,the min peaks in each axis and the variances of each axis.  In addition one record contains 20 samples too. The sample rate can be adjusted in android so we took the sampling rate $SENSOR\_DELAY\_FASTEST$. According to its name it should be the fastest one. The windows size are 20 samples. The sampling rate is dependable on the hardware in the mobile phone, so it is hard to give a window for 20 samples in seconds but it should be approximately 50ms. The reference dataset was  taken with the SensorHandler . These class takes the samples and writed them in a txt file. In our main activity we can click on the main button and generate data for our classificitation. For the classification we needed classes. We choose 3 activities as classes. 
+The euclidean distance is easy to program and is very efficient. Afterwards we thought about the features to use for the data set and the window size. We took the same features as for our CNN.The mean for each axis of the accelerometer values, the max peaks in each axis,the min peaks in each axis and the variances of each axis.  In addition one record contains 20 samples too. The sample rate can be adjusted in android so we took the sampling rate $SENSOR\_DELAY\_FASTEST$. According to its name it should be the fastest one. The windows size are 20 samples. The sampling rate is dependable on the hardware in the mobile phone, so it is hard to give a window for 20 samples in seconds but it should be approximately 50ms. The reference dataset was  taken with the SensorHandler. These class takes the samples and writed them in a txt file. In our main activity we can click on the generate data button and generate data for our classificitation as shown in 
+\ref{fig:mainmenuactivity}.
+\\ 
+\begin{figure}
+\includegraphics[scale=0.2]{MainActivity.jpeg}
+\centering
+\caption{MainMenuActivity of the application}
+\label{fig:mainmenuactivity}
+\end{figure}
+For the classification we needed classes. We choose 3 activities as classes. 
 Before you begin to format your paper, first write and save the content as a 
 separate text file. Complete all content and organizational editing before 
 formatting. Please note sections \ref{AA}--\ref{SCM} below for more information on 
